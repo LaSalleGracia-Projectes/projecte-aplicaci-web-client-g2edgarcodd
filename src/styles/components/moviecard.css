@@ -1,0 +1,65 @@
+.movie-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  padding: 20px;
+}
+
+.movie-card {
+  background: #30343F;
+  border-radius: 8px;
+  overflow: hidden;
+  width: 320px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.movie-card:hover {
+  transform: scale(1.05);
+}
+
+.movie-image {
+  width: 100%;
+  aspect-ratio: 16/9;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.movie-image.loaded {
+  opacity: 1;
+}
+
+.movie-info {
+  padding: 10px;
+}
+
+.movie-title {
+  font-family: 'Lato', sans-serif;
+  font-size: 18px;
+  font-weight: bold;
+  color: #FFFFFF;
+  margin: 5px 0;
+}
+
+.movie-description {
+  font-family: 'Lato', sans-serif;
+  font-size: 14px;
+  color: #C6C8CD;
+  margin-bottom: 10px;
+}
+
+.favorite-icon {
+  font-size: 20px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  color: #C6C8CD;
+}
+
+.favorite-icon.active {
+  color: #FBC500;
+}
+
+.favorite-icon.beat {
+  animation: heart-beat 0.6s ease;
+}

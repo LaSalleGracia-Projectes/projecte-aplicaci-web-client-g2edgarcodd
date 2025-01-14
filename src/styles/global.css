@@ -1,0 +1,50 @@
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #060D17;
+  color: #F6F6F7;
+  font-family: 'Lato', sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+a {
+  text-decoration: none;
+  color: #FBC500;
+  transition: transform 0.2s ease;
+}
+
+ul {
+  list-style: none;
+}
+
+section {
+  padding: 40px 20px;
+  transition: opacity 0.5s ease-in-out;
+}
+
+section h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-family: 'Lato', sans-serif;
+  font-size: 36px;
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+@keyframes heart-beat {
+  0% { transform: scale(1); }
+  25% { transform: scale(1.2); }
+  50% { transform: scale(0.9); }
+  75% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}

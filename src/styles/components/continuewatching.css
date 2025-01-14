@@ -1,0 +1,173 @@
+.continue-watching-section {
+    padding: 0 20px;
+    margin: 40px 0;
+  }
+  
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .section-header h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #F6F6F7;
+    margin: 0;
+  }
+  
+  .see-all {
+    font-size: 0.9rem;
+    color: #60A5FA;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  
+  .see-all:hover {
+    color: #93C5FD;
+    text-decoration: underline;
+  }
+  
+  .continue-watching-container {
+    display: flex;
+    gap: 15px;
+    overflow-x: auto;
+    padding-bottom: 15px;
+    scrollbar-width: thin;
+    scrollbar-color: #30343F #060D17;
+  }
+  
+  .continue-watching-container::-webkit-scrollbar {
+    height: 6px;
+  }
+  
+  .continue-watching-container::-webkit-scrollbar-track {
+    background: #060D17;
+  }
+  
+  .continue-watching-container::-webkit-scrollbar-thumb {
+    background-color: #30343F;
+    border-radius: 10px;
+  }
+  
+  .continue-item {
+    flex: 0 0 280px;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.2s;
+  }
+  
+  .continue-item:hover {
+    transform: scale(1.03);
+  }
+  
+  .continue-image-container {
+    position: relative;
+    width: 100%;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  .continue-image {
+    width: 100%;
+    height: 158px;
+    object-fit: cover;
+    display: block;
+  }
+  
+  .continue-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.2s;
+  }
+  
+  .continue-item:hover .continue-overlay {
+    opacity: 1;
+  }
+  
+  .play-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(4px);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  
+  .play-btn i {
+    color: white;
+    font-size: 18px;
+  }
+  
+  .play-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+  }
+  
+  .episode-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+  }
+  
+  .progress-container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.3);
+  }
+  
+  .progress-bar {
+    height: 100%;
+    background: #E50914;
+  }
+  
+  .continue-info {
+    padding: 10px 0;
+  }
+  
+  .continue-info h3 {
+    color: #F6F6F7;
+    font-size: 1rem;
+    margin: 0 0 5px 0;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .continue-info p {
+    color: #A0A3AD;
+    font-size: 0.8rem;
+    margin: 0;
+  }
+  
+  @media (max-width: 768px) {
+    .continue-item {
+      flex: 0 0 220px;
+    }
+    
+    .continue-image {
+      height: 124px;
+    }
+  }
