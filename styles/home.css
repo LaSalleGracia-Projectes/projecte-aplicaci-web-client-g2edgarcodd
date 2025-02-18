@@ -1,0 +1,533 @@
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+  
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    background: #060D17;
+    color: #F6F6F7;
+    font-family: 'Lato', sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+  }
+  
+  a {
+    text-decoration: none;
+    color: #FBC500;
+    transition: transform 0.2s ease;
+  }
+  
+  ul {
+    list-style: none;
+  }
+  
+  header {
+    background: #060D17;
+    position: relative;
+    border-bottom: 1px solid #30343F;
+    overflow: visible;
+    z-index: 10000;
+  }
+  
+  .navbar {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    z-index: 10001;
+  }
+  
+  .logo a {
+    font-size: 48px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #FFFFFF;
+  }
+  
+  /* Sección central centrada en pantalla */
+  .nav-center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 20px;
+  }
+  
+  .nav-center li {
+    position: relative;
+    padding: 10px;
+    font-family: 'Lato', sans-serif;
+    font-size: 16px;
+    transition: transform 0.2s ease;
+  }
+  
+  .nav-center li:hover {
+    background: #30343F;
+    transform: scale(1.05);
+  }
+  
+  .dropdown,
+  .dropdown-content {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: #30343F;
+    min-width: 200px;
+    padding: 10px;
+    z-index: 10002;
+    visibility: hidden;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    border-radius: 4px;
+  }
+  
+  .nav-center li:hover > .dropdown,
+  .nav-right > div:hover > .dropdown-content {
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .dropdown li,
+  .dropdown-content li {
+    padding: 5px 10px;
+    font-size: 16px;
+    color: #FFFFFF;
+    transition: background 0.2s ease;
+  }
+  
+  .dropdown li:hover,
+  .dropdown-content li:hover {
+    background: #444;
+  }
+  
+  .dropdown.explorar {
+    width: 400px;
+    padding: 20px;
+    max-width: calc(100vw - 40px);
+  }
+  
+  .dropdown.explorar .column {
+    float: left;
+    width: 50%;
+  }
+  
+  .dropdown.explorar::after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+  
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+  
+  .nav-right > div {
+    position: relative;
+    cursor: pointer;
+    font-size: 16px;
+    color: #F6F6F7;
+    transition: transform 0.2s ease;
+  }
+  
+  .nav-right > div:hover {
+    transform: scale(1.05);
+  }
+  
+  /* Asegura que el dropdown del perfil se alinee a la derecha */
+  .profile .dropdown-content {
+    right: 0;
+    left: auto;
+  }
+  
+  .search-overlay {
+    position: fixed;
+    top: 60px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.8);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+  }
+  
+  .search-overlay.active {
+    display: flex;
+  }
+  
+  .search-box {
+    width: 80%;
+    max-width: 600px;
+  }
+  
+  .search-box input[type="text"] {
+    width: 100%;
+    padding: 15px;
+    font-size: 1.2em;
+    border: none;
+  }
+  
+  .hero {
+    position: relative;
+    overflow: hidden;
+    height: 400px;
+    background: #000;
+    border-bottom: 1px solid #30343F;
+    transition: opacity 0.5s ease-in-out;
+    z-index: 1;
+  }
+  
+  .slider {
+    display: flex;
+    width: 300%;
+    height: 100%;
+    transition: transform 0.5s ease-in-out;
+  }
+  
+  .slide {
+    width: 100%;
+    height: 100%;
+    flex-shrink: 0;
+    background-size: cover;
+    background-position: center;
+    transition: opacity 0.3s ease;
+  }
+  
+  .cta {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #FBC500;
+    padding: 15px 30px;
+    color: #060D17;
+    font-size: 1.5em;
+    border-radius: 5px;
+    font-family: 'Lato', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    transition: transform 0.2s ease;
+  }
+  
+  .cta:hover {
+    transform: translateX(-50%) scale(1.05);
+  }
+  
+  section {
+    padding: 40px 20px;
+    transition: opacity 0.5s ease-in-out;
+  }
+  
+  section h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-family: 'Lato', sans-serif;
+    font-size: 36px;
+    font-weight: 600;
+    color: #FFFFFF;
+  }
+  
+  .top-list {
+    display: flex;
+    overflow-x: auto;
+    gap: 10px;
+    padding: 10px;
+  }
+  
+  .top-list .item {
+    min-width: 150px;
+    background: #C6C8CD;
+    color: #060D17;
+    padding: 10px;
+    text-align: center;
+    border-radius: 5px;
+    font-family: 'Lato', sans-serif;
+    font-size: 16px;
+    transition: transform 0.2s ease;
+  }
+  
+  .top-list .item:hover {
+    transform: scale(1.05);
+  }
+  
+  .subscription {
+    text-align: center;
+    padding: 20px;
+    background: #30343F;
+    transition: transform 0.2s ease;
+  }
+  
+  .subscription h2 {
+    font-family: 'Lato', sans-serif;
+    font-size: 36px;
+    font-weight: 600;
+    color: #FFFFFF;
+    margin-bottom: 20px;
+  }
+  
+  .subscription input[type="email"] {
+    padding: 10px;
+    width: 250px;
+    font-size: 16px;
+    border: 1px solid #30343F;
+    border-radius: 3px;
+  }
+  
+  .subscription button {
+    padding: 10px 20px;
+    font-size: 18px;
+    font-family: 'Lato', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    background: #FBC500;
+    color: #060D17;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.2s ease;
+  }
+  
+  .subscription button:hover {
+    transform: scale(1.05);
+    background: #e5aa00;
+  }
+  
+  footer {
+    background: #30343F;
+    color: #F6F6F7;
+    text-align: center;
+    padding: 20px;
+    font-family: 'Lato', sans-serif;
+    font-size: 16px;
+  }
+  
+  @media (max-width: 768px) {
+    .nav-center {
+      display: none;
+    }
+    .navbar {
+      justify-content: space-between;
+    }
+  }
+  
+  .movie-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    padding: 20px;
+  }
+  
+  .movie-card {
+    background: #30343F;
+    border-radius: 8px;
+    overflow: hidden;
+    width: 320px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .movie-card:hover {
+    transform: scale(1.05);
+  }
+  
+  .movie-image {
+    width: 100%;
+    aspect-ratio: 16/9;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .movie-image.loaded {
+    opacity: 1;
+  }
+  
+  .movie-info {
+    padding: 10px;
+  }
+  
+  .movie-title {
+    font-family: 'Lato', sans-serif;
+    font-size: 18px;
+    font-weight: bold;
+    color: #FFFFFF;
+    margin: 5px 0;
+  }
+  
+  .movie-description {
+    font-family: 'Lato', sans-serif;
+    font-size: 14px;
+    color: #C6C8CD;
+    margin-bottom: 10px;
+  }
+  
+  .favorite-icon {
+    font-size: 20px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    color: #C6C8CD;
+  }
+  
+  .favorite-icon.active {
+    color: #FBC500;
+  }
+  
+  .favorite-icon.beat {
+    animation: heart-beat 0.6s ease;
+  }
+  
+  @keyframes heart-beat {
+    0% { transform: scale(1); }
+    25% { transform: scale(1.2); }
+    50% { transform: scale(0.9); }
+    75% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+  }
+
+  
+  /* Contenedor principal del top 10 */
+.top10-container {
+    position: relative;
+    width: 100%;
+    max-width: 1200px; /* Ajusta según tu layout */
+    margin: 0 auto;
+    padding: 20px 0;
+    overflow: hidden; /* Para ocultar el desborde lateral al deslizar */
+  }
+  
+  /* Flechas de navegación */
+  .slider-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    background-color: rgba(0,0,0,0.5);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 2;
+  }
+  
+  .arrow-left {
+    left: 0;
+  }
+  
+  .arrow-right {
+    right: 0;
+  }
+  
+  .slider-arrow:hover {
+    background-color: rgba(0,0,0,0.7);
+  }
+  
+  /* Contenedor que aloja todos los items */
+  .top10-slider {
+    display: flex;
+    gap: 20px;
+    transition: transform 0.4s ease;
+    /* Ajusta el ancho según la cantidad de ítems que muestres de golpe */
+  }
+  
+  /* Cada item del top */
+  .top10-item {
+    position: relative;
+    min-width: 180px; /* Ancho mínimo para el poster */
+    transition: transform 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .top10-item:hover {
+    transform: scale(1.05);
+  }
+  
+  /* Número grande de ranking (1,2,3, etc.) */
+  .ranking-number {
+    position: absolute;
+    font-size: 80px;
+    font-weight: 700;
+    color: rgba(0,0,0,0.15); /* Un gris semitransparente */
+    z-index: 1; /* Detrás de la tarjeta */
+    pointer-events: none; /* Para que no interfiera con el hover */
+  }
+  
+  /* Tarjeta principal */
+  .card {
+    position: relative;
+    width: 180px; /* Mismo ancho que la imagen */
+    height: 250px; /* Ajusta a tu gusto */
+    background-color: #fff; /* Color de fondo */
+    z-index: 2; /* Por delante del número */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  
+  /* Poster de la película/serie */
+  .poster {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  
+  /* Ícono de marcador (bookmark) */
+  .bookmark-icon {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    font-size: 20px;
+    color: #bbb;
+    cursor: pointer;
+    transition: color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .bookmark-icon[data-active="true"],
+  .bookmark-icon:hover {
+    color: #FBC500;
+    transform: scale(1.2);
+  }
+  
+  /* Estrellas de rating */
+  .rating-stars {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    color: #FBC500;
+    font-size: 16px;
+  }
+  
+  /* Ajustes responsivos (ejemplo) */
+  @media (max-width: 768px) {
+    .ranking-number {
+      font-size: 50px;
+    }
+    .card {
+      width: 140px;
+      height: 200px;
+    }
+    .poster {
+      height: 100%;
+    }
+  }
+  
