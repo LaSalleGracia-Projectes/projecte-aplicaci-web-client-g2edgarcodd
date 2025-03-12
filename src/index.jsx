@@ -10,6 +10,7 @@ import Register from './components/Auth/Register';
 import ForgotPassword from './components/Auth/ForgotPassword';
 import ResetPassword from './components/Auth/ResetPassword';
 import UpdateProfile from './components/Auth/UpdateProfile';
+import ExplorePage from './pages/ExplorePage';
 import './index.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -22,6 +23,7 @@ root.render(
         <Route path="/series/:id" element={<MovieDetailPage />} />
         <Route path="/forum" element={<Forum />} />
         <Route path="/blog" element={<Blog />} />
+        <Route path="/explore" element={<ExplorePage />} />
         
         {/* Rutas de autenticación */}
         <Route path="/login" element={<Login />} />
@@ -29,7 +31,6 @@ root.render(
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route path="/profile/update" element={<UpdateProfile />} />
-        
       </Routes>
     </Router>
   </React.StrictMode>
