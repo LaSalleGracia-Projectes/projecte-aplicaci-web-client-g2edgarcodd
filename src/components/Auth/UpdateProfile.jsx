@@ -1,5 +1,4 @@
-// src/components/Auth/UpdateProfile.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../../styles/components/auth.css';
 
 function UpdateProfile() {
@@ -17,6 +16,44 @@ function UpdateProfile() {
   const [successMessage, setSuccessMessage] = useState('');
   const [passwordStrength, setPasswordStrength] = useState(0);
   const [activeTab, setActiveTab] = useState('profile'); // 'profile' o 'password'
+  const [showPassword, setShowPassword] = useState({
+    current: false,
+    new: false,
+    confirm: false
+  });
+
+  // Efecto para crear partículas decorativas
+  useEffect(() => {
+    const particles = document.querySelector('.particles');
+    if (!particles) return;
+
+    for (let i = 0; i < 15; i++) {
+      createParticle(particles);
+    }
+
+    return () => {
+      const existingParticles = document.querySelectorAll('.particle');
+      existingParticles.forEach(particle => particle.remove());
+    };
+  }, []);
+
+  const createParticle = (container) => {
+    const particle = document.createElement('div');
+    particle.classList.add('particle');
+    
+    const size = Math.random() * 15 + 5;
+    particle.style.width = `${size}px`;
+    particle.style.height = `${size}px`;
+    particle.style.left = `${Math.random() * 100}%`;
+    particle.style.top = `${Math.random() * 100}%`;
+    particle.style.opacity = Math.random() * 0.6 + 0.1;
+    
+    const duration = Math.random() * 20 + 10;
+    particle.style.animationDuration = `${duration}s`;
+    particle.style.animationDelay = `${Math.random() * 5}s`;
+    
+    container.appendChild(particle);
+  };
 
   const handleChange = (e) => {
     const { name, value, type, files } = e.target;
@@ -51,6 +88,13 @@ function UpdateProfile() {
     }
   };
 
+  const togglePasswordVisibility = (field) => {
+    setShowPassword({
+      ...showPassword,
+      [field]: !showPassword[field]
+    });
+  };
+
   const calculatePasswordStrength = (password) => {
     if (!password) return 0;
     
@@ -74,11 +118,11 @@ function UpdateProfile() {
   const validateForm = () => {
     const newErrors = {};
     
-    if (!formData.name.trim()) {
-      newErrors.name = 'El nombre es obligatorio';
-    }
-    
-    if (activeTab === 'password') {
+    if (activeTab === 'profile') {
+      if (!formData.name.trim()) {
+        newErrors.name = 'El nombre es obligatorio';
+      }
+    } else {
       if (!formData.currentPassword) {
         newErrors.currentPassword = 'Debes introducir tu contraseña actual';
       }
@@ -125,6 +169,15 @@ function UpdateProfile() {
           });
           setPasswordStrength(0);
         }
+        
+        // Mostrar animación de éxito
+        const successMsg = document.querySelector('.success-message');
+        if (successMsg) {
+          successMsg.classList.add('animate-success');
+          setTimeout(() => {
+            successMsg.classList.remove('animate-success');
+          }, 1000);
+        }
       }, 1500);
     }
   };
@@ -145,6 +198,9 @@ function UpdateProfile() {
 
   return (
     <div className="profile-container">
+      {/* Partículas de fondo */}
+      <div className="particles"></div>
+      
       <div className="profile-card">
         <div className="profile-header">
           <h2>Mi perfil</h2>
@@ -241,13 +297,17 @@ function UpdateProfile() {
                 <div className="input-with-icon">
                   <i className="fas fa-lock"></i>
                   <input
-                    type="password"
+                    type={showPassword.current ? "text" : "password"}
                     id="currentPassword"
                     name="currentPassword"
                     value={formData.currentPassword}
                     onChange={handleChange}
                     placeholder="Escribe tu contraseña actual"
                   />
+                  <i 
+                    className={`fas ${showPassword.current ? 'fa-eye-slash' : 'fa-eye'} password-toggle`}
+                    onClick={() => togglePasswordVisibility('current')}
+                  ></i>
                 </div>
                 {errors.currentPassword && <span className="form-error">{errors.currentPassword}</span>}
               </div>
@@ -257,13 +317,17 @@ function UpdateProfile() {
                 <div className="input-with-icon">
                   <i className="fas fa-lock"></i>
                   <input
-                    type="password"
+                    type={showPassword.new ? "text" : "password"}
                     id="newPassword"
                     name="newPassword"
                     value={formData.newPassword}
                     onChange={handleChange}
                     placeholder="Escribe tu nueva contraseña"
                   />
+                  <i 
+                    className={`fas ${showPassword.new ? 'fa-eye-slash' : 'fa-eye'} password-toggle`}
+                    onClick={() => togglePasswordVisibility('new')}
+                  ></i>
                 </div>
                 {passwordStrength > 0 && (
                   <div className="password-strength">
@@ -284,13 +348,17 @@ function UpdateProfile() {
                 <div className="input-with-icon">
                   <i className="fas fa-lock"></i>
                   <input
-                    type="password"
+                    type={showPassword.confirm ? "text" : "password"}
                     id="confirmPassword"
                     name="confirmPassword"
                     value={formData.confirmPassword}
                     onChange={handleChange}
                     placeholder="Confirma tu nueva contraseña"
                   />
+                  <i 
+                    className={`fas ${showPassword.confirm ? 'fa-eye-slash' : 'fa-eye'} password-toggle`}
+                    onClick={() => togglePasswordVisibility('confirm')}
+                  ></i>
                 </div>
                 {errors.confirmPassword && <span className="form-error">{errors.confirmPassword}</span>}
               </div>
@@ -321,11 +389,15 @@ function UpdateProfile() {
           
           <button type="submit" className="auth-button" disabled={isLoading}>
             {isLoading ? (
-              <span className="loading-spinner">
-                <i className="fas fa-circle-notch fa-spin"></i>
-              </span>
+              <>
+                Guardando...
+                <i className="fas fa-ellipsis-h button-icon-right"></i>
+              </>
             ) : (
-              activeTab === 'profile' ? 'Guardar cambios' : 'Actualizar contraseña'
+              <>
+                {activeTab === 'profile' ? 'Guardar cambios' : 'Actualizar contraseña'}
+                <i className={`fas ${activeTab === 'profile' ? 'fa-save' : 'fa-key'} button-icon-right`}></i>
+              </>
             )}
           </button>
         </form>

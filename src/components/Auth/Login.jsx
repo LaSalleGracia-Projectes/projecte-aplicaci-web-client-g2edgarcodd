@@ -1,5 +1,4 @@
-// src/components/Auth/Login.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import '../../styles/components/auth.css';
 
@@ -11,6 +10,46 @@ function Login() {
   });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
+  // Efecto para crear partículas decorativas
+  useEffect(() => {
+    const particles = document.querySelector('.particles');
+    if (!particles) return;
+
+    for (let i = 0; i < 15; i++) {
+      createParticle(particles);
+    }
+
+    return () => {
+      const existingParticles = document.querySelectorAll('.particle');
+      existingParticles.forEach(particle => particle.remove());
+    };
+  }, []);
+
+  const createParticle = (container) => {
+    const particle = document.createElement('div');
+    particle.classList.add('particle');
+    
+    // Propiedades aleatorias
+    const size = Math.random() * 15 + 5;
+    particle.style.width = `${size}px`;
+    particle.style.height = `${size}px`;
+    
+    // Posición inicial aleatoria
+    particle.style.left = `${Math.random() * 100}%`;
+    particle.style.top = `${Math.random() * 100}%`;
+    
+    // Opacidad y brillo aleatorios
+    particle.style.opacity = Math.random() * 0.6 + 0.1;
+    
+    // Velocidad de animación aleatoria
+    const duration = Math.random() * 20 + 10;
+    particle.style.animationDuration = `${duration}s`;
+    particle.style.animationDelay = `${Math.random() * 5}s`;
+    
+    container.appendChild(particle);
+  };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -18,7 +57,14 @@ function Login() {
       ...formData,
       [name]: type === 'checkbox' ? checked : value
     });
+    
+    // Limpiar error cuando el usuario escribe
+    if (error) setError('');
   };
+
+const togglePasswordVisibility = () => {
+  setShowPassword(!showPassword);
+};
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -49,13 +95,20 @@ function Login() {
 
   return (
     <div className="auth-container">
+      {/* Partículas de fondo */}
+      <div className="particles"></div>
+      
       <div className="auth-card">
         <div className="auth-header">
           <h2>Iniciar Sesión</h2>
           <p>¡Bienvenido de nuevo a Streamhub!</p>
         </div>
 
-        {error && <div className="auth-error">{error}</div>}
+        {error && (
+          <div className="auth-error">
+            {error}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="form-group">
@@ -75,14 +128,11 @@ function Login() {
           </div>
 
           <div className="form-group">
-            <div className="password-label">
-              <label htmlFor="password">Contraseña</label>
-              <Link to="/forgot-password" className="forgot-link">¿Olvidaste tu contraseña?</Link>
-            </div>
+            <label htmlFor="password">Contraseña</label>
             <div className="input-with-icon">
               <i className="fas fa-lock"></i>
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 id="password"
                 name="password"
                 value={formData.password}
@@ -90,8 +140,13 @@ function Login() {
                 placeholder="Escribe tu contraseña"
                 autoComplete="current-password"
               />
+              <i 
+                className={`fas ${showPassword ? 'fa-eye-slash' : 'fa-eye'} password-toggle`}
+                onClick={togglePasswordVisibility}
+              ></i>
             </div>
           </div>
+          <Link to="/forgot-password" className="forgot-link">¿Olvidaste tu contraseña?</Link>
 
           <div className="remember-me">
             <label className="checkbox-container">
@@ -108,11 +163,15 @@ function Login() {
 
           <button type="submit" className="auth-button" disabled={isLoading}>
             {isLoading ? (
-              <span className="loading-spinner">
-                <i className="fas fa-circle-notch fa-spin"></i>
-              </span>
+              <>
+                <i className="fas fa-circle-notch"></i>
+                Procesando...
+              </>
             ) : (
-              'Iniciar Sesión'
+              <>
+                Iniciar Sesión
+                <i className="fas fa-arrow-right button-icon-right"></i>
+              </>
             )}
           </button>
         </form>
@@ -124,6 +183,7 @@ function Login() {
               type="button" 
               className="social-button google" 
               onClick={() => handleSocialLogin('Google')}
+              aria-label="Iniciar sesión con Google"
             >
               <i className="fab fa-google"></i>
             </button>
@@ -131,6 +191,7 @@ function Login() {
               type="button" 
               className="social-button facebook" 
               onClick={() => handleSocialLogin('Facebook')}
+              aria-label="Iniciar sesión con Facebook"
             >
               <i className="fab fa-facebook-f"></i>
             </button>
@@ -138,6 +199,7 @@ function Login() {
               type="button" 
               className="social-button twitter" 
               onClick={() => handleSocialLogin('Twitter')}
+              aria-label="Iniciar sesión con Twitter"
             >
               <i className="fab fa-twitter"></i>
             </button>
