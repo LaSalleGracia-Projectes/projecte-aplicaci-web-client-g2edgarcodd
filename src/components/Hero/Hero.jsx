@@ -4,6 +4,7 @@ import '../../styles/components/hero.css';
 
 function Hero() {
   const [activeSlide, setActiveSlide] = useState(0);
+  // eslint-disable-next-line no-unused-vars
   const [animationKey, setAnimationKey] = useState(0);
   const intervalRef = useRef(null);
   
@@ -150,7 +151,7 @@ function Hero() {
         </div>
       </div>
 
-      {/* Controles de navegación */}
+      {/* Controles de navegación - ACTUALIZADO: sin círculos de progreso */}
       <div className="hero-controls">
         <button className="hero-arrow prev" onClick={handlePrevSlide} aria-label="Anterior">
           <i className="fas fa-chevron-left"></i>
@@ -164,18 +165,7 @@ function Hero() {
               onClick={() => handleSlideChange(index)}
               aria-label={`Ver slide ${index + 1}`}
             >
-              {index === activeSlide && (
-                <span className="progress-ring" key={animationKey}>
-                  <svg viewBox="0 0 36 36">
-                    <circle
-                      cx="18" cy="18" r="16"
-                      className="progress-ring-circle"
-                      strokeDasharray="100"
-                      strokeDashoffset="100"
-                    />
-                  </svg>
-                </span>
-              )}
+              {/* Eliminado el SVG del círculo de progreso */}
             </button>
           ))}
         </div>
