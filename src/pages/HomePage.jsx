@@ -34,7 +34,7 @@ function HomePage() {
   }, []);
   
   return (
-    
+    <MainLayout>
       <div className="homepage-container">
         {/* Hero Banner con Slider - NO incluye header */}
         <Hero />
@@ -76,7 +76,7 @@ function HomePage() {
           </section>
         </div>
       </div>
-    
+    </MainLayout>
   );
 }
 
