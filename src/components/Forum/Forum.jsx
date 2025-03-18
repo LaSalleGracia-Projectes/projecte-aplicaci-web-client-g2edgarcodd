@@ -163,10 +163,11 @@ function Forum() {
 
         <div className="forum-actions">
           <div className="forum-search">
-            <div className="input-with-icon">
+            <div className="forum-input-container">
               <i className="fas fa-search"></i>
               <input 
-                type="text" 
+                type="text"
+                className="forum-search-input" 
                 placeholder="Buscar en el foro..." 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -175,7 +176,7 @@ function Forum() {
           </div>
           
           <button 
-            className="create-topic-btn"
+            className="forum-create-topic-btn"
             onClick={() => setShowNewTopicForm(true)}
           >
             <i className="fas fa-plus"></i> Nuevo tema
@@ -184,9 +185,9 @@ function Forum() {
 
         <div className="forum-content">
           <aside className="forum-sidebar">
-            <div className="sidebar-section">
+            <div className="forum-sidebar-section">
               <h3>Categorías</h3>
-              <ul className="category-list">
+              <ul className="forum-category-list">
                 {categories.map(category => (
                   <li 
                     key={category.id}
@@ -199,7 +200,7 @@ function Forum() {
                     <i className={`fas fa-${category.icon}`}></i>
                     {category.name}
                     {category.id !== 'all' && (
-                      <span className="category-count">
+                      <span className="forum-category-count">
                         {topics.filter(t => t.category === category.id).length}
                       </span>
                     )}
@@ -208,68 +209,68 @@ function Forum() {
               </ul>
             </div>
 
-            <div className="sidebar-section">
+            <div className="forum-sidebar-section">
               <h3>Estadísticas del foro</h3>
-              <div className="forum-stats">
-                <div className="stat-item">
+              <div className="forum-stats-grid">
+                <div className="forum-stat-item">
                   <i className="fas fa-comments"></i>
-                  <div className="stat-info">
-                    <span className="stat-value">{topics.length}</span>
-                    <span className="stat-label">Temas</span>
+                  <div className="forum-stat-info">
+                    <span className="forum-stat-value">{topics.length}</span>
+                    <span className="forum-stat-label">Temas</span>
                   </div>
                 </div>
-                <div className="stat-item">
+                <div className="forum-stat-item">
                   <i className="fas fa-reply-all"></i>
-                  <div className="stat-info">
-                    <span className="stat-value">{topics.reduce((acc, t) => acc + t.replies, 0)}</span>
-                    <span className="stat-label">Respuestas</span>
+                  <div className="forum-stat-info">
+                    <span className="forum-stat-value">{topics.reduce((acc, t) => acc + t.replies, 0)}</span>
+                    <span className="forum-stat-label">Respuestas</span>
                   </div>
                 </div>
-                <div className="stat-item">
+                <div className="forum-stat-item">
                   <i className="fas fa-users"></i>
-                  <div className="stat-info">
-                    <span className="stat-value">8,923</span>
-                    <span className="stat-label">Miembros</span>
+                  <div className="forum-stat-info">
+                    <span className="forum-stat-value">8,923</span>
+                    <span className="forum-stat-label">Miembros</span>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="sidebar-section">
+            <div className="forum-sidebar-section">
               <h3>Usuarios activos</h3>
-              <ul className="active-users">
+              <ul className="forum-active-users">
                 <li>
                   <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Usuario" />
-                  <div className="user-info">
-                    <span className="username">CineExpert</span>
-                    <span className="user-status">En línea</span>
+                  <div className="forum-user-info">
+                    <span className="forum-username">CineExpert</span>
+                    <span className="forum-user-status">En línea</span>
                   </div>
                 </li>
                 <li>
                   <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Usuario" />
-                  <div className="user-info">
-                    <span className="username">FilmLover22</span>
-                    <span className="user-status">En línea</span>
+                  <div className="forum-user-info">
+                    <span className="forum-username">FilmLover22</span>
+                    <span className="forum-user-status">En línea</span>
                   </div>
                 </li>
                 <li>
                   <img src="https://randomuser.me/api/portraits/women/33.jpg" alt="Usuario" />
-                  <div className="user-info">
-                    <span className="username">SeriesAddict</span>
-                    <span className="user-status">Hace 10 min</span>
+                  <div className="forum-user-info">
+                    <span className="forum-username">SeriesAddict</span>
+                    <span className="forum-user-status">Hace 10 min</span>
                   </div>
                 </li>
                 <li>
                   <img src="https://randomuser.me/api/portraits/men/54.jpg" alt="Usuario" />
-                  <div className="user-info">
-                    <span className="username">MovieBuff</span>
-                    <span className="user-status">Hace 30 min</span>
+                  <div className="forum-user-info">
+                    <span className="forum-username">MovieBuff</span>
+                    <span className="forum-user-status">Hace 30 min</span>
                   </div>
                 </li>
               </ul>
             </div>
             
-            <div className="sidebar-section trending-topics">
+            <div className="forum-sidebar-section forum-trending-topics">
               <h3>Temas destacados</h3>
               <ul>
                 {topics.filter(t => t.isHot).slice(0, 3).map(topic => (
@@ -284,21 +285,22 @@ function Forum() {
 
           <main className="forum-topics">
             {isLoading ? (
-              <div className="loading-spinner">
-                <div className="spinner"></div>
+              <div className="forum-loading-spinner">
+                <div className="forum-spinner"></div>
                 <p>Cargando temas del foro...</p>
               </div>
             ) : (
               <>
-                <div className="topics-header">
+                <div className="forum-topics-header">
                   <h2>
                     {activeCategory === 'all' 
                       ? 'Todos los temas' 
                       : `Temas de ${categoryTranslations[activeCategory] || activeCategory}`}
                   </h2>
-                  <div className="topics-sort">
+                  <div className="forum-topics-sort">
                     <span>Ordenar por:</span>
                     <select 
+                      className="forum-sort-select"
                       value={sortBy}
                       onChange={(e) => setSortBy(e.target.value)}
                     >
@@ -310,62 +312,62 @@ function Forum() {
                 </div>
 
                 {paginatedTopics.length === 0 ? (
-                  <div className="no-topics">
+                  <div className="forum-no-topics">
                     <i className="fas fa-search"></i>
                     <h3>No se encontraron temas</h3>
                     <p>No hay temas que coincidan con tu búsqueda o filtros actuales.</p>
                     <button 
-                      className="create-topic-btn"
+                      className="forum-create-topic-btn"
                       onClick={() => setShowNewTopicForm(true)}
                     >
                       <i className="fas fa-plus"></i> Crear nuevo tema
                     </button>
                   </div>
                 ) : (
-                  <div className="topics-list">
+                  <div className="forum-topics-list">
                     {paginatedTopics.map(topic => (
                       <div 
-                        className="topic-item" 
+                        className={`forum-topic-item ${topic.isNew ? 'new' : ''}`}
                         key={topic.id} 
                         onClick={() => navigateToTopic(topic.id)}
                       >
-                        <div className="topic-author">
+                        <div className="forum-topic-author">
                           <img src={topic.avatarUrl} alt={topic.author} />
                         </div>
-                        <div className="topic-content">
+                        <div className="forum-topic-content">
                           <h3>
                             {topic.title}
-                            {topic.isNew && <span className="topic-tag new">Nuevo</span>}
-                            {topic.isHot && <span className="topic-tag hot">Popular</span>}
+                            {topic.isNew && <span className="forum-topic-tag new">Nuevo</span>}
+                            {topic.isHot && <span className="forum-topic-tag hot">Popular</span>}
                           </h3>
-                          <div className="topic-meta">
-                            <span className="topic-author-name">
+                          <div className="forum-topic-meta">
+                            <span className="forum-topic-author-name">
                               <i className="fas fa-user"></i> {topic.author}
                             </span>
-                            <span className="topic-category">
+                            <span className="forum-topic-category">
                               <i className="fas fa-folder"></i> {categoryTranslations[topic.category]}
                             </span>
-                            <span className="topic-date">
+                            <span className="forum-topic-date">
                               <i className="fas fa-calendar-alt"></i> {topic.createdAt}
                             </span>
                           </div>
-                          <p className="topic-excerpt">{topic.content}</p>
+                          <p className="forum-topic-excerpt">{topic.content}</p>
                         </div>
                         
-                        <div className="topic-stats">
-                          <div className="stat">
+                        <div className="forum-topic-stats">
+                          <div className="forum-stat">
                             <i className="fas fa-eye"></i>
                             <span>{topic.views}</span>
                           </div>
-                          <div className="stat">
+                          <div className="forum-stat">
                             <i className="fas fa-comment"></i>
                             <span>{topic.replies}</span>
                           </div>
                         </div>
                         
-                        <div className="topic-activity">
+                        <div className="forum-topic-activity">
                           <span>Última actividad</span>
-                          <span className="activity-time">{topic.lastActivity}</span>
+                          <span className="forum-activity-time">{topic.lastActivity}</span>
                           <i className="fas fa-history"></i>
                         </div>
                       </div>
@@ -375,16 +377,16 @@ function Forum() {
                 
                 {/* Paginación */}
                 {totalPages > 1 && (
-                  <div className="pagination">
+                  <div className="forum-pagination">
                     <button 
-                      className="pagination-btn prev" 
+                      className="forum-pagination-btn prev" 
                       disabled={currentPage === 1}
                       onClick={() => currentPage > 1 && handlePageChange(currentPage - 1)}
                     >
                       <i className="fas fa-chevron-left"></i> Anterior
                     </button>
                     
-                    <div className="pagination-numbers">
+                    <div className="forum-pagination-numbers">
                       {[...Array(totalPages)].map((_, i) => (
                         <span 
                           key={i + 1}
@@ -397,7 +399,7 @@ function Forum() {
                     </div>
                     
                     <button 
-                      className="pagination-btn next"
+                      className="forum-pagination-btn next"
                       disabled={currentPage === totalPages}
                       onClick={() => currentPage < totalPages && handlePageChange(currentPage + 1)}
                     >
@@ -413,21 +415,21 @@ function Forum() {
       
       {/* Modal para crear nuevo tema */}
       {showNewTopicForm && (
-        <div className="modal-overlay">
-          <div className="new-topic-form-container">
-            <div className="new-topic-form-header">
+        <div className="forum-modal-overlay">
+          <div className="forum-new-topic-form-container">
+            <div className="forum-new-topic-form-header">
               <h3>Crear nuevo tema</h3>
               <button 
                 onClick={() => setShowNewTopicForm(false)} 
-                className="close-form-btn"
+                className="forum-close-form-btn"
                 aria-label="Cerrar formulario"
               >
                 <i className="fas fa-times"></i>
               </button>
             </div>
             
-            <form onSubmit={handleNewTopicSubmit} className="new-topic-form">
-              <div className="form-group">
+            <form onSubmit={handleNewTopicSubmit} className="forum-new-topic-form">
+              <div className="forum-form-group">
                 <label htmlFor="title">Título del tema</label>
                 <input 
                   type="text" 
@@ -440,7 +442,7 @@ function Forum() {
                 />
               </div>
               
-              <div className="form-group">
+              <div className="forum-form-group">
                 <label htmlFor="category">Categoría</label>
                 <select 
                   id="category" 
@@ -456,7 +458,7 @@ function Forum() {
                 </select>
               </div>
               
-              <div className="form-group">
+              <div className="forum-form-group">
                 <label htmlFor="content">Contenido</label>
                 <textarea 
                   id="content" 
@@ -469,15 +471,15 @@ function Forum() {
                 ></textarea>
               </div>
               
-              <div className="form-actions">
+              <div className="forum-form-actions">
                 <button 
                   type="button" 
                   onClick={() => setShowNewTopicForm(false)} 
-                  className="cancel-btn"
+                  className="forum-cancel-btn"
                 >
                   Cancelar
                 </button>
-                <button type="submit" className="submit-btn">
+                <button type="submit" className="forum-submit-btn">
                   <i className="fas fa-paper-plane"></i> Publicar tema
                 </button>
               </div>
