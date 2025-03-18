@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import App from './App';
 import MovieDetailPage from './pages/MovieDetailPage';
 import Forum from './components/Forum/Forum';
+import ForumThread from './components/Forum/ForumThread';
 import Blog from './components/Blog/Blog';
 import Login from './components/Auth/Login';
 import Register from './components/Auth/Register';
@@ -22,6 +23,7 @@ root.render(
         <Route path="/movie/:id" element={<MovieDetailPage />} />
         <Route path="/series/:id" element={<MovieDetailPage />} />
         <Route path="/forum" element={<Forum />} />
+        <Route path="/forum/topic/:id" element={<ForumThread />} />
         <Route path="/blog" element={<Blog />} />
         <Route path="/explore" element={<ExplorePage />} />
         
