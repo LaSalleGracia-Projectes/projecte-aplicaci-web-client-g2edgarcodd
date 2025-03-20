@@ -1,10 +1,71 @@
+/* Header Premium con Efectos Visuales */
+
 header {
-  background: #060D17;
-  position: relative;
-  border-bottom: 1px solid #30343F;
+  background: linear-gradient(180deg, rgba(5, 11, 20, 0.98) 0%, rgba(8, 16, 28, 0.95) 100%);
+  position: sticky;
+  top: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   overflow: visible;
   z-index: 10000;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.3) inset;
+  backdrop-filter: blur(10px);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Sutile gradiente en vez de malla */
+header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, 
+    rgba(16, 23, 37, 0.4) 0%, 
+    rgba(5, 11, 20, 0.2) 100%
+  );
+  opacity: 0.3;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Efecto de borde iluminado mejorado */
+header:after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(251, 197, 0, 0.1) 20%, 
+    rgba(251, 197, 0, 0.4) 50%,
+    rgba(251, 197, 0, 0.1) 80%,
+    transparent 100%
+  );
+  opacity: 0;
+  filter: blur(0.5px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  transform: scaleX(0.8);
+  animation: glow 5s infinite ease-in-out;
+}
+
+header:hover:after {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
+@keyframes glow {
+  0%, 100% { opacity: 0.3; transform: translateX(-30%) scaleX(0.8); }
+  50% { opacity: 0.7; transform: translateX(30%) scaleX(0.8); }
+}
+
+/* Mejora en la transición del header al hacer scroll */
+header.scrolled {
+  background: rgba(5, 11, 20, 0.98);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.25);
+  border-bottom: 1px solid rgba(251, 197, 0, 0.1);
 }
 
 .navbar {
@@ -18,268 +79,992 @@ header {
   margin: 0 auto;
 }
 
+.navbar.scrolled {
+  padding: 12px 40px;
+}
+
+/* Logo con efectos premium unificados con footer */
+.logo {
+  position: relative;
+  z-index: 2;
+  transition: all 0.3s ease;
+}
+
 .logo a {
   display: flex;
   align-items: center;
   text-decoration: none;
+  position: relative;
+  overflow: visible;
+  padding: 5px;
 }
 
+/* Mejorado el efecto de hover del logo */
 .logo img {
   height: 40px;
-  margin-right: 10px;
+  margin-right: 15px;
+  transform: translateY(0);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  z-index: 2;
 }
 
+/* Texto del logo con animación de brillante */
 .logo span {
   font-size: 28px;
-  font-weight: 700;
+  font-weight: 800;
   text-transform: uppercase;
-  color: #FFFFFF;
+  background: linear-gradient(120deg, #FFFFFF, var(--color-accent), #FFFFFF);
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
   letter-spacing: 1px;
-  font-family: 'Lato', sans-serif;
+  font-family: 'Inter', sans-serif;
+  position: relative;
+  animation: shimmer-text 8s ease-in-out infinite;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  z-index: 2;
 }
 
-/* Sección central centrada en pantalla */
+@keyframes shimmer-text {
+  0% { background-position: 0% center; }
+  50% { background-position: 100% center; }
+  100% { background-position: 0% center; }
+}
+
+/* Efecto de resplandor detrás del logo */
+.logo a::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background: radial-gradient(
+    circle at center,
+    rgba(251, 197, 0, 0.15) 0%,
+    transparent 70%
+  );
+  border-radius: 30%;
+  opacity: 0;
+  transition: all 0.5s ease;
+  z-index: 0;
+  transform: scale(0.6);
+  filter: blur(5px);
+}
+
+@keyframes pulse-logo {
+  0%, 100% { transform: scale(1.5); opacity: 0.7; }
+  50% { transform: scale(1.8); opacity: 0.5; }
+}
+
+/* Destello dorado ocasional */
+.logo::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 120%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(255, 255, 255, 0.1) 20%,
+    rgba(251, 197, 0, 0.3) 30%,
+    rgba(251, 197, 0, 0.5) 50%,
+    rgba(251, 197, 0, 0.3) 70%,
+    rgba(255, 255, 255, 0.1) 80%,
+    transparent 100%
+  );
+  transform: skewX(-15deg);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.logo:hover::after {
+  animation: logo-flash 2s infinite 0.5s;
+}
+
+@keyframes logo-flash {
+  0% { left: -100%; opacity: 0; }
+  10% { opacity: 1; }
+  50%, 100% { left: 90%; opacity: 0; }
+}
+
+/* Sección central con navegación premium mejorada */
 .nav-center {
   display: flex;
-  gap: 30px;
+  gap: 35px;
+  position: relative;
+  align-items: center;
 }
 
+/* Efecto de línea bajo el nav */
+.nav-center::after {
+  content: '';
+  position: absolute;
+  bottom: -15px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(255, 255, 255, 0.05) 20%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0.05) 80%,
+    transparent 100%
+  );
+  opacity: 0;
+  transition: all 0.4s ease;
+}
+
+.nav-center:hover::after {
+  opacity: 1;
+  transform: translateY(-2px);
+}
+
+/* Ajustados espaciados y efectos de hover en items de menú */
 .nav-center li {
   position: relative;
   padding: 10px 5px;
-  font-family: 'Lato', sans-serif;
-  font-size: 16px;
-  transition: all 0.3s ease;
+  font-family: 'Inter', sans-serif;
+  font-size: 15.5px;
+  font-weight: 500;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  letter-spacing: 0.3px;
 }
 
 .nav-center li a {
-  color: #F6F6F7;
+  color: var(--color-text-secondary);
   text-decoration: none;
-  font-weight: 500;
   position: relative;
   padding: 5px 0;
+  transition: all 0.35s ease;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  display: inline-block;
 }
 
+.nav-center li:hover a,
+.nav-center li.active a {
+  color: #FFF;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+/* Efecto de subrayado con gradiente animado */
 .nav-center li a::after {
   content: '';
   position: absolute;
-  bottom: 0;
-  left: 0;
+  bottom: -2px;
+  left: 50%;
   width: 0%;
   height: 2px;
-  background: #FBC500;
-  transition: width 0.3s ease;
+  background: linear-gradient(90deg, 
+    transparent 0%,
+    var(--color-accent) 40%,
+    var(--color-accent) 60%,
+    transparent 100%
+  );
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateX(-50%);
+  opacity: 0;
+  border-radius: 2px;
 }
 
-.nav-center li:hover a::after {
+.nav-center li:hover a::after,
+.nav-center li.active a::after {
   width: 100%;
+  opacity: 1;
 }
 
+.nav-center li:hover,
+.nav-center li.active {
+  transform: translateY(-2px);
+}
+
+.nav-center li:hover::before,
+.nav-center li.active::before {
+  transform: translateX(-50%) scaleX(1);
+  opacity: 0.7;
+}
+
+/* Mejorar el aspecto de los dropdowns con glassmorphism avanzado */
 .dropdown,
 .dropdown-content {
   position: absolute;
   top: 100%;
   left: 0;
-  background: #30343F;
-  min-width: 200px;
-  padding: 15px;
+  background: rgba(16, 23, 37, 0.92);
+  backdrop-filter: blur(15px);
+  min-width: 220px;
+  padding: 18px;
   z-index: 10002;
   visibility: hidden;
   opacity: 0;
-  transform: translateY(10px);
-  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-  border-radius: 8px;
+  transform: translateY(12px) scale(0.98);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 
+    0 15px 35px rgba(0, 0, 0, 0.5),
+    0 5px 15px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+  pointer-events: none;
 }
 
-.nav-center li:hover > .dropdown,
-.nav-right > div:hover > .dropdown-content {
-  visibility: visible;
-  opacity: 1;
-  transform: translateY(5px);
+/* Efecto de fondo para los dropdowns */
+.dropdown::after,
+.dropdown-content::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 10% 90%, rgba(255, 255, 255, 0.02) 0%, transparent 60%);
+  z-index: -1;
+  opacity: 0.5;
+  pointer-events: none;
 }
 
-.dropdown li,
-.dropdown-content li {
-  padding: 8px 12px;
-  font-size: 15px;
-  color: #F6F6F7;
-  transition: all 0.2s ease;
-  border-radius: 4px;
+/* Flecha elegante para los dropdowns con sombra */
+.dropdown::before,
+.dropdown-content::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: 20px;
+  width: 12px;
+  height: 12px;
+  background: rgba(16, 23, 37, 0.95);
+  transform: rotate(45deg);
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: -2px -2px 5px rgba(0, 0, 0, 0.1);
+  z-index: 0;
 }
 
-.dropdown li:hover,
-.dropdown-content li:hover {
-  background: #444;
+.dropdown-content::before {
+  left: auto;
+  right: 20px;
 }
 
-.dropdown li a,
-.dropdown-content li a {
-  display: block;
-  color: #F6F6F7;
+/* Animación de aparición mejorada */
+.dropdown.visible,
+.dropdown-content.visible {
+  visibility: visible !important;
+  opacity: 1 !important;
+  transform: translateY(6px) scale(1) !important;
+  pointer-events: auto !important;
+}
+
+/* Estilos para los elementos de dropdown */
+.dropdown-content .profile-item,
+.dropdown-content .language-item {
+  padding: 12px 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  border-radius: var(--radius-md);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  color: var(--color-text-secondary);
+  margin-bottom: 4px;
+  position: relative;
+  overflow: hidden;
+}
+
+.dropdown-content .profile-item:hover,
+.dropdown-content .language-item:hover {
+  background: rgba(251, 197, 0, 0.15);
+  color: var(--color-accent);
+  transform: translateX(3px);
+}
+
+/* Efecto de onda al hacer clic */
+.dropdown-content .profile-item:active::after,
+.dropdown-content .language-item:active::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0.6;
+  animation: ripple 0.5s ease-out;
+}
+
+@keyframes ripple {
+  to {
+    transform: translate(-50%, -50%) scale(3);
+    opacity: 0;
+  }
+}
+
+.dropdown-content .profile-item a {
+  color: inherit;
   text-decoration: none;
+  width: 100%;
+  display: block;
 }
 
-.dropdown li a:hover {
-  color: #FBC500;
-}
-
-.dropdown li a::after {
-  display: none;
-}
-
-.dropdown.explorar {
-  width: 450px;
-  padding: 20px;
-  max-width: calc(100vw - 40px);
-}
-
-.dropdown.explorar .column {
-  float: left;
-  width: 50%;
-}
-
-.dropdown.explorar::after {
-  content: "";
-  display: table;
-  clear: both;
-}
-
+/* Mejorar la sección derecha del nav */
 .nav-right {
   display: flex;
   align-items: center;
   gap: 25px;
+  position: relative;
+  z-index: 10001;
 }
 
 .nav-right > div {
   position: relative;
   cursor: pointer;
   font-size: 16px;
-  color: #F6F6F7;
-  transition: all 0.2s ease;
+  color: var(--color-text);
+  transition: all 0.3s ease;
 }
 
-.nav-right > div:hover {
-  color: #FBC500;
+.nav-right > div:hover,
+.nav-right > div.active {
+  color: var(--color-accent);
 }
 
-.nav-right a:hover {
-  color: #FBC500;
+.nav-right > div i {
+  font-size: 18px;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-/* Asegura que el dropdown del perfil se alinee a la derecha */
-.profile .dropdown-content {
+.nav-right > div:hover i,
+.nav-right > div.active i {
+  transform: scale(1.15);
+}
+
+/* Posicionamiento específico para los dropdowns */
+.language .dropdown-content {
+  top: 100%;
   right: 0;
+  left: auto;
+  min-width: 180px;
+}
+
+.profile .dropdown-content {
+  top: 100%;
+  right: 0;
+  left: auto;
+  min-width: 180px;
+}
+
+/* SOLUCIÓN AL DOBLE BORDE: Botones de idioma y perfil mejorados */
+.profile-icon, .language-selector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+  gap: 8px;
+  border-radius: var(--radius-md);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  background: rgba(16, 23, 37, 0.7);
+  border: 1px solid rgba(251, 197, 0, 0.1);
+  outline: none;
+  color: var(--color-text);
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Botón de búsqueda con efectos especiales mejorados */
+.search-btn {
+  position: relative;
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-round);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  background: rgba(16, 23, 37, 0.7);
+  border: 1px solid rgba(251, 197, 0, 0.1);
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.search-btn::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: inherit;
+  opacity: 0;
+  transition: all 0.5s ease;
+  background: radial-gradient(circle, rgba(251, 197, 0, 0.2) 0%, transparent 70%);
+  z-index: -1;
+  transform: scale(0.6);
+}
+
+.search-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.05) 0%, 
+    transparent 50%, 
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.search-btn:hover {
+  background: rgba(16, 23, 37, 0.9);
+  border-color: rgba(251, 197, 0, 0.3);
+  transform: translateY(-4px);
+  box-shadow: 
+    0 12px 24px rgba(0, 0, 0, 0.3),
+    0 0 0 2px rgba(251, 197, 0, 0.15),
+    0 0 20px rgba(251, 197, 0, 0.3);
+}
+
+.search-btn:hover::before {
+  opacity: 1;
+  transform: scale(1);
+  animation: pulse-search 3s infinite;
+}
+
+.search-btn:hover::after {
+  opacity: 1;
+}
+
+@keyframes pulse-search {
+  0%, 100% { transform: scale(1); opacity: 0.3; }
+  50% { transform: scale(1.2); opacity: 0.5; }
+}
+
+.search-btn i {
+  position: relative;
+  z-index: 2;
+  color: var(--color-text);
+  transition: all 0.3s ease;
+}
+
+.search-btn:hover i {
+  color: var(--color-accent);
+}
+
+/* SOLUCIÓN AL PROBLEMA: Mejora del perfil y las banderas de idioma */
+.profile, .language {
+  padding: 0;
+  border-radius: var(--radius-md);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+/* Efectos de fondo para botones de idioma y perfil */
+.language-selector::after,
+.profile-icon::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.1) 0%, 
+    transparent 50%, 
+    rgba(255, 255, 255, 0.1) 100%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.language-selector:hover::after,
+.profile-icon:hover::after {
+  opacity: 1;
+}
+
+/* Efecto hover */
+.profile-icon:hover, .language-selector:hover,
+.profile.active .profile-icon, .language.active .language-selector {
+  background: rgba(22, 31, 48, 0.8);
+  transform: translateY(-4px);
+  box-shadow: 
+    0 12px 24px rgba(0, 0, 0, 0.3),
+    0 0 0 2px rgba(251, 197, 0, 0.15),
+    0 0 20px rgba(251, 197, 0, 0.3);
+  border-color: rgba(251, 197, 0, 0.3);
+}
+
+/* Estilos mejorados para las banderas de idioma */
+.language .flag-icon {
+  width: 22px;
+  height: 16px;
+  display: inline-block;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  border-radius: 2px;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-origin: center;
+  position: relative;
+}
+
+/* Efecto de brillo alrededor de la bandera */
+.language .flag-icon::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.language:hover .flag-icon,
+.language.active .flag-icon {
+  transform: scale(1.15);
+}
+
+.language:hover .flag-icon::before,
+.language.active .flag-icon::before {
+  opacity: 0.5;
+}
+
+.language span {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text);
+  transition: color 0.3s ease;
+  letter-spacing: 0.2px;
+}
+
+.language:hover span,
+.language.active span {
+  color: var(--color-accent);
+}
+
+/* Dropdown de idiomas mejorado */
+.language-dropdown {
+  min-width: 180px;
+  top: calc(100% + 10px);
+  right: 0;
+  left: auto;
+  overflow: hidden;
+}
+
+.language-dropdown::before {
+  right: 20px;
   left: auto;
 }
 
+/* Mejores iconos en los dropdown items */
+.dropdown-content .profile-item i,
+.dropdown-content .language-item i {
+  font-size: 16px;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-accent);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.dropdown-content .profile-item:hover i,
+.dropdown-content .language-item:hover i {
+  transform: scale(1.15);
+}
+
+/* Search Overlay mejorado */
 .search-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(5, 11, 20, 0.95);
+  backdrop-filter: blur(10px);
+  z-index: 10010;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+
+.search-overlay.active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.search-box {
+  width: 70%;
+  max-width: 800px;
+  position: relative;
+  transform: translateY(30px);
+  opacity: 0;
+  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition-delay: 0.1s;
+}
+
+.search-overlay.active .search-box {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.search-box input[type="text"] {
+  width: 100%;
+  padding: 20px 60px;
+  border-radius: var(--radius-lg);
+  border: 2px solid rgba(251, 197, 0, 0.2);
+  background: rgba(16, 23, 37, 0.8);
+  color: var(--color-text);
+  font-size: 1.3em;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.search-box input[type="text"]:focus {
+  border-color: rgba(251, 197, 0, 0.6);
+  box-shadow: 0 0 20px rgba(251, 197, 0, 0.2);
+}
+
+.search-box::before {
+  content: '\f002';
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  position: absolute;
+  left: 25px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-text-tertiary);
+  font-size: 18px;
+}
+
+/* Botón de cierre para el overlay de búsqueda mejorado */
+.search-overlay .close-search {
+  position: absolute;
+  top: 40px;
+  right: 40px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgba(24, 34, 54, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  opacity: 0;
+  transform: scale(0.8) rotate(-90deg);
+}
+
+.search-overlay.active .close-search {
+  opacity: 1;
+  transform: scale(1) rotate(0);
+  transition-delay: 0.3s;
+}
+
+.search-overlay .close-search::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.05) 0%, 
+    transparent 50%, 
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.search-overlay .close-search:hover {
+  background: rgba(251, 197, 0, 0.9);
+  transform: rotate(90deg) scale(1.1);
+  box-shadow: 
+    0 8px 20px rgba(0, 0, 0, 0.3),
+    0 0 20px rgba(251, 197, 0, 0.5);
+}
+
+.search-overlay .close-search:hover::after {
+  opacity: 1;
+}
+
+.search-overlay .close-search i {
+  font-size: 20px;
+  color: var(--color-text);
+  transition: all 0.3s ease;
+}
+
+.search-overlay .close-search:hover i {
+  color: var(--color-dark);
+  transform: scale(1.2);
+}
+
+/* Efecto de onda para clicks en botones */
+.ripple {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  transform: scale(0);
+  animation: ripple 0.6s linear;
+}
+
+/* Añadir clase personalizada para la bandera catalana que no está en la librería */
+.flag-icon-cat {
+  background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NDAgNDgwIj48cGF0aCBmaWxsPSIjRkNERDAyIiBkPSJNMCAwaDY0MHY0ODBIMHoiLz48cGF0aCBzdHJva2U9IiNEQTEyMUEiIHN0cm9rZS13aWR0aD0iNjAiIGQ9Ik0wIDkwaDY0MG0wIDEyMEgwbTAgMTIwaDY0MCIvPjwvc3ZnPg==');
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+/* Botón de menú móvil - Oculto en desktop */
+.mobile-menu-toggle {
+  display: none;
+  width: 45px;
+  height: 45px;
+  border-radius: var(--radius-md);
+  align-items: center;
+  justify-content: center;
+  background: rgba(16, 23, 37, 0.8);
+  border: 1px solid rgba(251, 197, 0, 0.1);
+  cursor: pointer;
+  position: relative;
+  z-index: 1002;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.mobile-menu-toggle i {
+  color: var(--color-text);
+  font-size: 22px;
+  transition: transform 0.3s ease;
+}
+
+.mobile-menu-toggle:hover {
+  background: rgba(22, 31, 48, 0.9);
+  transform: translateY(-2px);
+  box-shadow: 
+    0 8px 20px rgba(0, 0, 0, 0.3),
+    0 0 0 2px rgba(251, 197, 0, 0.15);
+}
+
+.mobile-menu-toggle:hover i {
+  color: var(--color-accent);
+}
+
+.mobile-menu-toggle.active {
+  background: rgba(251, 197, 0, 0.1);
+  border-color: rgba(251, 197, 0, 0.3);
+}
+
+.mobile-menu-toggle.active i {
+  transform: rotate(180deg);
+  color: var(--color-accent);
+}
+
+/* Explorar Dropdown con dos columnas */
+.dropdown.explorar {
+  display: flex;
+  gap: 20px;
+  min-width: 380px;
+  padding: 24px;
+}
+
+.dropdown.explorar .column {
+  flex: 1;
+}
+
+.dropdown.explorar .column li {
+  padding: 8px 0;
+}
+
+.dropdown.explorar .column li a {
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  display: block;
+  padding: 6px 10px;
+  border-radius: var(--radius-md);
+  transition: all 0.3s ease;
+}
+
+.dropdown.explorar .column li a:hover {
+  background: rgba(251, 197, 0, 0.1);
+  color: var(--color-accent);
+  transform: translateX(3px);
+}
+
+/* Mejoras para móvil */
+@media (max-width: 992px) {
+  .navbar {
+    padding: 15px 20px;
+  }
+  
+  .logo span {
+    font-size: 24px;
+  }
+  
+  .nav-center {
+    gap: 25px;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Mostrar botón de hamburguesa en móvil */
+  .mobile-menu-toggle {
+    display: flex;
+    order: 3;
+  }
+  
+  /* Reordenar elementos en móvil */
+  .navbar {
+    padding: 12px 16px;
+    flex-wrap: wrap;
+  }
+  
+  .logo {
+    order: 1;
+  }
+  
+  .nav-right {
+    order: 2;
+    margin-left: auto;
+    margin-right: 15px;
+  }
+  
+  /* Menú central en pantalla completa */
+  .nav-center {
+    order: 4;
+    position: fixed;
+    top: 70px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(5, 11, 20, 0.98);
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: 40px;
+    transform: translateY(-100%);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+    width: 100%;
+    gap: 15px;
+    overflow-y: auto;
+  }
+  
+  .nav-center.mobile-active {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  /* Adaptar dropdowns en móvil */
+  .nav-center li {
+    font-size: 18px;
+    width: 100%;
+    max-width: 300px;
+    text-align: center;
+  }
+  
+  .dropdown, 
+  .dropdown.explorar {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+    max-width: 300px;
+    margin: 10px auto;
+    flex-direction: column;
+    box-shadow: none;
+    border-radius: var(--radius-md);
+  }
+  
+  .dropdown.explorar .column {
+    width: 100%;
+  }
+  
+  .dropdown-content {
+    top: 0;
+    position: relative;
+    width: 100%;
+    margin-top: 10px;
+  }
+  
+  /* Ajustar overlay de búsqueda para móvil */
+  .search-box {
+    width: 90%;
+  }
+  
+  .search-overlay .close-search {
+    top: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* Asegurar que el botón de cierre de búsqueda solo aparezca cuando se activa */
+.search-overlay:not(.active) .close-search {
+  opacity: 0 !important; 
+  pointer-events: none;
+}
+
+/* Corregir contraste en menús dropdown */
+.dropdown-content .profile-item,
+.dropdown-content .language-item {
+  color: var(--color-text-secondary);
+}
+
+.dropdown-content .profile-item:hover,
+.dropdown-content .language-item:hover {
+  color: var(--color-accent);
+}
+
+/* Estilo para menú activo */
+.mobile-active-overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(6, 13, 23, 0.9);
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
   display: none;
-  align-items: center;
-  justify-content: center;
-  z-index: 20000;
 }
 
-.search-overlay.active {
-  display: flex;
+.mobile-active-overlay.active {
+  display: block;
 }
 
-.search-box {
-  width: 80%;
-  max-width: 700px;
-  position: relative;
-}
-
-.search-box input[type="text"] {
-  width: 100%;
-  padding: 20px;
-  font-size: 1.4em;
-  border: none;
-  border-radius: 8px;
-  background: #30343F;
-  color: #F6F6F7;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  transition: all 0.3s ease;
-}
-
-.search-box input[type="text"]:focus {
-  border: 1px solid #FBC500;
-  outline: none;
-}
-
-.mobile-menu-toggle {
-  display: none;
-  color: #F6F6F7;
-  font-size: 24px;
-  cursor: pointer;
-}
-
-.mobile-menu-toggle:hover {
-  color: #FBC500;
-}
-
-@media (max-width: 1024px) {
-  .navbar {
-    padding: 15px 20px;
+/* Mejorar animación de aparición del menú */
+@keyframes slideIn {
+  from {
+    transform: translateY(-10px);
+    opacity: 0;
   }
-  
-  .nav-center {
-    gap: 15px;
-  }
-}
-
-@media (max-width: 768px) {
-  .mobile-menu-toggle {
-    display: block;
-  }
-  
-  .nav-center {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    flex-direction: column;
-    background: #060D17;
-    padding: 20px;
-    gap: 10px;
-    display: none;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    border-top: 1px solid #30343F;
-  }
-  
-  .nav-center.mobile-active {
-    display: flex;
-  }
-  
-  .dropdown.explorar {
-    position: relative;
-    width: 100%;
+  to {
+    transform: translateY(0);
     opacity: 1;
-    visibility: visible;
-    transform: none;
-    display: none;
-  }
-  
-  .nav-center li.has-dropdown:hover .dropdown {
-    display: block;
-  }
-  
-  .dropdown.explorar .column {
-    width: 100%;
-    margin-bottom: 10px;
-  }
-  
-  .nav-right {
-    gap: 15px;
-  }
-  
-  .language span {
-    display: none;
   }
 }
+
+.dropdown.visible,
+.dropdown-content.visible {
+  animation: slideIn 0.3s forwards;
+}
+

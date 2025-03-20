@@ -1,5 +1,4 @@
-// src/components/Auth/Register.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import '../../styles/components/auth.css';
 
@@ -17,6 +16,8 @@ function Register() {
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState(0);
+  const [showPassword, setShowPassword] = useState(false);
+  const [avatarPreview, setAvatarPreview] = useState(null);
 
   // Géneros disponibles
   const availableGenres = [
@@ -24,14 +25,50 @@ function Register() {
     'Terror', 'Misterio', 'Romance', 'Ciencia Ficción', 'Thriller'
   ];
 
+  // Efecto para crear partículas decorativas
+  useEffect(() => {
+    const particles = document.querySelector('.particles');
+    if (!particles) return;
+
+    for (let i = 0; i < 15; i++) {
+      createParticle(particles);
+    }
+
+    return () => {
+      const existingParticles = document.querySelectorAll('.particle');
+      existingParticles.forEach(particle => particle.remove());
+    };
+  }, []);
+
+  const createParticle = (container) => {
+    const particle = document.createElement('div');
+    particle.classList.add('particle');
+    
+    const size = Math.random() * 15 + 5;
+    particle.style.width = `${size}px`;
+    particle.style.height = `${size}px`;
+    particle.style.left = `${Math.random() * 100}%`;
+    particle.style.top = `${Math.random() * 100}%`;
+    particle.style.opacity = Math.random() * 0.6 + 0.1;
+    
+    const duration = Math.random() * 20 + 10;
+    particle.style.animationDuration = `${duration}s`;
+    particle.style.animationDelay = `${Math.random() * 5}s`;
+    
+    container.appendChild(particle);
+  };
+
   const handleChange = (e) => {
     const { name, value, type, checked, files } = e.target;
     
     if (type === 'file') {
-      setFormData({
-        ...formData,
-        [name]: files[0]
-      });
+      if (files[0]) {
+        setFormData({
+          ...formData,
+          [name]: files[0]
+        });
+        setAvatarPreview(URL.createObjectURL(files[0]));
+      }
       return;
     }
     
@@ -60,6 +97,10 @@ function Register() {
         [name]: ''
       });
     }
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   const handleGenreToggle = (genre) => {
@@ -139,11 +180,20 @@ function Register() {
   const nextStep = () => {
     if (step === 1 && validateStep1()) {
       setStep(2);
+      // Desplazarse al inicio del formulario
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
     }
   };
 
   const prevStep = () => {
     setStep(1);
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
   };
 
   const handleSubmit = (e) => {
@@ -178,6 +228,9 @@ function Register() {
 
   return (
     <div className="auth-container">
+      {/* Partículas de fondo */}
+      <div className="particles"></div>
+      
       <div className="auth-card register-card">
         <div className="auth-header">
           <h2>Crear cuenta</h2>
@@ -186,7 +239,9 @@ function Register() {
 
         <div className="steps-indicator">
           <div className={`step ${step >= 1 ? 'active' : ''}`}>1</div>
-          <div className="step-line"></div>
+          <div className="step-line">
+            <span className="step-progress" style={{width: step >= 2 ? '100%' : '0%'}}></span>
+          </div>
           <div className={`step ${step >= 2 ? 'active' : ''}`}>2</div>
         </div>
 
@@ -230,13 +285,17 @@ function Register() {
                 <div className="input-with-icon">
                   <i className="fas fa-lock"></i>
                   <input
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     id="password"
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
                     placeholder="Crea una contraseña segura"
                   />
+                  <i 
+                    className={`fas ${showPassword ? 'fa-eye-slash' : 'fa-eye'} password-toggle`}
+                    onClick={togglePasswordVisibility}
+                  ></i>
                 </div>
                 {passwordStrength > 0 && (
                   <div className="password-strength">
@@ -257,7 +316,7 @@ function Register() {
                 <div className="input-with-icon">
                   <i className="fas fa-lock"></i>
                   <input
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     id="confirmPassword"
                     name="confirmPassword"
                     value={formData.confirmPassword}
@@ -270,6 +329,7 @@ function Register() {
 
               <button type="button" className="auth-button" onClick={nextStep}>
                 Continuar
+                <i className="fas fa-arrow-right button-icon-right"></i>
               </button>
             </>
           )}
@@ -279,9 +339,9 @@ function Register() {
               <div className="form-group avatar-upload">
                 <label className="avatar-label">Foto de perfil (opcional)</label>
                 <div className="avatar-preview">
-                  {formData.avatar ? (
+                  {avatarPreview ? (
                     <img 
-                      src={URL.createObjectURL(formData.avatar)} 
+                      src={avatarPreview} 
                       alt="Avatar preview" 
                       className="avatar-image"
                     />
@@ -306,7 +366,7 @@ function Register() {
               </div>
 
               <div className="form-group">
-                <label>Selecciona tus géneros favoritos (máximo 3)</label>
+                <label>Selecciona tus géneros favoritos <span className="label-note">(máximo 3)</span></label>
                 <div className="genres-grid">
                   {availableGenres.map(genre => (
                     <div 
@@ -314,6 +374,9 @@ function Register() {
                       className={`genre-item ${formData.preferredGenres.includes(genre) ? 'selected' : ''}`}
                       onClick={() => handleGenreToggle(genre)}
                     >
+                      {formData.preferredGenres.includes(genre) && (
+                        <span className="genre-checkmark"><i className="fas fa-check"></i></span>
+                      )}
                       {genre}
                     </div>
                   ))}
@@ -330,7 +393,7 @@ function Register() {
                   />
                   <span className="checkmark"></span>
                   <span className="terms-text">
-                    Acepto los <a href="#" target="_blank">Términos y Condiciones</a> y la <a href="#" target="_blank">Política de Privacidad</a>
+                    Acepto los <a href="#" target="_blank" rel="noopener noreferrer">Términos y Condiciones</a> y la <a href="#" target="_blank" rel="noopener noreferrer">Política de Privacidad</a>
                   </span>
                 </label>
                 {errors.termsAccepted && <span className="form-error">{errors.termsAccepted}</span>}
@@ -338,15 +401,20 @@ function Register() {
 
               <div className="buttons-group">
                 <button type="button" className="secondary-button" onClick={prevStep}>
+                  <i className="fas fa-arrow-left button-icon-left"></i>
                   Atrás
                 </button>
                 <button type="submit" className="auth-button" disabled={isLoading}>
                   {isLoading ? (
-                    <span className="loading-spinner">
-                      <i className="fas fa-circle-notch fa-spin"></i>
-                    </span>
+                    <>
+                      <i className="fas fa-circle-notch"></i>
+                      Procesando...
+                    </>
                   ) : (
-                    'Crear cuenta'
+                    <>
+                      Crear cuenta
+                      <i className="fas fa-user-plus button-icon-right"></i>
+                    </>
                   )}
                 </button>
               </div>

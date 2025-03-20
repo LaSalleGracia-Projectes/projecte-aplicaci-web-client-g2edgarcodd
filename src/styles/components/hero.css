@@ -320,39 +320,7 @@
   transform: scale(1.2);
 }
 
-/* Progress ring animation - ACTUALIZADO */
-.progress-ring {
-  position: absolute;
-  top: -11px;
-  left: -11px;
-  width: 36px;
-  height: 36px;
-  display: block; /* Cambiado de 'none' a 'block' */
-}
-
-.hero-dot.active .progress-ring {
-  display: block;
-}
-
-.progress-ring-circle {
-  fill: none;
-  stroke: #FBC500;
-  stroke-width: 2;
-  stroke-linecap: round;
-  transform: rotate(-90deg);
-  transform-origin: 50% 50%;
-  animation: circleProgress 8s linear forwards; /* Cambiado de transition a animation */
-}
-
-/* Nueva animación para el círculo de progreso */
-@keyframes circleProgress {
-  from {
-    stroke-dashoffset: 100;
-  }
-  to {
-    stroke-dashoffset: 0;
-  }
-}
+/* Se han eliminado los estilos de progress-ring */
 
 /* Animaciones */
 @keyframes fadeInUp {
@@ -506,10 +474,4 @@
     height: 10px;
   }
   
-  .progress-ring {
-    top: -13px;
-    left: -13px;
-    width: 36px;
-    height: 36px;
-  }
 }

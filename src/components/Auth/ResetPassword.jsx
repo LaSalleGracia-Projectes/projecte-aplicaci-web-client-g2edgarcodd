@@ -1,9 +1,9 @@
-// src/components/Auth/ResetPassword.jsx
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useParams } from 'react-router-dom';
 import '../../styles/components/auth.css';
 
 function ResetPassword() {
+  const { token } = useParams();
   const [formData, setFormData] = useState({
     password: '',
     confirmPassword: ''
@@ -12,6 +12,59 @@ function ResetPassword() {
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState(0);
+  const [showPassword, setShowPassword] = useState({
+    new: false,
+    confirm: false
+  });
+
+  // Efecto para crear partículas decorativas
+  useEffect(() => {
+    const particles = document.querySelector('.particles');
+    if (!particles) return;
+
+    for (let i = 0; i < 15; i++) {
+      createParticle(particles);
+    }
+
+    // Validar el token al cargar el componente
+    validateToken();
+
+    return () => {
+      const existingParticles = document.querySelectorAll('.particle');
+      existingParticles.forEach(particle => particle.remove());
+    };
+  }, []);
+
+  const createParticle = (container) => {
+    const particle = document.createElement('div');
+    particle.classList.add('particle');
+    
+    const size = Math.random() * 15 + 5;
+    particle.style.width = `${size}px`;
+    particle.style.height = `${size}px`;
+    particle.style.left = `${Math.random() * 100}%`;
+    particle.style.top = `${Math.random() * 100}%`;
+    particle.style.opacity = Math.random() * 0.6 + 0.1;
+    
+    const duration = Math.random() * 20 + 10;
+    particle.style.animationDuration = `${duration}s`;
+    particle.style.animationDelay = `${Math.random() * 5}s`;
+    
+    container.appendChild(particle);
+  };
+
+  // Simulación de validación de token
+  const validateToken = () => {
+    console.log('Validando token:', token);
+    // En un caso real, aquí validarías el token con tu backend
+  };
+
+  const togglePasswordVisibility = (field) => {
+    setShowPassword({
+      ...showPassword,
+      [field]: !showPassword[field]
+    });
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -79,7 +132,17 @@ function ResetPassword() {
       setTimeout(() => {
         console.log('Contraseña restablecida con:', formData.password);
         setIsLoading(false);
-        setIsSubmitted(true);
+        
+        // Animación de transición suave antes de mostrar el éxito
+        const formElement = document.querySelector('.auth-form');
+        if (formElement) {
+          formElement.classList.add('fade-out');
+          setTimeout(() => {
+            setIsSubmitted(true);
+          }, 300);
+        } else {
+          setIsSubmitted(true);
+        }
       }, 1500);
     }
   };
@@ -100,6 +163,9 @@ function ResetPassword() {
 
   return (
     <div className="auth-container">
+      {/* Partículas de fondo */}
+      <div className="particles"></div>
+      
       <div className="auth-card">
         {!isSubmitted ? (
           <>
@@ -114,13 +180,18 @@ function ResetPassword() {
                 <div className="input-with-icon">
                   <i className="fas fa-lock"></i>
                   <input
-                    type="password"
+                    type={showPassword.new ? "text" : "password"}
                     id="password"
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
                     placeholder="Escribe tu nueva contraseña"
+                    autoFocus
                   />
+                  <i 
+                    className={`fas ${showPassword.new ? 'fa-eye-slash' : 'fa-eye'} password-toggle`}
+                    onClick={() => togglePasswordVisibility('new')}
+                  ></i>
                 </div>
                 {passwordStrength > 0 && (
                   <div className="password-strength">
@@ -141,13 +212,17 @@ function ResetPassword() {
                 <div className="input-with-icon">
                   <i className="fas fa-lock"></i>
                   <input
-                    type="password"
+                    type={showPassword.confirm ? "text" : "password"}
                     id="confirmPassword"
                     name="confirmPassword"
                     value={formData.confirmPassword}
                     onChange={handleChange}
                     placeholder="Confirma tu nueva contraseña"
                   />
+                  <i 
+                    className={`fas ${showPassword.confirm ? 'fa-eye-slash' : 'fa-eye'} password-toggle`}
+                    onClick={() => togglePasswordVisibility('confirm')}
+                  ></i>
                 </div>
                 {errors.confirmPassword && <span className="form-error">{errors.confirmPassword}</span>}
               </div>
@@ -176,11 +251,15 @@ function ResetPassword() {
 
               <button type="submit" className="auth-button" disabled={isLoading}>
                 {isLoading ? (
-                  <span className="loading-spinner">
-                    <i className="fas fa-circle-notch fa-spin"></i>
-                  </span>
+                  <>
+                    <i className="fas fa-circle-notch"></i>
+                    Procesando...
+                  </>
                 ) : (
-                  'Restablecer contraseña'
+                  <>
+                    Restablecer contraseña
+                    <i className="fas fa-key button-icon-right"></i>
+                  </>
                 )}
               </button>
             </form>
@@ -195,6 +274,7 @@ function ResetPassword() {
               Tu contraseña ha sido cambiada exitosamente. Ahora puedes iniciar sesión con tu nueva contraseña.
             </p>
             <Link to="/login" className="auth-button">
+              <i className="fas fa-sign-in-alt button-icon-left"></i>
               Ir a iniciar sesión
             </Link>
           </div>

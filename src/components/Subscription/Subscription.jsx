@@ -1,4 +1,3 @@
-// src/components/Subscription/Subscription.jsx
 import React, { useState } from 'react';
 import '../../styles/components/subscription.css';
 
@@ -37,44 +36,44 @@ function Subscription() {
   };
 
   return (
-    <section className="subscription">
-      <div className="subscription-container">
-        <h2>Mantente al día</h2>
-        <p>Suscríbete a nuestro boletín para recibir notificaciones sobre nuevos lanzamientos y contenido exclusivo.</p>
+    <section className="newsletter-section">
+      <div className="newsletter-container">
+        <h2 className="newsletter-title">Mantente al día</h2>
+        <p className="newsletter-description">Suscríbete a nuestro boletín para recibir notificaciones sobre nuevos lanzamientos y contenido exclusivo.</p>
         
         {submitted ? (
-          <div className="success-message">
+          <div className="newsletter-success-message">
             <i className="fas fa-check-circle"></i>
             <p>¡Gracias por suscribirte! Pronto recibirás novedades.</p>
           </div>
         ) : (
-          <form onSubmit={handleSubmit}>
-            <div className="form-group">
+          <form onSubmit={handleSubmit} className="newsletter-form">
+            <div className="newsletter-input-group">
               <input
                 type="email"
                 placeholder="Tu correo electrónico"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className={error ? 'error' : ''}
+                className={error ? 'newsletter-input newsletter-input-error' : 'newsletter-input'}
               />
-              <button type="submit">
+              <button type="submit" className="newsletter-submit-btn">
                 Suscribirse <i className="fas fa-arrow-right"></i>
               </button>
             </div>
-            {error && <p className="error-message">{error}</p>}
+            {error && <p className="newsletter-error-message">{error}</p>}
           </form>
         )}
         
-        <div className="benefits">
-          <div className="benefit">
+        <div className="newsletter-benefits">
+          <div className="newsletter-benefit">
             <i className="fas fa-bell"></i>
             <span>Notificaciones de estrenos</span>
           </div>
-          <div className="benefit">
+          <div className="newsletter-benefit">
             <i className="fas fa-gift"></i>
             <span>Contenido exclusivo</span>
           </div>
-          <div className="benefit">
+          <div className="newsletter-benefit">
             <i className="fas fa-tag"></i>
             <span>Ofertas especiales</span>
           </div>
