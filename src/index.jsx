@@ -13,6 +13,7 @@ import ResetPassword from './components/Auth/ResetPassword';
 import UpdateProfile from './components/Auth/UpdateProfile';
 import ExplorePage from './pages/ExplorePage';
 import './index.css';
+import ProfilePage from './pages/ProfilePage';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -33,6 +34,7 @@ root.render(
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route path="/profile/update" element={<UpdateProfile />} />
+        <Route path="/profile" element={<ProfilePage />} />
       </Routes>
     </Router>
   </React.StrictMode>
