@@ -1,0 +1,349 @@
+/* ======== ESTADO DE CARGA Y NOTIFICACIONES MEJORADAS ======== */
+.adminPanel-loader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--adminPanel-spacing-xl);
+}
+
+.adminPanel-spinner {
+  width: 40px;
+  height: 40px;
+  margin-bottom: var(--adminPanel-spacing-md);
+  position: relative;
+}
+
+.adminPanel-spinner::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 3px solid var(--adminPanel-border);
+  border-top-color: var(--adminPanel-accent);
+  animation: adminPanelSpin 0.8s linear infinite;
+}
+
+@keyframes adminPanelSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.adminPanel-loader-text {
+  color: var(--adminPanel-text-tertiary);
+  font-size: var(--adminPanel-font-size-sm);
+}
+
+.adminPanel-skeleton {
+  display: block;
+  background: linear-gradient(
+    90deg,
+    var(--adminPanel-surface-secondary) 25%,
+    var(--adminPanel-surface-hover) 50%,
+    var(--adminPanel-surface-secondary) 75%
+  );
+  background-size: 200% 100%;
+  border-radius: var(--adminPanel-radius-md);
+  animation: adminPanel-skeleton-loading 1.5s infinite;
+}
+
+.adminPanel-skeleton.title {
+  height: 24px;
+  margin-bottom: var(--adminPanel-spacing-md);
+  width: 60%;
+}
+
+.adminPanel-skeleton.text {
+  height: 16px;
+  margin-bottom: var(--adminPanel-spacing-sm);
+}
+
+.adminPanel-skeleton.text.short {
+  width: 40%;
+}
+
+.adminPanel-skeleton.text.medium {
+  width: 70%;
+}
+
+.adminPanel-skeleton.circle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+}
+
+.adminPanel-skeleton.button {
+  height: 40px;
+  width: 120px;
+  border-radius: var(--adminPanel-radius-md);
+}
+
+@keyframes adminPanel-skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Sistema de notificaciones mejorado */
+.adminPanel-notifications {
+  position: fixed;
+  top: var(--adminPanel-spacing-lg);
+  right: var(--adminPanel-spacing-lg);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: var(--adminPanel-spacing-md);
+  max-width: 380px;
+  pointer-events: none;
+}
+
+.adminPanel-notification {
+  padding: var(--adminPanel-spacing-md) var(--adminPanel-spacing-lg);
+  border-radius: var(--adminPanel-radius-md);
+  margin-bottom: var(--adminPanel-spacing-md);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--adminPanel-spacing-md);
+  position: relative;
+  overflow: hidden;
+  animation: adminPanel-fade-in-right 0.3s ease-out;
+  border: 1px solid transparent;
+}
+
+.adminPanel-notification::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 4px;
+  border-radius: var(--adminPanel-radius-md) 0 0 var(--adminPanel-radius-md);
+}
+
+.adminPanel-notification-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.adminPanel-notification-content {
+  flex: 1;
+}
+
+.adminPanel-notification-title {
+  font-weight: 600;
+  margin: 0 0 var(--adminPanel-spacing-xs);
+  font-size: var(--adminPanel-font-size-sm);
+}
+
+.adminPanel-notification-message {
+  margin: 0;
+  font-size: var(--adminPanel-font-size-sm);
+  line-height: 1.5;
+}
+
+.adminPanel-notification-close {
+  background: none;
+  border: none;
+  color: inherit;
+  opacity: 0.6;
+  cursor: pointer;
+  padding: var(--adminPanel-spacing-xs);
+  font-size: var(--adminPanel-font-size-sm);
+  transition: opacity var(--adminPanel-transition-fast);
+}
+
+.adminPanel-notification-close:hover {
+  opacity: 1;
+}
+
+.adminPanel-notification-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.3);
+  animation: adminPanel-progress-bar 5s linear forwards;
+}
+
+/* Variantes de notificación */
+.adminPanel-notification.info {
+  background-color: var(--adminPanel-info-light);
+  color: var(--adminPanel-info);
+  border-color: rgba(99, 102, 241, 0.3);
+}
+
+.adminPanel-notification.info::before {
+  background-color: var(--adminPanel-info);
+}
+
+.adminPanel-notification.success {
+  background-color: var(--adminPanel-success-light);
+  color: var(--adminPanel-success);
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.adminPanel-notification.success::before {
+  background-color: var(--adminPanel-success);
+}
+
+.adminPanel-notification.warning {
+  background-color: var(--adminPanel-warning-light);
+  color: var(--adminPanel-warning);
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+.adminPanel-notification.warning::before {
+  background-color: var(--adminPanel-warning);
+}
+
+.adminPanel-notification.error {
+  background-color: var(--adminPanel-danger-light);
+  color: var(--adminPanel-danger);
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.adminPanel-notification.error::before {
+  background-color: var(--adminPanel-danger);
+}
+
+/* Contenedor de notificaciones */
+.adminPanel-notifications-container {
+  position: fixed;
+  top: var(--adminPanel-spacing-lg);
+  right: var(--adminPanel-spacing-lg);
+  width: 320px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: var(--adminPanel-spacing-sm);
+}
+
+/* Alertas inline */
+.adminPanel-alert {
+  padding: var(--adminPanel-spacing-md) var(--adminPanel-spacing-lg);
+  border-radius: var(--adminPanel-radius-md);
+  margin-bottom: var(--adminPanel-spacing-md);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--adminPanel-spacing-md);
+  position: relative;
+  overflow: hidden;
+  border: 1px solid transparent;
+}
+
+.adminPanel-alert-icon {
+  flex-shrink: 0;
+}
+
+.adminPanel-alert-content {
+  flex: 1;
+}
+
+.adminPanel-alert-title {
+  font-weight: 600;
+  margin: 0 0 var(--adminPanel-spacing-xs);
+  font-size: var(--adminPanel-font-size-sm);
+}
+
+.adminPanel-alert-message {
+  margin: 0;
+  font-size: var(--adminPanel-font-size-sm);
+  line-height: 1.5;
+}
+
+.adminPanel-alert-actions {
+  margin-top: var(--adminPanel-spacing-sm);
+  display: flex;
+  gap: var(--adminPanel-spacing-sm);
+}
+
+.adminPanel-alert-close {
+  background: none;
+  border: none;
+  color: inherit;
+  opacity: 0.6;
+  cursor: pointer;
+  padding: var(--adminPanel-spacing-xs);
+  font-size: var(--adminPanel-font-size-sm);
+  transition: opacity var(--adminPanel-transition-fast);
+  position: absolute;
+  top: var(--adminPanel-spacing-xs);
+  right: var(--adminPanel-spacing-xs);
+}
+
+.adminPanel-alert-close:hover {
+  opacity: 1;
+}
+
+/* Variantes de alertas */
+.adminPanel-alert.info {
+  background-color: var(--adminPanel-info-light);
+  color: var(--adminPanel-info);
+  border-left: 4px solid var(--adminPanel-info);
+}
+
+.adminPanel-alert.success {
+  background-color: var(--adminPanel-success-light);
+  color: var(--adminPanel-success);
+  border-left: 4px solid var(--adminPanel-success);
+}
+
+.adminPanel-alert.warning {
+  background-color: var(--adminPanel-warning-light);
+  color: var(--adminPanel-warning);
+  border-left: 4px solid var(--adminPanel-warning);
+}
+
+.adminPanel-alert.error {
+  background-color: var(--adminPanel-danger-light);
+  color: var(--adminPanel-danger);
+  border-left: 4px solid var(--adminPanel-danger);
+}
+
+/* Toasts pequeños */
+.adminPanel-toast {
+  position: fixed;
+  bottom: var(--adminPanel-spacing-lg);
+  right: var(--adminPanel-spacing-lg);
+  padding: var(--adminPanel-spacing-sm) var(--adminPanel-spacing-lg);
+  background-color: var(--adminPanel-surface);
+  color: var(--adminPanel-text-primary);
+  border-radius: var(--adminPanel-radius-lg);
+  box-shadow: var(--adminPanel-shadow-lg);
+  display: flex;
+  align-items: center;
+  gap: var(--adminPanel-spacing-sm);
+  animation: adminPanel-fade-in-up 0.3s ease-out;
+  z-index: 1000;
+  max-width: 300px;
+}
+
+.adminPanel-toast i {
+  font-size: var(--adminPanel-font-size-lg);
+}
+
+.adminPanel-toast.success i {
+  color: var(--adminPanel-success);
+}
+
+.adminPanel-toast.error i {
+  color: var(--adminPanel-danger);
+}
+
+.adminPanel-toast.info i {
+  color: var(--adminPanel-info);
+}
+
+.adminPanel-toast.warning i {
+  color: var(--adminPanel-warning);
+}

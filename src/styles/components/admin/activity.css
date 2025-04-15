@@ -1,0 +1,252 @@
+/* ======== ACTIVIDADES REDISEÑADA ======== */
+.adminPanel-activity-log {
+  background-color: var(--adminPanel-surface);
+  border-radius: var(--adminPanel-radius-xl);
+  box-shadow: var(--adminPanel-shadow-md);
+  padding: var(--adminPanel-spacing-xl);
+  margin-bottom: var(--adminPanel-spacing-lg);
+  border: 1px solid var(--adminPanel-border);
+  position: relative;
+  overflow: hidden;
+}
+
+.adminPanel-activity-log h2 {
+  color: var(--adminPanel-text-primary);
+  font-size: var(--adminPanel-font-size-xl);
+  font-weight: 600;
+  margin-top: 0;
+  margin-bottom: var(--adminPanel-spacing-lg);
+  display: flex;
+  align-items: center;
+  gap: var(--adminPanel-spacing-sm);
+  font-family: "Plus Jakarta Sans", sans-serif;
+}
+
+.adminPanel-activity-log h2 i {
+  color: var(--adminPanel-accent);
+  font-size: 1.3em;
+  background: var(--adminPanel-surface-accent);
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--adminPanel-radius-md);
+}
+
+.adminPanel-activity-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.adminPanel-activity-item {
+  display: flex;
+  align-items: flex-start;
+  padding: var(--adminPanel-spacing-md);
+  border-left: 3px solid var(--adminPanel-accent);
+  background-color: var(--adminPanel-surface-secondary);
+  margin-bottom: var(--adminPanel-spacing-sm);
+  border-radius: 0 var(--adminPanel-radius-md) var(--adminPanel-radius-md) 0;
+  transition: all var(--adminPanel-transition-fast);
+}
+
+.adminPanel-activity-item:hover {
+  transform: translateX(4px);
+  background-color: var(--adminPanel-surface-hover);
+}
+
+.adminPanel-activity-icon {
+  background-color: var(--adminPanel-surface-accent);
+  width: 36px;
+  height: 36px;
+  border-radius: var(--adminPanel-radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: var(--adminPanel-spacing-md);
+  flex-shrink: 0;
+}
+
+.adminPanel-activity-icon i {
+  color: var(--adminPanel-accent);
+  font-size: 1rem;
+}
+
+.adminPanel-activity-content {
+  flex: 1;
+}
+
+.adminPanel-activity-timestamp {
+  font-size: var(--adminPanel-font-size-xs);
+  color: var(--adminPanel-text-tertiary);
+  margin-bottom: var(--adminPanel-spacing-xs);
+  display: flex;
+  align-items: center;
+  gap: var(--adminPanel-spacing-xs);
+}
+
+.adminPanel-activity-timestamp i {
+  font-size: 0.875rem;
+}
+
+.adminPanel-activity-action {
+  font-size: var(--adminPanel-font-size-sm);
+  color: var(--adminPanel-text-secondary);
+  font-weight: 500;
+}
+
+.adminPanel-activity-action strong {
+  color: var(--adminPanel-text-primary);
+}
+
+/* Actividad reciente mejorada */
+.adminPanel-activity-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--adminPanel-spacing-md);
+}
+
+.adminPanel-activity-title {
+  font-size: var(--adminPanel-font-size-xl);
+  font-weight: 600;
+  color: var(--adminPanel-text-primary);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--adminPanel-spacing-xs);
+}
+
+.adminPanel-activity-title i {
+  color: var(--adminPanel-accent);
+  font-size: 1.1em;
+}
+
+.adminPanel-activity-filters {
+  display: flex;
+  gap: var(--adminPanel-spacing-xs);
+}
+
+.adminPanel-activity-filter {
+  background: var(--adminPanel-surface);
+  border: 1px solid var(--adminPanel-border);
+  color: var(--adminPanel-text-secondary);
+  font-size: var(--adminPanel-font-size-sm);
+  padding: var(--adminPanel-spacing-xs) var(--adminPanel-spacing-md);
+  border-radius: var(--adminPanel-radius-md);
+  cursor: pointer;
+  transition: all var(--adminPanel-transition-fast);
+}
+
+.adminPanel-activity-filter:hover {
+  background: var(--adminPanel-surface-hover);
+  color: var(--adminPanel-text-primary);
+}
+
+.adminPanel-activity-filter.active {
+  background: var(--adminPanel-surface-accent);
+  color: var(--adminPanel-accent);
+  border-color: var(--adminPanel-accent);
+}
+
+.adminPanel-activity-items {
+  position: relative;
+}
+
+.adminPanel-activity-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--adminPanel-spacing-md);
+  padding: var(--adminPanel-spacing-md) 0;
+  position: relative;
+  transition: all var(--adminPanel-transition-fast);
+  border-bottom: 1px solid var(--adminPanel-border);
+}
+
+.adminPanel-activity-item:last-child {
+  border-bottom: none;
+}
+
+.adminPanel-activity-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--adminPanel-surface-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.adminPanel-activity-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.adminPanel-activity-avatar.system {
+  background: var(--adminPanel-info-light);
+}
+
+.adminPanel-activity-avatar.system i {
+  color: var(--adminPanel-info);
+}
+
+.adminPanel-activity-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--adminPanel-spacing-xs);
+}
+
+.adminPanel-activity-user {
+  font-weight: 500;
+  color: var(--adminPanel-text-primary);
+}
+
+.adminPanel-activity-time {
+  font-size: var(--adminPanel-font-size-xs);
+  color: var(--adminPanel-text-tertiary);
+}
+
+.adminPanel-activity-message {
+  color: var(--adminPanel-text-secondary);
+  font-size: var(--adminPanel-font-size-sm);
+  line-height: 1.5;
+}
+
+.adminPanel-activity-actions {
+  margin-top: var(--adminPanel-spacing-sm);
+  display: flex;
+  gap: var(--adminPanel-spacing-sm);
+}
+
+.adminPanel-activity-action {
+  font-size: var(--adminPanel-font-size-xs);
+  color: var(--adminPanel-text-tertiary);
+  cursor: pointer;
+  transition: color var(--adminPanel-transition-fast);
+  display: flex;
+  align-items: center;
+  gap: var(--adminPanel-spacing-xs);
+}
+
+.adminPanel-activity-action:hover {
+  color: var(--adminPanel-accent);
+}
+
+.adminPanel-activity-action i {
+  font-size: 0.8em;
+}
+
+.adminPanel-activity-timeline {
+  position: absolute;
+  left: 20px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background-color: var(--adminPanel-border);
+  z-index: -1;
+}
