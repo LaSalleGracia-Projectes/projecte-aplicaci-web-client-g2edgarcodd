@@ -1,108 +1,112 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
-import '../../styles/components/trendingnow.css';
+import React, { useState, useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
+import { useLanguage } from "../../contexts/LanguageContext";
+import { useFavorites } from "../../contexts/FavoritesContext";
+import "../../styles/components/trendingnow.css";
 
-function TrendingNow() {
+function TrendingNow({ movies = [] }) {
   const [scrollPosition, setScrollPosition] = useState(0);
   const sliderRef = useRef(null);
   const maxScroll = useRef(0);
-  const [showLeftArrow, setShowLeftArrow] = useState(false);
+  const [showLeftArrow, setShowLeftArrow] = useState(true); // Mostrar flecha izquierda desde el inicio
   const [showRightArrow, setShowRightArrow] = useState(true);
+  const { t } = useLanguage();
+  const { isFavorite, toggleFavorite } = useFavorites();
 
-  // Datos simulados para trending
-  const trendingContent = [
-    {
-      id: 1,
-      title: "Arrakis Chronicles",
-      image: "https://images.unsplash.com/photo-1627873649417-c67f701f1949?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-      genres: ["Sci-Fi", "Drama"],
-      year: "2024",
-      trending: "+128%",
-      type: "movie"
-    },
-    {
-      id: 2,
-      title: "Temporal Paradox",
-      image: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-      genres: ["Thriller", "Mystery"],
-      year: "2024",
-      trending: "+92%",
-      type: "movie"
-    },
-    {
-      id: 3,
-      title: "Midnight Chronicles",
-      image: "https://images.unsplash.com/photo-1604975701397-6365ccbd028a?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-      genres: ["Fantasy", "Adventure"],
-      year: "2023",
-      trending: "+87%",
-      type: "series"
-    },
-    {
-      id: 4,
-      title: "City of Dreams",
-      image: "https://images.unsplash.com/photo-1515634928627-2a4e0dae3ddf?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-      genres: ["Drama", "Crime"],
-      year: "2024",
-      trending: "+81%",
-      type: "series"
-    },
-    {
-      id: 5,
-      title: "Beyond the Horizon",
-      image: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-      genres: ["Documentary", "Nature"],
-      year: "2023",
-      trending: "+76%",
-      type: "movie"
-    },
-    {
-      id: 6,
-      title: "Quantum Protocol",
-      image: "https://images.unsplash.com/photo-1538370965046-79c0d6907d47?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-      genres: ["Sci-Fi", "Action"],
-      year: "2024",
-      trending: "+70%",
-      type: "movie"
-    }
-  ];
+  // Formatea los datos de películas para el componente
+  const trendingContent = movies.map((movie) => {
+    // Calcula un porcentaje de tendencia basado en la popularidad
+    const trendingPercentage = `+${Math.floor((movie.popularity / 10) * 100)}%`;
+
+    // Extrae el año de la fecha de lanzamiento
+    const year = movie.release_date ? movie.release_date.substring(0, 4) : "";
+
+    // Mapea los genre_ids a un formato compatible
+    const genres = (movie.genre_ids || []).slice(0, 2).map((id) => {
+      // Mapeo simple de IDs de género a keys de traducción
+      const genreMap = {
+        28: "genres.action",
+        12: "genres.adventure",
+        16: "genres.animation",
+        35: "genres.comedy",
+        80: "genres.crime",
+        99: "genres.documentary",
+        18: "genres.drama",
+        10751: "genres.family",
+        14: "genres.fantasy",
+        36: "genres.history",
+        27: "genres.horror",
+        10402: "genres.music",
+        9648: "genres.mystery",
+        10749: "genres.romance",
+        878: "genres.scifi",
+        10770: "genres.tvMovie",
+        53: "genres.thriller",
+        10752: "genres.war",
+        37: "genres.western",
+        10759: "genres.action",
+        10765: "genres.scifi",
+      };
+      return { key: genreMap[id] || "genres.other" };
+    });
+
+    return {
+      id: movie.id,
+      titleKey: movie.title,
+      image: movie.backdrop_path
+        ? `https://image.tmdb.org/t/p/w780${movie.backdrop_path}`
+        : "https://images.unsplash.com/photo-1594909122845-11baa439b7bf?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+      genres,
+      year,
+      trending: trendingPercentage,
+      rating: movie.vote_average || 0,
+      type: "movie",
+    };
+  });
 
   // Actualizar maxScroll cuando cambie el tamaño
   useEffect(() => {
     const updateMaxScroll = () => {
       if (sliderRef.current) {
-        maxScroll.current = sliderRef.current.scrollWidth - sliderRef.current.clientWidth;
+        maxScroll.current =
+          sliderRef.current.scrollWidth - sliderRef.current.clientWidth;
         updateArrowVisibility(sliderRef.current.scrollLeft);
       }
     };
 
     updateMaxScroll();
-    window.addEventListener('resize', updateMaxScroll);
-    
-    sliderRef.current?.addEventListener('scroll', handleScroll);
+    window.addEventListener("resize", updateMaxScroll);
+
+    sliderRef.current?.addEventListener("scroll", handleScroll);
 
     return () => {
-      window.removeEventListener('resize', updateMaxScroll);
-      sliderRef.current?.removeEventListener('scroll', handleScroll);
+      window.removeEventListener("resize", updateMaxScroll);
+      sliderRef.current?.removeEventListener("scroll", handleScroll);
     };
-  }, []);
+  }, [movies]); // Añadimos movies como dependencia para recalcular cuando cambien
 
   const updateArrowVisibility = (position) => {
-    setShowLeftArrow(position > 0);
+    setShowLeftArrow(true); // Siempre mostramos la flecha izquierda
     setShowRightArrow(position < maxScroll.current - 10);
   };
 
   const scroll = (direction) => {
     if (sliderRef.current) {
-      const scrollAmount = 300;
-      const newPosition = direction === 'left' 
-        ? scrollPosition - scrollAmount 
-        : scrollPosition + scrollAmount;
-      
-      sliderRef.current.scrollTo({
-        left: newPosition,
-        behavior: 'smooth'
-      });
+      if (direction === "left") {
+        // Para la flecha izquierda, siempre volvemos al inicio
+        sliderRef.current.scrollTo({
+          left: 0,
+          behavior: "smooth",
+        });
+      } else {
+        const scrollAmount = 300;
+        const newPosition = scrollPosition + scrollAmount;
+
+        sliderRef.current.scrollTo({
+          left: newPosition,
+          behavior: "smooth",
+        });
+      }
     }
   };
 
@@ -113,49 +117,126 @@ function TrendingNow() {
     }
   };
 
+  const handleToggleFavorite = (e, item) => {
+    e.preventDefault(); // Prevenir navegación
+    e.stopPropagation(); // Prevenir propagación del evento
+
+    const favoriteItem = {
+      id: item.id,
+      title: item.titleKey,
+      posterPath: item.image,
+      year: item.year,
+      type: item.type,
+      rating: item.rating,
+    };
+
+    toggleFavorite(favoriteItem);
+  };
+
+  // Genera estrellas basadas en la calificación
+  const renderStars = (rating) => {
+    // Convertir a escala de 5 estrellas
+    const ratingOn5 = rating / 2;
+    const stars = [];
+    const fullStars = Math.floor(ratingOn5);
+    const hasHalfStar = ratingOn5 % 1 >= 0.5;
+
+    // Estrellas completas
+    for (let i = 0; i < fullStars; i++) {
+      stars.push(<i key={`full-${i}`} className="fas fa-star"></i>);
+    }
+
+    // Media estrella si es necesario
+    if (hasHalfStar) {
+      stars.push(<i key="half" className="fas fa-star-half-alt"></i>);
+    }
+
+    // Estrellas vacías hasta completar 5
+    const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+    for (let i = 0; i < emptyStars; i++) {
+      stars.push(<i key={`empty-${i}`} className="far fa-star"></i>);
+    }
+
+    return stars;
+  };
+
   return (
     <section className="trending-section">
       <div className="section-header">
-        <h2>En tendencia ahora</h2>
-        <p className="section-description">Lo más visto en la plataforma esta semana</p>
+        <h2>{t("home.trendingNow")}</h2>
+        <p className="section-description">{t("home.trendingDescription")}</p>
       </div>
 
       <div className="trending-container">
-        {showLeftArrow && (
-          <button 
-            className="trending-arrow arrow-left" 
-            onClick={() => scroll('left')}
-            aria-label="Desplazar a la izquierda"
-          >
-            <i className="fas fa-chevron-left"></i>
-          </button>
-        )}
-        
-        <div 
-          className="trending-slider" 
-          ref={sliderRef}
+        {/* Flecha izquierda siempre visible */}
+        <button
+          className="trending-arrow arrow-left visible"
+          onClick={() => scroll("left")}
+          aria-label={t("common.scrollLeft")}
         >
+          <i className="fas fa-chevron-left"></i>
+        </button>
+
+        <div className="trending-slider" ref={sliderRef}>
           {trendingContent.map((item) => (
-            <Link to={`/${item.type}/${item.id}`} className="trending-item" key={item.id}>
+            <Link
+              to={`/${item.type}/${item.id}`}
+              className="trending-item"
+              key={item.id}
+            >
               <div className="trending-image-container">
-                <img src={item.image} alt={item.title} />
+                <img src={item.image} alt={item.titleKey} />
                 <span className="trending-badge">
                   <i className="fas fa-chart-line"></i> {item.trending}
                 </span>
+
+                {/* Botón de favoritos similar al de Top10 */}
+                <button
+                  className={`favorite-icon ${
+                    isFavorite(item.id) ? "active" : ""
+                  }`}
+                  onClick={(e) => handleToggleFavorite(e, item)}
+                  aria-label={
+                    isFavorite(item.id)
+                      ? t("favorites.removeFromFavorites")
+                      : t("favorites.addToFavorites")
+                  }
+                >
+                  <i className="fas fa-heart"></i>
+                </button>
+
+                {/* Rating stars similar al de Top10 */}
+                <div className="rating-stars">{renderStars(item.rating)}</div>
+
                 <div className="trending-overlay">
-                  <button className="play-button">
-                    <i className="fas fa-play"></i>
-                  </button>
+                  <div className="trending-actions">
+                    <button className="play-button">
+                      <i className="fas fa-play"></i>
+                    </button>
+                  </div>
                 </div>
               </div>
               <div className="trending-info">
-                <h3>{item.title}</h3>
+                <h3>{item.titleKey}</h3>
                 <div className="trending-meta">
                   <span className="trending-year">{item.year}</span>
                   <span className="trending-dot">•</span>
-                  <span className="trending-genres">{item.genres.join(', ')}</span>
-                  <span className={item.type === 'movie' ? 'movie-badge' : 'series-badge'}>
-                    {item.type === 'movie' ? 'Película' : 'Serie'}
+                  <span className="trending-genres">
+                    {item.genres.map((genre, index) => (
+                      <React.Fragment key={genre.key}>
+                        {index > 0 && ", "}
+                        {t(genre.key)}
+                      </React.Fragment>
+                    ))}
+                  </span>
+                  <span
+                    className={
+                      item.type === "movie" ? "movie-badge" : "series-badge"
+                    }
+                  >
+                    {item.type === "movie"
+                      ? t("common.movie")
+                      : t("common.series")}
                   </span>
                 </div>
               </div>
@@ -163,15 +244,16 @@ function TrendingNow() {
           ))}
         </div>
 
-        {showRightArrow && (
-          <button 
-            className="trending-arrow arrow-right" 
-            onClick={() => scroll('right')}
-            aria-label="Desplazar a la derecha"
-          >
-            <i className="fas fa-chevron-right"></i>
-          </button>
-        )}
+        {/* Flecha derecha condicional */}
+        <button
+          className={`trending-arrow arrow-right ${
+            showRightArrow ? "visible" : "hidden"
+          }`}
+          onClick={() => scroll("right")}
+          aria-label={t("common.scrollRight")}
+        >
+          <i className="fas fa-chevron-right"></i>
+        </button>
       </div>
     </section>
   );

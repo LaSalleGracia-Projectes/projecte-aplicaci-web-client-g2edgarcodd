@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
-import '../../styles/components/subscription.css';
+import React, { useState } from "react";
+import { useLanguage } from "../../../contexts/LanguageContext";
+import "../../../styles/components/subscription.css";
 
 function Subscription() {
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
+  const { t } = useLanguage();
 
   const validateEmail = (email) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -13,69 +15,79 @@ function Subscription() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     // Reset states
-    setError('');
-    
+    setError("");
+
     // Validate email
     if (!email) {
-      setError('Por favor, introduce tu correo electrónico.');
+      setError(t("subscription.errorEmptyEmail"));
       return;
     }
-    
+
     if (!validateEmail(email)) {
-      setError('Por favor, introduce un correo electrónico válido.');
+      setError(t("subscription.errorInvalidEmail"));
       return;
     }
-    
+
     // Simulation of successful subscription
     setSubmitted(true);
-    
+
     // Here you would typically make an API call to handle the subscription
-    console.log('Subscribed with email:', email);
+    console.log("Subscribed with email:", email);
   };
 
   return (
     <section className="newsletter-section">
       <div className="newsletter-container">
-        <h2 className="newsletter-title">Mantente al día</h2>
-        <p className="newsletter-description">Suscríbete a nuestro boletín para recibir notificaciones sobre nuevos lanzamientos y contenido exclusivo.</p>
-        
+        <h2 className="newsletter-title">{t("subscription.title")}</h2>
+        <p className="newsletter-description">
+          {t("subscription.description")}
+        </p>
+
         {submitted ? (
           <div className="newsletter-success-message">
             <i className="fas fa-check-circle"></i>
-            <p>¡Gracias por suscribirte! Pronto recibirás novedades.</p>
+            <p>
+              {t("subscription.successTitle")}{" "}
+              {t("subscription.successMessage")}
+            </p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="newsletter-form">
             <div className="newsletter-input-group">
               <input
                 type="email"
-                placeholder="Tu correo electrónico"
+                placeholder={t("subscription.placeholder")}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className={error ? 'newsletter-input newsletter-input-error' : 'newsletter-input'}
+                className={
+                  error
+                    ? "newsletter-input newsletter-input-error"
+                    : "newsletter-input"
+                }
               />
               <button type="submit" className="newsletter-submit-btn">
-                Suscribirse <i className="fas fa-arrow-right"></i>
+                {t("subscription.subscribe")}{" "}
+                <i className="fas fa-arrow-right"></i>
               </button>
             </div>
             {error && <p className="newsletter-error-message">{error}</p>}
           </form>
         )}
-        
+
         <div className="newsletter-benefits">
           <div className="newsletter-benefit">
             <i className="fas fa-bell"></i>
-            <span>Notificaciones de estrenos</span>
+            <span>{t("subscription.benefits.notifications")}</span>
           </div>
           <div className="newsletter-benefit">
             <i className="fas fa-gift"></i>
-            <span>Contenido exclusivo</span>
+            <span>{t("subscription.benefits.exclusiveContent")}</span>
           </div>
           <div className="newsletter-benefit">
             <i className="fas fa-tag"></i>
-            <span>Ofertas especiales</span>
+            <span>{t("subscription.benefits.specialOffers")}</span>
           </div>
         </div>
       </div>
