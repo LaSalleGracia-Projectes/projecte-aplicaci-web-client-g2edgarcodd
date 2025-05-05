@@ -1,0 +1,619 @@
+/* Estilos para la página de configuraciones en el panel de administración */
+
+.admin-settings-page {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.admin-settings-title {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: var(--adminPanel-text-primary);
+  margin-bottom: 0.5rem;
+  position: relative;
+  padding-bottom: 0.75rem;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  letter-spacing: -0.02em;
+}
+
+.admin-settings-title::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 60px;
+  height: 4px;
+  background: linear-gradient(135deg, #fbc500, #ffd700);
+  border-radius: 9999px;
+}
+
+.admin-settings-subtitle {
+  color: var(--adminPanel-text-secondary);
+  font-size: 1.125rem;
+  font-weight: normal;
+  margin-bottom: 2.5rem;
+}
+
+/* Tarjetas de secciones de configuración */
+.settings-section {
+  background: var(--adminPanel-surface);
+  border-radius: 1rem;
+  border: 1px solid var(--adminPanel-border);
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(15, 23, 42, 0.05);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.settings-section:hover {
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+  border-color: rgba(251, 197, 0, 0.2);
+}
+
+.settings-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--adminPanel-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--adminPanel-surface);
+}
+
+.settings-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--adminPanel-text-primary);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.settings-title i {
+  color: #fbc500;
+  font-size: 1.25rem;
+}
+
+.settings-toggle-btn {
+  background: none;
+  border: none;
+  color: var(--adminPanel-text-tertiary);
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.settings-toggle-btn:hover {
+  color: #fbc500;
+  background: rgba(251, 197, 0, 0.1);
+}
+
+.settings-content {
+  padding: 1.5rem;
+}
+
+.settings-content p {
+  color: var(--adminPanel-text-secondary);
+  font-size: 0.875rem;
+  line-height: 1.6;
+  margin: 0 0 1.5rem;
+}
+
+.settings-group {
+  margin-bottom: 2rem;
+}
+
+.settings-group:last-child {
+  margin-bottom: 0;
+}
+
+.settings-group-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--adminPanel-text-primary);
+  margin: 0 0 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px dashed var(--adminPanel-border);
+}
+
+.settings-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.settings-row:last-child {
+  margin-bottom: 0;
+}
+
+.settings-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.settings-field label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--adminPanel-text-secondary);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.settings-field-required {
+  color: #ef4444;
+  font-size: 0.75rem;
+}
+
+.settings-input {
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--adminPanel-border);
+  background: var(--adminPanel-surface);
+  color: var(--adminPanel-text-primary);
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.settings-input:focus {
+  outline: none;
+  border-color: #fbc500;
+  box-shadow: 0 0 0 3px rgba(251, 197, 0, 0.2);
+}
+
+.settings-help {
+  font-size: 0.75rem;
+  color: var(--adminPanel-text-tertiary);
+}
+
+/* Switch toggle moderno */
+.settings-switch-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.875rem;
+  border-radius: 0.75rem;
+  background: var(--adminPanel-surface);
+  border: 1px solid var(--adminPanel-border);
+  margin-bottom: 1rem;
+  transition: all 0.2s ease;
+}
+
+.settings-switch-container:hover {
+  background: var(--adminPanel-surface-hover);
+}
+
+.settings-switch-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.settings-switch-title {
+  font-weight: 500;
+  font-size: 0.875rem;
+  color: var(--adminPanel-text-primary);
+}
+
+.settings-switch-description {
+  font-size: 0.75rem;
+  color: var(--adminPanel-text-tertiary);
+}
+
+.settings-switch {
+  position: relative;
+  width: 46px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.settings-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.settings-switch-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--adminPanel-surface-secondary);
+  border: 1px solid var(--adminPanel-border);
+  transition: all 0.3s ease;
+  border-radius: 34px;
+}
+
+.settings-switch-slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.settings-switch input:checked + .settings-switch-slider {
+  background-color: #fbc500;
+  border-color: #fbc500;
+}
+
+.settings-switch input:checked + .settings-switch-slider:before {
+  transform: translateX(22px);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* Tarjetas de opciones de configuración */
+.settings-option-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.settings-option-card {
+  padding: 1.25rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--adminPanel-border);
+  background: var(--adminPanel-surface);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  text-align: center;
+  position: relative;
+}
+
+.settings-option-card:hover {
+  border-color: #fbc500;
+  transform: translateY(-4px);
+  box-shadow: 0 8px 15px rgba(15, 23, 42, 0.05);
+}
+
+.settings-option-card input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.settings-option-card input[type="radio"]:checked + .settings-option-content {
+  border-color: #fbc500;
+  background: rgba(251, 197, 0, 0.05);
+}
+
+.settings-option-card
+  input[type="radio"]:checked
+  + .settings-option-content
+  .settings-option-check {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.settings-option-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  height: 100%;
+  border: 2px solid transparent;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  transition: all 0.2s ease;
+}
+
+.settings-option-check {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #fbc500;
+  color: #050b14;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  opacity: 0;
+  transform: scale(0.5);
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.settings-option-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 0.75rem;
+  background: rgba(251, 197, 0, 0.1);
+  color: #fbc500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+.settings-option-title {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--adminPanel-text-primary);
+  margin: 0;
+}
+
+.settings-option-description {
+  font-size: 0.75rem;
+  color: var(--adminPanel-text-tertiary);
+  margin: 0;
+}
+
+/* Selector de colores personalizado */
+.settings-color-picker {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.settings-color-option {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 3px solid var(--adminPanel-surface);
+  box-shadow: 0 0 0 1px var(--adminPanel-border);
+  transition: all 0.2s ease;
+  overflow: hidden;
+  position: relative;
+}
+
+.settings-color-option input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+.settings-color-option:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 0 1px var(--adminPanel-text-tertiary);
+}
+
+.settings-color-option.selected {
+  box-shadow: 0 0 0 2px #fbc500;
+  transform: scale(1.1);
+}
+
+.settings-color-option.selected::after {
+  content: "\f00c";
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 0.75rem;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.settings-color-option[data-color="primary"] {
+  background: #fbc500;
+}
+
+.settings-color-option[data-color="blue"] {
+  background: #3182ce;
+}
+
+.settings-color-option[data-color="green"] {
+  background: #10b981;
+}
+
+.settings-color-option[data-color="red"] {
+  background: #ef4444;
+}
+
+.settings-color-option[data-color="purple"] {
+  background: #6366f1;
+}
+
+.settings-color-option[data-color="pink"] {
+  background: #ec4899;
+}
+
+.settings-color-option[data-color="orange"] {
+  background: #f59e0b;
+}
+
+.settings-color-option[data-color="teal"] {
+  background: #14b8a6;
+}
+
+/* Barra de configuración rápida */
+.settings-actions {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--adminPanel-surface);
+  border-top: 1px solid var(--adminPanel-border);
+  box-shadow: 0 -4px 10px rgba(15, 23, 42, 0.05);
+  margin-top: 2rem;
+  border-radius: 0 0 1rem 1rem;
+  z-index: 10;
+}
+
+.settings-action-btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  border: none;
+}
+
+.settings-action-btn.primary {
+  background: #fbc500;
+  color: #050b14;
+  box-shadow: 0 4px 6px rgba(251, 197, 0, 0.2);
+}
+
+.settings-action-btn.primary:hover {
+  background: #ffd700;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(251, 197, 0, 0.3);
+}
+
+.settings-action-btn.secondary {
+  background: var(--adminPanel-surface-secondary);
+  color: var(--adminPanel-text-secondary);
+  border: 1px solid var(--adminPanel-border);
+}
+
+.settings-action-btn.secondary:hover {
+  color: var(--adminPanel-text-primary);
+  transform: translateY(-2px);
+  border-color: var(--adminPanel-text-tertiary);
+}
+
+.settings-action-btn.danger {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.settings-action-btn.danger:hover {
+  background: #ef4444;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(239, 68, 68, 0.2);
+}
+
+/* Pestañas de configuración */
+.settings-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--adminPanel-border);
+  margin-bottom: 2rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.settings-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.settings-tab {
+  padding: 1rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--adminPanel-text-secondary);
+  cursor: pointer;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.settings-tab:hover {
+  color: var(--adminPanel-text-primary);
+}
+
+.settings-tab.active {
+  color: #fbc500;
+  border-bottom-color: #fbc500;
+  font-weight: 600;
+}
+
+.settings-tab-content {
+  display: none;
+}
+
+.settings-tab-content.active {
+  display: block;
+  animation: fadeIn 0.3s ease;
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.settings-section {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* Diseño responsive */
+@media (max-width: 768px) {
+  .settings-row {
+    grid-template-columns: 1fr;
+  }
+
+  .settings-option-cards {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+
+  .settings-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .settings-toggle-btn {
+    align-self: flex-end;
+    margin-top: -2.5rem;
+  }
+
+  .settings-actions {
+    flex-direction: column-reverse;
+    padding: 1rem;
+  }
+
+  .settings-action-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .settings-switch-container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .settings-switch {
+    align-self: flex-start;
+  }
+}

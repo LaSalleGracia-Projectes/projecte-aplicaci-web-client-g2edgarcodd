@@ -1,22 +1,43 @@
-/* Estilos mejorados para el Hero - Versión espectacular */
-
+/* Estilos espectaculares para el componente Hero con efectos cinematográficos */
+/* === CONFIGURACIÓN PRINCIPAL === */
 .hero {
   position: relative;
-  height: 85vh;
-  min-height: 600px;
-  max-height: 800px;
-  overflow: hidden;
+  height: 90vh;
+  min-height: 700px;
+  max-height: 950px;
+  overflow: hidden !important; /* Forzar hidden con !important */
   z-index: 1;
   color: #fff;
+  transition: filter 0.5s ease, height 0.3s ease;
 }
 
-/* Slides y efectos de fondo */
+.hero.trailer-active {
+  height: 80vh;
+  overflow: hidden !important;
+}
+
+/* === PARTÍCULAS Y ELEMENTOS DE FONDO === */
+.hero-particles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0.75;
+  transition: opacity 0.3s ease;
+  overflow: hidden; /* Añadido overflow hidden */
+}
+
+/* Asegurar que todos los contenedores internos también tengan overflow:hidden */
 .hero-slides {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
+  overflow: hidden !important; /* Añadido overflow hidden */
 }
 
 .hero-slide {
@@ -26,16 +47,13 @@
   width: 100%;
   height: 100%;
   opacity: 0;
-  transition: opacity 1.5s cubic-bezier(0.645, 0.045, 0.355, 1);
+  transition: opacity 1.8s cubic-bezier(0.645, 0.045, 0.355, 1);
   z-index: 1;
-  will-change: opacity;
+  will-change: opacity, transform;
+  overflow: hidden !important; /* Reforzado overflow hidden */
 }
 
-.hero-slide.active {
-  opacity: 1;
-  z-index: 2;
-}
-
+/* Asegurarse de que el contenedor del parallax no genere overflow */
 .parallax-bg {
   position: absolute;
   top: -10%;
@@ -45,15 +63,76 @@
   background-size: cover;
   background-position: center;
   will-change: transform;
-  transition: transform 10s ease-out;
-  filter: brightness(0.9) contrast(1.1);
+  transition: transform 12s ease-out, filter 1.5s ease;
+  filter: brightness(0.85) contrast(1.15) saturate(1.1);
+  overflow: hidden; /* Añadido overflow hidden */
 }
 
-.hero-slide.active .parallax-bg {
-  transform: translate3d(0, 5%, 0) scale(1.05);
+/* Trailer container también con overflow controlado */
+.trailer-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(1.05);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+  overflow: hidden !important; /* Reforzado overflow hidden */
+  z-index: 3;
+  will-change: opacity, transform;
+  background-color: rgba(
+    0,
+    0,
+    0,
+    0.5
+  ); /* Fondo mientras carga para no mostrar saltos */
 }
 
-/* Overlay para mejorar legibilidad */
+/* Asegurar que el contenedor de HomePage no genere scrollbars adicionales */
+.homepage-container {
+  overflow-x: hidden; /* Solo permitir scroll vertical */
+}
+
+.trailer-frame {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  min-width: 100%;
+  min-height: 56.25vw; /* 16:9 aspect ratio */
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  will-change: transform;
+  opacity: 0.01; /* Iniciar casi invisible para evitar parpadeos */
+  animation: fadeInTrailer 1.5s ease forwards;
+}
+
+@keyframes fadeInTrailer {
+  0% {
+    opacity: 0.01;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Gestionar mejor las transiciones cuando el trailer está activo */
+.hero.trailer-active .parallax-bg {
+  filter: brightness(0.3) blur(4px);
+  transform: scale(1.05);
+  transition: filter 1.2s ease, transform 1.2s ease;
+}
+
+/* Overlay con transición más suave para el trailer */
+.hero-overlay.transparent {
+  opacity: 0.4;
+  transition: opacity 0.8s ease;
+}
+
+/* Overlay mejorado con degradado más cinematográfico */
 .hero-overlay {
   position: absolute;
   top: 0;
@@ -62,206 +141,503 @@
   height: 100%;
   background: linear-gradient(
     0deg,
-    rgba(0, 0, 0, 0.9) 0%,
-    rgba(0, 0, 0, 0.6) 35%,
-    rgba(0, 0, 0, 0.3) 60%,
+    rgba(0, 0, 0, 0.95) 0%,
+    rgba(0, 0, 0, 0.7) 25%,
+    rgba(0, 0, 0, 0.4) 50%,
+    rgba(0, 0, 0, 0.5) 75%,
     rgba(0, 0, 0, 0.7) 100%
   );
-  z-index: 3;
+  z-index: 4;
+  opacity: 0.9;
+  transition: opacity 0.5s ease;
 }
 
-/* Contenido del hero */
+/* === CONTENIDO DEL HERO === */
 .hero-content-container {
   position: absolute;
-  bottom: 10%;
+  bottom: 13%;
   left: 0;
   width: 100%;
-  padding: 0 5%;
-  z-index: 4;
+  padding: 0 7%;
+  z-index: 5;
   display: flex;
-  justify-content: flex-start;
+  justify-content: flex-start; /* Asegura alineación a la izquierda */
 }
 
 .hero-content {
+  position: relative;
   max-width: 650px;
-  animation: fadeInUp 1s ease-out forwards;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  text-align: left; /* Garantiza que todo el texto se alinee a la izquierda */
 }
 
-/* Estilos actualizados para el título principal - Sin gradiente para mayor visibilidad */
-.hero-title {
-  font-size: 3.5rem;
-  font-weight: 800;
-  margin-bottom: 15px;
-  color: #FFC700; /* Color dorado brillante sólido */
-  text-shadow: 
-    0 1px 1px rgba(0, 0, 0, 0.6),
-    0 2px 4px rgba(0, 0, 0, 0.9),
-    0 4px 8px rgba(0, 0, 0, 0.9),
-    0 6px 16px rgba(0, 0, 0, 0.9); /* Sombras múltiples para destacar en cualquier fondo */
-  letter-spacing: -0.5px;
-  line-height: 1.1;
-  max-width: 700px;
-  /* Añadir un stroke para aún más visibilidad */
-  -webkit-text-stroke: 1px rgba(0, 0, 0, 0.3);
+.hero-content.content-hidden {
+  opacity: 0.3;
   transform: translateY(20px);
-  opacity: 0;
-  animation: fadeInUp 0.8s ease-out 0.2s forwards;
-  /* Asegurar que el título sea visible */
-  background: none;
-  -webkit-text-fill-color: #FFC700;
+  pointer-events: none;
 }
 
-/* Se mantienen estos estilos para referencia pero no se usan actualmente */
-.movie-logo {
-  max-width: 400px;
-  height: auto;
-  margin-bottom: 20px;
-  filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.5));
-  transform: translateY(20px);
-  opacity: 0;
-  animation: fadeInUp 0.8s ease-out 0.2s forwards;
-  display: none; /* Ocultar el logo */
+.hero-content.content-hidden .hero-title {
+  opacity: 0.7;
+  transform: scale(0.95);
 }
 
-.movie-logo img {
-  max-width: 100%;
-  max-height: 120px;
-  object-fit: contain;
+.hero-content.content-hidden .hero-buttons {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
 }
 
-.hero-tagline {
-  font-size: 1.5rem;
-  font-weight: 300;
-  margin-bottom: 15px;
-  color: #FBC500;
-  letter-spacing: 1px;
-  transform: translateY(20px);
-  opacity: 0;
-  animation: fadeInUp 0.8s ease-out 0.4s forwards;
+.hero-content-inner {
+  position: relative;
 }
 
-.hero-meta {
-  display: flex;
+/* === BADGE DE PREMIOS === */
+.award-badge {
+  display: inline-flex;
   align-items: center;
-  gap: 20px;
-  margin-bottom: 15px;
-  font-size: 1.1rem;
-  transform: translateY(20px);
-  opacity: 0;
-  animation: fadeInUp 0.8s ease-out 0.6s forwards;
+  background: linear-gradient(
+    135deg,
+    #f3c93e 0%,
+    #ffd700 30%,
+    #f4bd1c 40%,
+    #ffd700 60%,
+    #f4bd1c 75%,
+    #e2ae15 100%
+  );
+  padding: 8px 20px;
+  border-radius: 30px;
+  margin-bottom: 18px;
+  box-shadow: 0 3px 15px rgba(255, 215, 0, 0.6),
+    inset 0 0 8px rgba(255, 255, 255, 0.4);
+  transform: translateY(-5px);
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 248, 220, 0.5);
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+    box-shadow 0.3s ease;
+  width: fit-content;
 }
 
-.hero-rating {
-  color: #FBC500;
-  font-weight: 700;
+.award-badge:hover {
+  transform: translateY(-7px) scale(1.03);
+  box-shadow: 0 5px 20px rgba(255, 215, 0, 0.7),
+    inset 0 0 10px rgba(255, 255, 255, 0.5);
 }
 
-.hero-rating i {
+.award-badge::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.5) 0%,
+    transparent 60%
+  );
+  opacity: 0.8;
+  animation: shimmer 6s infinite linear;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: rotate(0deg);
+    opacity: 0.3;
+  }
+  30% {
+    opacity: 0.5;
+  }
+  70% {
+    opacity: 0.3;
+  }
+  100% {
+    transform: rotate(360deg);
+    opacity: 0.3;
+  }
+}
+
+.award-badge::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.6),
+    transparent
+  );
+  animation: shine 4s infinite ease-in-out;
+}
+
+@keyframes shine {
+  0% {
+    left: -100%;
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.5;
+  }
+  20% {
+    left: 100%;
+    opacity: 0;
+  }
+  100% {
+    left: 100%;
+    opacity: 0;
+  }
+}
+
+.award-badge i {
+  color: #ffc700; /* Cambiado a dorado para combinar con el texto */
+  margin-right: 12px;
+  font-size: 1.2rem;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+  position: relative;
+  z-index: 2;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5); /* Añadido text-shadow para mejorar legibilidad */
+}
+
+.award-badge span {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #ffc700; /* Color dorado para el texto */
+  letter-spacing: 0.5px;
+  position: relative;
+  z-index: 2;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+}
+
+/* === INFORMACIÓN DE CREADORES === */
+.hero-creators {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+  font-size: 1.05rem;
+  color: #e2e8f0;
+}
+
+.hero-director,
+.hero-starring {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+}
+
+.director-label,
+.starring-label {
+  color: #b0b8c1;
+  font-weight: 400;
   margin-right: 4px;
 }
 
-.hero-year, .hero-duration {
-  color: #E2E8F0;
+.director-name,
+.starring-names {
+  color: #fff;
+  font-weight: 600;
 }
 
+/* Título del hero con efecto de resplandor mejorado */
+.hero-title {
+  font-size: 3.5rem;
+  font-weight: 900;
+  margin-bottom: 15px;
+  background: linear-gradient(90deg, #ffc700, #ffe56f, #ffc700);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 10px rgba(255, 199, 0, 0.3), 0 0 30px rgba(255, 199, 0, 0.2),
+    0 1px 2px rgba(0, 0, 0, 0.8);
+  letter-spacing: -1px;
+  line-height: 1.1;
+  max-width: 800px;
+  cursor: default;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+  text-align: left; /* Alineación explícita a la izquierda */
+  animation: shine 3s ease-in-out infinite;
+}
+
+@keyframes shine {
+  0% {
+    background-position: 0% center;
+  }
+  50% {
+    background-position: 100% center;
+  }
+  100% {
+    background-position: 0% center;
+  }
+}
+
+/* Tagline con estilo elegante */
+.hero-tagline {
+  font-size: 1.7rem;
+  font-weight: 400;
+  margin-bottom: 18px;
+  color: #ffc700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-style: italic;
+  cursor: default;
+  text-align: left; /* Alineación explícita a la izquierda */
+}
+
+/* Metadatos de la película/serie */
+.hero-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 22px;
+  margin-bottom: 18px;
+  font-size: 1.1rem;
+  justify-content: flex-start; /* Alineación a la izquierda */
+}
+
+.hero-rating {
+  color: #ffc700;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.hero-rating i {
+  margin-right: 6px;
+  font-size: 1.2rem;
+}
+
+.hero-year,
+.hero-duration {
+  color: #e2e8f0;
+  position: relative;
+}
+
+.hero-year::after,
+.hero-duration::after {
+  content: "•";
+  position: absolute;
+  right: -14px;
+  opacity: 0.5;
+}
+
+/* Tipos de contenido con indicadores visuales mejorados */
 .content-type {
-  padding: 3px 10px;
-  border-radius: 4px;
+  padding: 4px 12px;
+  border-radius: 5px;
   font-size: 0.9rem;
   font-weight: 600;
   text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .content-type.movie {
-  background: rgba(96, 165, 250, 0.2);
-  color: #60A5FA;
+  background: rgba(96, 165, 250, 0.25);
+  color: #90c4ff;
+  border: 1px solid rgba(96, 165, 250, 0.4);
 }
 
 .content-type.series {
-  background: rgba(236, 72, 153, 0.2);
-  color: #EC4899;
+  background: rgba(236, 72, 153, 0.25);
+  color: #ff9dc7;
+  border: 1px solid rgba(236, 72, 153, 0.4);
 }
 
+/* Géneros con diseño visualmente atractivo */
 .hero-genres {
   display: flex;
+  flex-wrap: wrap;
   gap: 10px;
-  margin-bottom: 20px;
-  transform: translateY(20px);
-  opacity: 0;
-  animation: fadeInUp 0.8s ease-out 0.8s forwards;
+  margin-bottom: 22px;
+  justify-content: flex-start; /* Alineación a la izquierda */
 }
 
 .genre-tag {
-  padding: 5px 12px;
+  padding: 6px 14px;
   border-radius: 20px;
-  font-size: 0.9rem;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(5px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 0.95rem;
+  background: rgba(255, 255, 255, 0.13);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
+.genre-tag:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  border-color: rgba(255, 199, 0, 0.3);
+}
+
+/* Descripción con estilo elegante y legible */
 .hero-description {
-  font-size: 1.1rem;
-  line-height: 1.5;
-  margin-bottom: 25px;
-  max-width: 600px;
-  color: #CBD5E0;
-  transform: translateY(20px);
-  opacity: 0;
-  animation: fadeInUp 0.8s ease-out 1s forwards;
+  font-size: 1.2rem;
+  line-height: 1.6;
+  margin-bottom: 28px;
+  max-width: 620px;
+  color: #d9e2ec;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
-/* Botones de acción */
+/* === BOTONES DE ACCIÓN === */
 .hero-buttons {
   display: flex;
-  gap: 15px;
-  transform: translateY(20px);
-  opacity: 0;
-  animation: fadeInUp 0.8s ease-out 1.2s forwards;
+  flex-wrap: wrap;
+  gap: 18px;
+  justify-content: flex-start; /* Alineación a la izquierda */
 }
 
-.btn-watch, .btn-info {
+.btn-watch,
+.btn-info,
+.btn-trailer {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 14px 28px;
-  border-radius: 50px;
-  font-size: 1.1rem;
+  padding: 16px 28px;
+  border-radius: 8px;
+  font-size: 1.15rem;
   font-weight: 600;
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   text-decoration: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  border: none;
+  transform-origin: center;
 }
 
+.btn-watch:hover,
+.btn-info:hover,
+.btn-trailer:hover {
+  transform: translateY(-4px) scale(1.03);
+  filter: brightness(1.1);
+}
+
+.btn-watch:active,
+.btn-info:active,
+.btn-trailer:active {
+  transform: translateY(1px) scale(0.98);
+  filter: brightness(0.9);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Efecto para todos los botones */
+.btn-watch::before,
+.btn-info::before,
+.btn-trailer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.7s ease;
+}
+
+.btn-watch:hover::before,
+.btn-info:hover::before,
+.btn-trailer:hover::before {
+  left: 100%;
+}
+
+/* Botón de reproducción con efecto pulsante */
 .btn-watch {
-  background: #FBC500;
-  color: #1A202C;
-  box-shadow: 0 5px 15px rgba(251, 197, 0, 0.3);
+  background: linear-gradient(135deg, #ffc700, #ff9900);
+  color: #0d1117;
+  position: relative;
 }
 
-.btn-watch:hover {
-  transform: translateY(-3px) scale(1.05);
-  box-shadow: 0 8px 20px rgba(251, 197, 0, 0.5);
-  background: #FFD700;
+.btn-watch i {
+  margin-right: 10px;
+  font-size: 1.2rem;
+  animation: pulse 2s infinite;
 }
 
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Botón de trailer optimizado para mejor respuesta */
+.btn-trailer {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  color: white;
+  padding: 16px 28px;
+  border-radius: 8px;
+  width: auto;
+  min-width: 56px;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+    width 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-trailer:active {
+  transform: scale(0.96);
+}
+
+/* Botón de información con efecto de vidrio esmerilado */
 .btn-info {
-  background: rgba(255, 255, 255, 0.1);
-  color: #E2E8F0;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(52, 152, 219, 0.85);
+  color: white;
+  border-radius: 8px;
   backdrop-filter: blur(10px);
+  box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-info:after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+  transform: translateY(-50%);
+  transition: transform 0.3s ease;
+}
+
+.btn-info:hover:after {
+  transform: translateY(0%);
 }
 
 .btn-info:hover {
-  transform: translateY(-3px);
-  background: rgba(255, 255, 255, 0.2);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  background: rgba(41, 128, 185, 0.9);
+  box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
 }
 
-.btn-watch i, .btn-info i {
-  margin-right: 8px;
+.btn-info i {
+  margin-right: 10px;
+  font-size: 1.2rem;
 }
 
-/* Controles de navegación */
+/* === CONTROLES DE NAVEGACIÓN === */
 .hero-controls {
   position: absolute;
   bottom: 5%;
@@ -269,64 +645,125 @@
   transform: translateX(-50%);
   display: flex;
   align-items: center;
-  gap: 30px;
+  gap: 35px;
   z-index: 5;
+  transition: opacity 0.5s ease, transform 0.5s ease;
 }
 
+.hero-controls.hidden {
+  opacity: 0;
+  transform: translateX(-50%) translateY(20px);
+  pointer-events: none;
+}
+
+/* Flechas de navegación */
 .hero-arrow {
-  width: 46px;
-  height: 46px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
-  background: rgba(0, 0, 0, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.6);
+  border: 2px solid rgba(255, 255, 255, 0.15);
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(5px);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  backdrop-filter: blur(8px);
+  font-size: 1.2rem;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.hero-arrow::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.2) 0%,
+    transparent 60%
+  );
+  opacity: 0;
+  transition: opacity 0.4s ease;
 }
 
 .hero-arrow:hover {
-  background: rgba(251, 197, 0, 0.8);
-  color: #1A202C;
-  transform: scale(1.1);
+  background: rgba(255, 199, 0, 0.9);
+  color: #0d1117;
+  transform: scale(1.15);
+  border-color: rgba(255, 199, 0, 0.6);
+  box-shadow: 0 4px 15px rgba(255, 199, 0, 0.5);
 }
 
+.hero-arrow:hover::before {
+  opacity: 1;
+}
+
+/* Indicadores de diapositivas con animación */
 .hero-dots {
   display: flex;
-  gap: 12px;
+  gap: 14px;
 }
 
 .hero-dot {
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.3);
-  border: none;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   cursor: pointer;
   padding: 0;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2),
+    inset 0 0 2px rgba(255, 255, 255, 0.3);
 }
 
 .hero-dot:hover {
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.4);
+  transform: scale(1.1);
 }
 
 .hero-dot.active {
-  background: #FBC500;
+  background: rgba(255, 199, 0, 0.3);
   transform: scale(1.2);
+  box-shadow: 0 0 10px rgba(255, 199, 0, 0.5);
+  border: 1px solid rgba(255, 199, 0, 0.6);
 }
 
-/* Se han eliminado los estilos de progress-ring */
+/* Indicador de progreso circular mejorado */
+.progress-ring {
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  z-index: -1;
+  box-shadow: 0 0 15px rgba(255, 199, 0, 0.3);
+  animation: glow 2s infinite alternate;
+}
 
-/* Animaciones */
+@keyframes glow {
+  0% {
+    box-shadow: 0 0 5px rgba(255, 199, 0, 0.3);
+  }
+  100% {
+    box-shadow: 0 0 15px rgba(255, 199, 0, 0.5);
+  }
+}
+
+/* === ANIMACIONES === */
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(30px);
   }
   to {
     opacity: 1;
@@ -334,144 +771,334 @@
   }
 }
 
-/* Ocultar visualmente el título pero mantenerlo accesible para SEO y lectores de pantalla */
-.visually-hidden {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-  padding: 0;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  border: 0;
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
-/* Media queries para responsividad */
+@keyframes scaleIn {
+  from {
+    transform: scale(1.1);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Animación de carga */
+.hero-loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #0d1117;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.hero-spinner {
+  width: 50px;
+  height: 50px;
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  border-top-color: #ffc700;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 15px;
+}
+
+.loading-text {
+  color: #e2e8f0;
+  font-size: 1.2rem;
+  letter-spacing: 2px;
+  animation: pulse 1.5s infinite alternate;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  from {
+    opacity: 0.5;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* === MEDIA QUERIES === */
+@media (max-width: 1200px) {
+  .hero-title {
+    font-size: 3.2rem;
+  }
+
+  .hero-tagline {
+    font-size: 1.5rem;
+  }
+
+  .hero-description {
+    font-size: 1.15rem;
+  }
+
+  .btn-watch,
+  .btn-info,
+  .btn-trailer {
+    padding: 15px 26px;
+    font-size: 1.1rem;
+  }
+}
+
 @media (max-width: 992px) {
   .hero {
-    height: 80vh;
+    height: 85vh;
+    min-height: 650px;
   }
-  
+
   .hero-content-container {
     bottom: 15%;
   }
-  
+
   .hero-title {
-    font-size: 2.8rem;
+    font-size: 3rem;
   }
-  
+
   .hero-tagline {
-    font-size: 1.3rem;
+    font-size: 1.4rem;
   }
-  
+
   .hero-description {
+    font-size: 1.1rem;
+    margin-bottom: 24px;
+  }
+
+  .btn-watch,
+  .btn-info,
+  .btn-trailer {
+    padding: 14px 24px;
+    font-size: 1.1rem;
+  }
+
+  .hero-creators {
     font-size: 1rem;
+  }
+
+  .award-badge {
+    padding: 5px 12px;
+    margin-bottom: 15px;
+  }
+
+  .award-badge span {
+    font-size: 0.9rem;
+  }
+
+  .trailer-frame {
+    min-height: 65vh;
+    width: 120%;
   }
 }
 
 @media (max-width: 768px) {
   .hero {
-    height: 75vh;
-    min-height: 500px;
+    height: 80vh;
+    min-height: 550px;
   }
-  
+
+  .hero.trailer-active {
+    height: 70vh;
+  }
+
+  .hero-content-container {
+    padding: 0 5%;
+  }
+
   .hero-title {
-    font-size: 2.4rem;
+    font-size: 2.6rem;
+    letter-spacing: -0.5px;
   }
-  
+
   .hero-tagline {
     font-size: 1.2rem;
+    margin-bottom: 15px;
   }
-  
+
   .hero-meta {
-    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 15px;
+  }
+
+  .hero-year::after,
+  .hero-duration::after {
+    right: -10px;
+  }
+
+  .hero-description {
+    font-size: 1rem;
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+
+  .hero-buttons {
     gap: 15px;
   }
-  
-  .hero-description {
-    font-size: 0.95rem;
-    margin-bottom: 20px;
-  }
-  
-  .btn-watch, .btn-info {
-    padding: 12px 22px;
+
+  .btn-watch,
+  .btn-info,
+  .btn-trailer {
+    padding: 13px 22px;
     font-size: 1rem;
   }
-  
+
   .hero-controls {
-    bottom: 2%;
+    gap: 25px;
   }
-  
+
   .hero-arrow {
-    width: 40px;
-    height: 40px;
+    width: 45px;
+    height: 45px;
+    font-size: 1rem;
+  }
+
+  .hero-genres {
+    margin-bottom: 18px;
+  }
+
+  .genre-tag {
+    padding: 5px 12px;
+    font-size: 0.9rem;
+  }
+
+  .hero-creators {
+    font-size: 0.95rem;
+    margin-bottom: 12px;
+  }
+
+  .trailer-frame {
+    min-height: 70vh;
+    width: 150%;
   }
 }
 
 @media (max-width: 576px) {
   .hero {
-    height: 70vh;
-    min-height: 450px;
+    height: 75vh;
+    min-height: 500px;
   }
-  
+
+  .hero.trailer-active {
+    height: 60vh;
+  }
+
   .hero-content-container {
     bottom: 20%;
   }
-  
+
   .hero-title {
-    font-size: 2rem;
+    font-size: 2.2rem;
+    margin-bottom: 10px;
   }
-  
+
   .hero-tagline {
     font-size: 1.1rem;
     margin-bottom: 12px;
   }
-  
+
   .hero-meta {
     font-size: 0.9rem;
     margin-bottom: 12px;
+    gap: 10px;
   }
-  
-  .hero-genres {
-    flex-wrap: wrap;
-  }
-  
-  .genre-tag {
-    padding: 4px 10px;
+
+  .content-type {
+    padding: 3px 10px;
     font-size: 0.8rem;
   }
-  
+
   .hero-description {
-    font-size: 0.9rem;
-    margin-bottom: 15px;
+    font-size: 0.95rem;
+    margin-bottom: 18px;
   }
-  
+
   .hero-buttons {
-    flex-direction: column;
-    gap: 10px;
+    flex-wrap: wrap;
+    gap: 12px;
+    width: 100%;
   }
-  
-  .btn-watch, .btn-info {
+
+  .btn-watch,
+  .btn-info,
+  .btn-trailer {
     width: 100%;
     padding: 12px 20px;
+    justify-content: center;
   }
-  
+
   .hero-controls {
     gap: 20px;
+    bottom: 3%;
   }
-  
+
   .hero-arrow {
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
   }
-  
-  .hero-dots {
-    gap: 10px;
-  }
-  
+
   .hero-dot {
-    width: 10px;
-    height: 10px;
+    width: 12px;
+    height: 12px;
   }
-  
+
+  .progress-ring {
+    width: 16px;
+    height: 16px;
+  }
+
+  .award-badge {
+    padding: 4px 10px;
+    margin-bottom: 10px;
+  }
+
+  .award-badge i {
+    font-size: 0.8rem;
+  }
+
+  .award-badge span {
+    font-size: 0.8rem;
+  }
+
+  .hero-year::after,
+  .hero-duration::after {
+    display: none;
+  }
+
+  .hero-creators {
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+  }
+
+  .trailer-frame {
+    min-height: 100%;
+    width: 180%;
+  }
 }

@@ -1,373 +1,399 @@
 /* Estilos para la sección de premios */
 
 .awards-showcase {
-    padding: 50px 20px;
-    color: #F6F6F7;
+  padding: 50px 20px;
+  color: #f6f6f7;
+}
+
+.awards-container {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+/* Elemento destacado */
+.awards-feature {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  background: linear-gradient(
+    135deg,
+    rgba(21, 21, 35, 0.8) 0%,
+    rgba(15, 23, 42, 0.9) 100%
+  );
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+/* Efecto de brillo en los bordes */
+.awards-feature::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 16px;
+  padding: 2px;
+  background: linear-gradient(135deg, #fbc500 0%, #60a5fa 50%, #fbc500 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.awards-image {
+  position: relative;
+  height: 450px;
+  overflow: hidden;
+  border-radius: 16px 0 0 16px;
+}
+
+.awards-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+.awards-feature:hover .awards-image img {
+  transform: scale(1.05);
+}
+
+.awards-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.8) 0%,
+    rgba(0, 0, 0, 0.4) 50%,
+    rgba(0, 0, 0, 0.2) 100%
+  );
+}
+
+.awards-badges {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-width: 80%;
+}
+
+.award-badge {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 50px;
+  padding: 10px 15px;
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  animation: fadeSlideIn 0.5s ease-out;
+  animation-fill-mode: both;
+}
+
+.award-badge:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.award-badge:nth-child(2) {
+  animation-delay: 0.3s;
+}
+
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
   }
-  
-  .awards-container {
-    margin-top: 30px;
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
+  to {
+    opacity: 1;
+    transform: translateX(0);
   }
-  
-  /* Elemento destacado */
+}
+
+.award-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #fbc500 0%, #ffd700 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 15px rgba(251, 197, 0, 0.5);
+  position: relative; /* Añadido para posicionamiento más preciso */
+}
+
+.award-icon i {
+  color: #1a202c;
+  font-size: 18px;
+  display: flex; /* Mejora el centrado del icono */
+  align-items: center;
+  justify-content: center;
+  width: 100%; /* Asegura que el icono ocupe todo el espacio disponible */
+  height: 100%;
+  position: absolute; /* Posicionamiento absoluto para centrado perfecto */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* Centra perfectamente el icono */
+  text-align: center;
+  line-height: 1;
+}
+
+.award-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.award-name {
+  font-weight: 700;
+  font-size: 16px;
+  color: #fbc500;
+}
+
+.award-category {
+  font-size: 14px;
+  color: #e2e8f0;
+}
+
+.watch-now-btn {
+  position: absolute;
+  bottom: 25px;
+  left: 25px;
+  padding: 12px 25px;
+  background: #fbc500;
+  color: #1a202c;
+  font-weight: 700;
+  border-radius: 30px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  box-shadow: 0 5px 15px rgba(251, 197, 0, 0.3);
+}
+
+.watch-now-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(251, 197, 0, 0.5);
+  background: #ffd700;
+}
+
+.watch-now-btn:active {
+  transform: translateY(-1px);
+}
+
+.awards-info {
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.awards-info h3 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 15px;
+  background: linear-gradient(135deg, #f6f6f7 0%, #cbd5e0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1.2;
+}
+
+.awards-director {
+  font-size: 1.1rem;
+  color: #a0aec0;
+  margin-bottom: 20px;
+}
+
+.awards-synopsis {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #e2e8f0;
+  margin-bottom: 25px;
+}
+
+.awards-type {
+  margin-top: auto;
+}
+
+.movie-badge,
+.series-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 15px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.movie-badge {
+  background: rgba(96, 165, 250, 0.15);
+  color: #60a5fa;
+  border: 1px solid rgba(96, 165, 250, 0.3);
+}
+
+.series-badge {
+  background: rgba(236, 72, 153, 0.15);
+  color: #ec4899;
+  border: 1px solid rgba(236, 72, 153, 0.3);
+}
+
+/* Selector de premios */
+.awards-selector {
+  display: flex;
+  gap: 20px;
+  padding: 10px;
+  overflow-x: auto;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.awards-selector::-webkit-scrollbar {
+  display: none;
+}
+
+.award-select-item {
+  flex: 0 0 300px;
+  background: rgba(30, 41, 59, 0.5);
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  border: 2px solid transparent;
+}
+
+.award-select-item:hover {
+  transform: translateY(-5px);
+}
+
+.award-select-item.active {
+  border-color: #fbc500;
+  box-shadow: 0 0 15px rgba(251, 197, 0, 0.3);
+}
+
+.award-select-image {
+  height: 140px;
+  overflow: hidden;
+}
+
+.award-select-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.award-select-item:hover .award-select-image img {
+  transform: scale(1.05);
+}
+
+.award-select-info {
+  padding: 15px;
+  position: relative;
+}
+
+.award-select-info h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+  line-height: 1.3;
+  color: #f6f6f7;
+}
+
+.award-select-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  background: rgba(251, 197, 0, 0.2);
+  color: #fbc500;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
   .awards-feature {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 30px;
-    background: linear-gradient(135deg, rgba(21, 21, 35, 0.8) 0%, rgba(15, 23, 42, 0.9) 100%);
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    position: relative;
+    grid-template-columns: 1fr;
   }
-  
-  /* Efecto de brillo en los bordes */
-  .awards-feature::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    border-radius: 16px;
-    padding: 2px;
-    background: linear-gradient(135deg, #FBC500 0%, #60A5FA 50%, #FBC500 100%);
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    pointer-events: none;
-    opacity: 0.7;
-  }
-  
+
   .awards-image {
-    position: relative;
-    height: 450px;
-    overflow: hidden;
-    border-radius: 16px 0 0 16px;
+    height: 350px;
+    border-radius: 16px 16px 0 0;
   }
-  
-  .awards-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.5s cubic-bezier(0.33, 1, 0.68, 1);
-  }
-  
-  .awards-feature:hover .awards-image img {
-    transform: scale(1.05);
-  }
-  
-  .awards-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.4) 50%, rgba(0, 0, 0, 0.2) 100%);
-  }
-  
-  .awards-badges {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    max-width: 80%;
-  }
-  
-  .award-badge {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    background: rgba(0, 0, 0, 0.7);
-    border-radius: 50px;
-    padding: 10px 15px;
-    backdrop-filter: blur(5px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    animation: fadeSlideIn 0.5s ease-out;
-    animation-fill-mode: both;
-  }
-  
-  .award-badge:nth-child(1) {
-    animation-delay: 0.1s;
-  }
-  
-  .award-badge:nth-child(2) {
-    animation-delay: 0.3s;
-  }
-  
-  @keyframes fadeSlideIn {
-    from {
-      opacity: 0;
-      transform: translateX(-20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
-  
-  .award-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #FBC500 0%, #FFD700 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 0 15px rgba(251, 197, 0, 0.5);
-  }
-  
-  .award-icon i {
-    color: #1A202C;
-    font-size: 18px;
-  }
-  
-  .award-info {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .award-name {
-    font-weight: 700;
-    font-size: 16px;
-    color: #FBC500;
-  }
-  
-  .award-category {
-    font-size: 14px;
-    color: #E2E8F0;
-  }
-  
-  .watch-now-btn {
-    position: absolute;
-    bottom: 25px;
-    left: 25px;
-    padding: 12px 25px;
-    background: #FBC500;
-    color: #1A202C;
-    font-weight: 700;
-    border-radius: 30px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    transition: all 0.3s ease;
-    text-decoration: none;
-    box-shadow: 0 5px 15px rgba(251, 197, 0, 0.3);
-  }
-  
-  .watch-now-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(251, 197, 0, 0.5);
-    background: #FFD700;
-  }
-  
-  .watch-now-btn:active {
-    transform: translateY(-1px);
-  }
-  
+
   .awards-info {
-    padding: 30px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    padding: 25px;
   }
-  
+
   .awards-info h3 {
-    font-size: 2rem;
-    font-weight: 700;
-    margin-bottom: 15px;
-    background: linear-gradient(135deg, #F6F6F7 0%, #CBD5E0 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    line-height: 1.2;
+    font-size: 1.8rem;
   }
-  
-  .awards-director {
-    font-size: 1.1rem;
-    color: #A0AEC0;
-    margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+  .awards-image {
+    height: 300px;
   }
-  
-  .awards-synopsis {
-    font-size: 1rem;
-    line-height: 1.6;
-    color: #E2E8F0;
-    margin-bottom: 25px;
-  }
-  
-  .awards-type {
-    margin-top: auto;
-  }
-  
-  .movie-badge, .series-badge {
-    display: inline-flex;
-    align-items: center;
-    padding: 6px 15px;
-    border-radius: 20px;
-    font-size: 14px;
-    font-weight: 600;
-  }
-  
-  .movie-badge {
-    background: rgba(96, 165, 250, 0.15);
-    color: #60A5FA;
-    border: 1px solid rgba(96, 165, 250, 0.3);
-  }
-  
-  .series-badge {
-    background: rgba(236, 72, 153, 0.15);
-    color: #EC4899;
-    border: 1px solid rgba(236, 72, 153, 0.3);
-  }
-  
-  /* Selector de premios */
-  .awards-selector {
-    display: flex;
-    gap: 20px;
-    padding: 10px;
-    overflow-x: auto;
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
-  }
-  
-  .awards-selector::-webkit-scrollbar {
-    display: none;
-  }
-  
+
   .award-select-item {
-    flex: 0 0 300px;
-    background: rgba(30, 41, 59, 0.5);
-    border-radius: 12px;
-    overflow: hidden;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    position: relative;
-    border: 2px solid transparent;
+    flex: 0 0 260px;
   }
-  
-  .award-select-item:hover {
-    transform: translateY(-5px);
-  }
-  
-  .award-select-item.active {
-    border-color: #FBC500;
-    box-shadow: 0 0 15px rgba(251, 197, 0, 0.3);
-  }
-  
+
   .award-select-image {
-    height: 140px;
-    overflow: hidden;
+    height: 120px;
   }
-  
-  .award-select-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.3s ease;
+}
+
+@media (max-width: 576px) {
+  .awards-showcase {
+    padding: 30px 15px;
   }
-  
-  .award-select-item:hover .award-select-image img {
-    transform: scale(1.05);
+
+  .awards-image {
+    height: 250px;
   }
-  
-  .award-select-info {
-    padding: 15px;
-    position: relative;
+
+  .awards-badges {
+    gap: 10px;
   }
-  
-  .award-select-info h4 {
-    font-size: 1rem;
-    font-weight: 600;
-    margin-bottom: 10px;
-    line-height: 1.3;
-    color: #F6F6F7;
+
+  .award-badge {
+    padding: 8px 12px;
   }
-  
-  .award-select-badge {
-    display: inline-block;
-    padding: 4px 10px;
-    background: rgba(251, 197, 0, 0.2);
-    color: #FBC500;
-    border-radius: 4px;
+
+  .award-icon {
+    width: 30px;
+    height: 30px;
+  }
+
+  .award-icon i {
+    font-size: 14px; /* Reduce el tamaño para pantallas pequeñas */
+  }
+
+  .award-name {
+    font-size: 14px;
+  }
+
+  .award-category {
     font-size: 12px;
-    font-weight: 600;
   }
-  
-  /* Responsive */
-  @media (max-width: 992px) {
-    .awards-feature {
-      grid-template-columns: 1fr;
-    }
-    
-    .awards-image {
-      height: 350px;
-      border-radius: 16px 16px 0 0;
-    }
-    
-    .awards-info {
-      padding: 25px;
-    }
-    
-    .awards-info h3 {
-      font-size: 1.8rem;
-    }
+
+  .award-select-item {
+    flex: 0 0 220px;
   }
-  
-  @media (max-width: 768px) {
-    .awards-image {
-      height: 300px;
-    }
-    
-    .award-select-item {
-      flex: 0 0 260px;
-    }
-    
-    .award-select-image {
-      height: 120px;
-    }
+
+  .award-select-image {
+    height: 110px;
   }
-  
-  @media (max-width: 576px) {
-    .awards-showcase {
-      padding: 30px 15px;
-    }
-    
-    .awards-image {
-      height: 250px;
-    }
-    
-    .awards-badges {
-      gap: 10px;
-    }
-    
-    .award-badge {
-      padding: 8px 12px;
-    }
-    
-    .award-icon {
-      width: 30px;
-      height: 30px;
-    }
-    
-    .award-name {
-      font-size: 14px;
-    }
-    
-    .award-category {
-      font-size: 12px;
-    }
-    
-    .award-select-item {
-      flex: 0 0 220px;
-    }
-    
-    .award-select-image {
-      height: 110px;
-    }
-  }
+}

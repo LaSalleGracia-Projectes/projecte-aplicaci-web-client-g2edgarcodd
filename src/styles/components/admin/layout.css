@@ -1,0 +1,444 @@
+.adminPanel-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  grid-template-rows: auto 1fr;
+  height: 100vh;
+  background-color: var(--adminPanel-bg);
+  color: var(--adminPanel-text-primary);
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif;
+  position: relative;
+  overflow: hidden;
+}
+
+.adminPanel-layout::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(
+    circle at 80% 10%,
+    rgba(56, 189, 248, 0.05) 0%,
+    transparent 50%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ======== SIDEBAR REDISEÑADO ======== */
+.adminPanel-sidebar {
+  grid-column: 1 / 2;
+  grid-row: 1 / 3;
+  background: linear-gradient(160deg, #0f172a, #0f172a);
+  color: white;
+  padding: var(--adminPanel-spacing-xl) 0;
+  box-shadow: var(--adminPanel-shadow-xl);
+  z-index: 20;
+  overflow-y: auto;
+  position: relative;
+  transition: transform var(--adminPanel-transition-normal);
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.adminPanel-sidebar::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: linear-gradient(
+    180deg,
+    rgba(251, 197, 0, 0.15) 0%,
+    transparent 100%
+  );
+  opacity: 0.4;
+  z-index: -1;
+}
+
+.adminPanel-sidebar::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 30%;
+  background: linear-gradient(to top, rgba(15, 23, 42, 0.5), transparent);
+  z-index: -1;
+}
+
+.adminPanel-sidebar-header {
+  padding: 0 var(--adminPanel-spacing-xl);
+  margin-bottom: var(--adminPanel-spacing-2xl);
+}
+
+.adminPanel-sidebar-title {
+  font-size: var(--adminPanel-font-size-2xl);
+  font-weight: 700;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--adminPanel-spacing-sm);
+  font-family: "Plus Jakarta Sans", sans-serif;
+  position: relative;
+  letter-spacing: -0.02em;
+}
+
+.adminPanel-sidebar-title::before {
+  content: "";
+  display: block;
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(
+    135deg,
+    var(--adminPanel-accent),
+    var(--adminPanel-accent-hover)
+  );
+  border-radius: var(--adminPanel-radius-md);
+  box-shadow: 0 4px 12px rgba(251, 197, 0, 0.4);
+  transform: rotate(-10deg);
+  position: relative;
+  z-index: 1;
+}
+
+.adminPanel-sidebar-title::after {
+  content: "";
+  position: absolute;
+  top: 8px;
+  left: 30px;
+  width: 10px;
+  height: 10px;
+  background-color: #f8fafc;
+  border-radius: 50%;
+  z-index: 2;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+}
+
+.adminPanel-sidebar-nav {
+  flex: 1; /* Para que ocupe todo el espacio disponible */
+}
+
+.adminPanel-sidebar-nav ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0 var(--adminPanel-spacing-md);
+}
+
+.adminPanel-sidebar-nav li {
+  margin-bottom: var(--adminPanel-spacing-xs);
+}
+
+.adminPanel-sidebar-nav a {
+  display: flex;
+  align-items: center;
+  gap: var(--adminPanel-spacing-md);
+  padding: var(--adminPanel-spacing-md) var(--adminPanel-spacing-lg);
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  font-weight: 500;
+  transition: all var(--adminPanel-transition-fast);
+  border-radius: var(--adminPanel-radius-md);
+  position: relative;
+  overflow: hidden;
+}
+
+.adminPanel-sidebar-nav a i {
+  font-size: 1.25rem;
+  width: 1.5rem;
+  text-align: center;
+  transition: all var(--adminPanel-transition-fast);
+  position: relative;
+}
+
+.adminPanel-sidebar-nav a::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    var(--adminPanel-accent),
+    var(--adminPanel-accent-hover)
+  );
+  opacity: 0;
+  transition: opacity var(--adminPanel-transition-fast);
+  border-radius: 0 var(--adminPanel-radius-md) var(--adminPanel-radius-md) 0;
+}
+
+.adminPanel-sidebar-nav a:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  color: white;
+}
+
+.adminPanel-sidebar-nav a:hover i {
+  transform: translateX(2px);
+  color: var(--adminPanel-accent);
+}
+
+.adminPanel-sidebar-nav a.active {
+  background-color: rgba(251, 197, 0, 0.15);
+  color: white;
+  font-weight: 600;
+}
+
+.adminPanel-sidebar-nav a.active::before {
+  opacity: 1;
+}
+
+.adminPanel-sidebar-nav a.active i {
+  color: var(--adminPanel-accent);
+}
+
+/* Efecto de resplandor para elementos activos */
+.adminPanel-sidebar-nav a.active::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    circle at center right,
+    rgba(251, 197, 0, 0.3),
+    transparent 70%
+  );
+  opacity: 0.6;
+  z-index: -1;
+}
+
+/* Estilos para los badges en la navegación */
+.adminPanel-nav-badge {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  font-size: var(--adminPanel-font-size-xs);
+  font-weight: 500;
+  padding: 0.15rem 0.4rem;
+  border-radius: var(--adminPanel-radius-full);
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+}
+
+.adminPanel-nav-badge.new {
+  background: var(--adminPanel-success);
+  color: white;
+}
+
+.adminPanel-nav-badge.alert {
+  background: var(--adminPanel-danger);
+  color: white;
+}
+
+/* Grupos de navegación */
+.adminPanel-nav-group {
+  margin-bottom: var(--adminPanel-spacing-lg);
+}
+
+.adminPanel-nav-group-title {
+  font-size: var(--adminPanel-font-size-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgba(255, 255, 255, 0.5);
+  padding: 0 var(--adminPanel-spacing-xl);
+  margin: var(--adminPanel-spacing-lg) 0 var(--adminPanel-spacing-sm);
+}
+
+/* Estilos para el botón de cierre de sesión */
+.adminPanel-nav-logout {
+  color: rgba(255, 255, 255, 0.7) !important;
+  margin-top: var(--adminPanel-spacing-md);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.adminPanel-nav-logout:hover {
+  color: var(--adminPanel-danger) !important;
+}
+
+.adminPanel-nav-logout:hover i {
+  color: var(--adminPanel-danger) !important;
+}
+
+/* Footer del sidebar con información del usuario */
+.adminPanel-sidebar-footer {
+  padding: var(--adminPanel-spacing-lg) var(--adminPanel-spacing-xl);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: auto;
+}
+
+.adminPanel-user-info {
+  display: flex;
+  align-items: center;
+  gap: var(--adminPanel-spacing-md);
+}
+
+.adminPanel-user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0.05)
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--adminPanel-accent);
+  font-size: var(--adminPanel-font-size-md);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.adminPanel-user-details {
+  flex: 1;
+}
+
+.adminPanel-user-name {
+  font-weight: 600;
+  font-size: var(--adminPanel-font-size-sm);
+  color: white;
+}
+
+.adminPanel-user-role {
+  font-size: var(--adminPanel-font-size-xs);
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Estilos para el selector de idiomas en la barra lateral */
+.adminPanel-language-selector {
+  padding: 1rem;
+  border-bottom: 1px solid var(--adminPanel-border);
+}
+
+.adminPanel-language-selector .language-selector {
+  width: 100%;
+}
+
+.adminPanel-language-selector .language-button {
+  width: 100%;
+  padding: 0.5rem;
+  background-color: var(--adminPanel-surface-secondary);
+  border: 1px solid var(--adminPanel-border);
+  border-radius: var(--adminPanel-radius-md);
+  color: var(--adminPanel-text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.875rem;
+}
+
+.adminPanel-language-selector .language-dropdown {
+  width: 100%;
+  background-color: var(--adminPanel-surface);
+  border: 1px solid var(--adminPanel-border);
+  border-radius: var(--adminPanel-radius-md);
+  margin-top: 0.5rem;
+  box-shadow: var(--adminPanel-shadow-lg);
+}
+
+.adminPanel-language-selector .language-item {
+  width: 100%;
+  padding: 0.5rem;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.adminPanel-language-selector .language-item:hover {
+  background-color: var(--adminPanel-surface-hover);
+}
+
+.adminPanel-language-selector .language-item.active {
+  background-color: var(--adminPanel-surface-accent);
+  color: var(--adminPanel-accent);
+}
+
+/* ======== CONTENIDO PRINCIPAL MEJORADO ======== */
+.adminPanel-main-content {
+  grid-column: 2 / 3;
+  grid-row: 1 / 3;
+  padding: var(--adminPanel-spacing-xl);
+  overflow-y: auto;
+  position: relative;
+  z-index: 1;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: var(--adminPanel-text-tertiary) transparent;
+}
+
+.adminPanel-main-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.adminPanel-main-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.adminPanel-main-content::-webkit-scrollbar-thumb {
+  background-color: var(--adminPanel-text-tertiary);
+  border-radius: var(--adminPanel-radius-full);
+}
+
+/* Media queries para adaptación a dispositivos móviles y tablets */
+@media (max-width: 768px) {
+  .adminPanel-layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+    height: 100vh;
+  }
+
+  .adminPanel-sidebar {
+    grid-column: 1 / 2;
+    grid-row: 1 / 2;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 250px;
+    height: 100%;
+    transform: translateX(-100%);
+    z-index: 100;
+  }
+
+  .adminPanel-sidebar.open {
+    transform: translateX(0);
+  }
+
+  .adminPanel-main-content {
+    grid-column: 1 / 2;
+    grid-row: 1 / 3;
+    padding-top: 60px; /* Espacio para el menú hamburguesa */
+  }
+
+  .adminPanel-mobile-toggle {
+    display: block !important;
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 101;
+    padding: 10px;
+    background-color: var(--adminPanel-surface);
+    border-radius: var(--adminPanel-radius-md);
+    box-shadow: var(--adminPanel-shadow-md);
+    border: none;
+    color: var(--adminPanel-text-primary);
+    cursor: pointer;
+    font-size: var(--adminPanel-font-size-lg);
+  }
+}
+
+@media (max-width: 480px) {
+  .adminPanel-main-content {
+    padding: var(--adminPanel-spacing-md);
+  }
+}

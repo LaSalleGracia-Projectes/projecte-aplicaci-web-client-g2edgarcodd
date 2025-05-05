@@ -1,0 +1,22 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap");
+@import "variables.css";
+@import "layout.css";
+@import "dashboard.css";
+@import "cards.css";
+@import "tables.css";
+@import "forms.css";
+@import "auth.css";
+@import "notifications.css";
+@import "activity.css";
+@import "utilities.css";
+@import "animations.css";
+/* Importando módulos específicos para páginas de administración */
+@import "accessDenied.css";
+@import "adminChecking.css"; /* Nuevo archivo CSS para la página de verificación */
+@import "content.css";
+@import "settings.css";
+@import "login.css";
+@import "forum.css";
+@import "editor.css";
+@import "blog.css";
+@import "users.css";

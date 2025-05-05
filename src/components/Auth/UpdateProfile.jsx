@@ -1,30 +1,60 @@
-import React, { useState, useEffect } from 'react';
-import '../../styles/components/auth.css';
+import React, { useState, useEffect, useContext } from "react";
+import { useLanguage } from "../../contexts/LanguageContext";
+import { AuthContext } from "../../contexts/AuthContext";
+import LanguageSelector from "../UI/LanguageSelector";
+import "../../styles/components/auth.css";
 
 function UpdateProfile() {
+  const { t } = useLanguage();
+  const { user, fetchUserInfo } = useContext(AuthContext);
+
   const [formData, setFormData] = useState({
-    name: 'Usuario Ejemplo',
-    email: 'usuario@ejemplo.com',
+    name: "",
+    surname: "",
+    username: "",
+    email: "",
+    date_of_birth: "",
     avatar: null,
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: ''
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
   });
-  const [previewAvatar, setPreviewAvatar] = useState('/api/placeholder/150/150');
+  const [previewAvatar, setPreviewAvatar] = useState(
+    "/api/placeholder/150/150"
+  );
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
-  const [successMessage, setSuccessMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState("");
   const [passwordStrength, setPasswordStrength] = useState(0);
-  const [activeTab, setActiveTab] = useState('profile'); // 'profile' o 'password'
+  const [activeTab, setActiveTab] = useState("profile"); // 'profile' o 'password'
   const [showPassword, setShowPassword] = useState({
     current: false,
     new: false,
-    confirm: false
+    confirm: false,
   });
+
+  // Cargar datos del usuario cuando el componente se monte
+  useEffect(() => {
+    if (user) {
+      setFormData((prev) => ({
+        ...prev,
+        name: user.name || "",
+        surname: user.surname || "",
+        username: user.username || "",
+        email: user.email || "",
+        date_of_birth: user.date_of_birth || "",
+      }));
+
+      // Si el usuario tiene un avatar, mostrarlo
+      if (user.avatar) {
+        setPreviewAvatar(user.avatar);
+      }
+    }
+  }, [user]);
 
   // Efecto para crear partículas decorativas
   useEffect(() => {
-    const particles = document.querySelector('.particles');
+    const particles = document.querySelector(".auth-particles");
     if (!particles) return;
 
     for (let i = 0; i < 15; i++) {
@@ -32,58 +62,58 @@ function UpdateProfile() {
     }
 
     return () => {
-      const existingParticles = document.querySelectorAll('.particle');
-      existingParticles.forEach(particle => particle.remove());
+      const existingParticles = document.querySelectorAll(".auth-particle");
+      existingParticles.forEach((particle) => particle.remove());
     };
   }, []);
 
   const createParticle = (container) => {
-    const particle = document.createElement('div');
-    particle.classList.add('particle');
-    
+    const particle = document.createElement("div");
+    particle.classList.add("auth-particle");
+
     const size = Math.random() * 15 + 5;
     particle.style.width = `${size}px`;
     particle.style.height = `${size}px`;
     particle.style.left = `${Math.random() * 100}%`;
     particle.style.top = `${Math.random() * 100}%`;
     particle.style.opacity = Math.random() * 0.6 + 0.1;
-    
+
     const duration = Math.random() * 20 + 10;
     particle.style.animationDuration = `${duration}s`;
     particle.style.animationDelay = `${Math.random() * 5}s`;
-    
+
     container.appendChild(particle);
   };
 
   const handleChange = (e) => {
     const { name, value, type, files } = e.target;
-    
-    if (type === 'file') {
+
+    if (type === "file") {
       if (files[0]) {
         setFormData({
           ...formData,
-          [name]: files[0]
+          [name]: files[0],
         });
         setPreviewAvatar(URL.createObjectURL(files[0]));
       }
       return;
     }
-    
-    if (name === 'newPassword') {
+
+    if (name === "newPassword") {
       const strength = calculatePasswordStrength(value);
       setPasswordStrength(strength);
     }
-    
+
     setFormData({
       ...formData,
-      [name]: value
+      [name]: value,
     });
-    
+
     // Limpiar error específico cuando el usuario corrige
     if (errors[name]) {
       setErrors({
         ...errors,
-        [name]: ''
+        [name]: "",
       });
     }
   };
@@ -91,157 +121,251 @@ function UpdateProfile() {
   const togglePasswordVisibility = (field) => {
     setShowPassword({
       ...showPassword,
-      [field]: !showPassword[field]
+      [field]: !showPassword[field],
     });
   };
 
   const calculatePasswordStrength = (password) => {
     if (!password) return 0;
-    
-    let strength = 0;
-    
-    // Longitud mínima
-    if (password.length >= 8) strength += 25;
-    
-    // Contiene letras minúsculas
-    if (/[a-z]/.test(password)) strength += 25;
-    
-    // Contiene letras mayúsculas
-    if (/[A-Z]/.test(password)) strength += 25;
-    
-    // Contiene números o caracteres especiales
-    if (/[0-9]|[^a-zA-Z0-9]/.test(password)) strength += 25;
-    
-    return strength;
+
+    // Definir los criterios
+    const criteria = {
+      minLength: password.length >= 8,
+      hasUpperCase: /[A-Z]/.test(password),
+      hasLowerCase: /[a-z]/.test(password),
+      hasNumber: /[0-9]/.test(password),
+      hasSpecialChar: /[^a-zA-Z0-9]/.test(password),
+    };
+
+    // Contar cuántos criterios se cumplen
+    const metCriteria = Object.values(criteria).filter(Boolean).length;
+
+    // Determinar la fortaleza según criterios cumplidos
+    if (metCriteria === 5) {
+      return 100; // Fuerte - 100% (todos los 5 criterios)
+    } else if (metCriteria >= 3) {
+      return 50; // Medio - 50% (3-4 criterios)
+    } else {
+      return 25; // Bajo - 25% (1-2 criterios)
+    }
   };
 
   const validateForm = () => {
     const newErrors = {};
-    
-    if (activeTab === 'profile') {
+
+    if (activeTab === "profile") {
       if (!formData.name.trim()) {
-        newErrors.name = 'El nombre es obligatorio';
+        newErrors.name = t("auth.nameRequired");
       }
     } else {
       if (!formData.currentPassword) {
-        newErrors.currentPassword = 'Debes introducir tu contraseña actual';
+        newErrors.currentPassword = t("auth.currentPasswordRequired");
       }
-      
+
       if (formData.newPassword) {
         if (formData.newPassword.length < 8) {
-          newErrors.newPassword = 'La nueva contraseña debe tener al menos 8 caracteres';
+          newErrors.newPassword = t("auth.passwordMinLength");
         }
-        
+
         if (formData.newPassword !== formData.confirmPassword) {
-          newErrors.confirmPassword = 'Las contraseñas no coinciden';
+          newErrors.confirmPassword = t("auth.passwordsDontMatch");
         }
       }
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setSuccessMessage('');
-    
-    if (validateForm()) {
-      setIsLoading(true);
-      
-      // Simulación de actualización de perfil
-      setTimeout(() => {
-        console.log('Perfil actualizado con:', formData);
+    setSuccessMessage("");
+    setErrors({});
+
+    if (!validateForm()) {
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const userId = localStorage.getItem("user_id");
+      const token = localStorage.getItem("auth_token");
+
+      if (!userId || !token) {
+        setErrors({ general: t("auth.notAuthenticated") });
         setIsLoading(false);
-        setSuccessMessage(
-          activeTab === 'profile' 
-            ? 'Tu información de perfil ha sido actualizada correctamente.' 
-            : 'Tu contraseña ha sido actualizada correctamente.'
-        );
-        
-        // Limpiar campos de contraseña después de actualizar
-        if (activeTab === 'password') {
-          setFormData({
-            ...formData,
-            currentPassword: '',
-            newPassword: '',
-            confirmPassword: ''
+        return;
+      }
+
+      // Preparar los datos para la actualización según la pestaña activa
+      const updateData = { user_id: userId };
+
+      // Si es la pestaña de perfil, añadir datos personales
+      if (activeTab === "profile") {
+        updateData.name = formData.name;
+        updateData.surname = formData.surname;
+        updateData.username = formData.username;
+        updateData.date_of_birth = formData.date_of_birth;
+
+        // Como password es obligatorio, usamos una contraseña vacía
+        // para indicar que no queremos cambiarla
+        updateData.password = "";
+        updateData.password_confirmation = "";
+      } else {
+        // Si es la pestaña de contraseña
+        updateData.password = formData.newPassword;
+        updateData.password_confirmation = formData.confirmPassword;
+
+        // Incluimos también los datos del perfil para que no se pierdan
+        updateData.name = formData.name;
+        updateData.surname = formData.surname;
+        updateData.username = formData.username;
+        updateData.date_of_birth = formData.date_of_birth;
+      }
+
+      // Realizar la petición PUT a la API
+      const response = await fetch("http://25.17.74.119:8000/api/updateUser", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(updateData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        // Manejar errores de la API
+        if (data.errors) {
+          const apiErrors = {};
+          Object.keys(data.errors).forEach((key) => {
+            apiErrors[key] = data.errors[key][0];
           });
-          setPasswordStrength(0);
+          setErrors(apiErrors);
+        } else {
+          setErrors({
+            general: data.message || t("auth.errorUpdatingProfile"),
+          });
         }
-        
-        // Mostrar animación de éxito
-        const successMsg = document.querySelector('.success-message');
-        if (successMsg) {
-          successMsg.classList.add('animate-success');
-          setTimeout(() => {
-            successMsg.classList.remove('animate-success');
-          }, 1000);
-        }
-      }, 1500);
+        setIsLoading(false);
+        return;
+      }
+
+      // Si la actualización es exitosa
+      setSuccessMessage(
+        activeTab === "profile"
+          ? t("profile.profileUpdatedSuccess")
+          : t("profile.passwordChangedSuccess")
+      );
+
+      // Limpiar campos de contraseña después de actualizar
+      if (activeTab === "password") {
+        setFormData({
+          ...formData,
+          currentPassword: "",
+          newPassword: "",
+          confirmPassword: "",
+        });
+        setPasswordStrength(0);
+      }
+
+      // Actualizar la información del usuario en el contexto
+      if (userId && token) {
+        await fetchUserInfo(userId, token);
+      }
+
+      // Mostrar animación de éxito
+      const successMsg = document.querySelector(".auth-success-message");
+      if (successMsg) {
+        successMsg.classList.add("animate-success");
+        setTimeout(() => {
+          if (successMsg) {
+            successMsg.classList.remove("animate-success");
+          }
+        }, 1000);
+      }
+    } catch (error) {
+      console.error("Error al actualizar el perfil:", error);
+      setErrors({ general: t("auth.connectionError") });
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const getPasswordStrengthText = () => {
-    if (passwordStrength === 0) return '';
-    if (passwordStrength <= 25) return 'Débil';
-    if (passwordStrength <= 75) return 'Media';
-    return 'Fuerte';
+    if (passwordStrength === 0) return "";
+    if (passwordStrength <= 25) return t("profile.passwordStrength.débil");
+    if (passwordStrength < 100) return t("profile.passwordStrength.media");
+    return t("profile.passwordStrength.fuerte");
   };
 
   const getPasswordStrengthClass = () => {
-    if (passwordStrength === 0) return '';
-    if (passwordStrength <= 25) return 'weak';
-    if (passwordStrength <= 75) return 'medium';
-    return 'strong';
+    if (passwordStrength === 0) return "";
+    if (passwordStrength <= 25) return "weak";
+    if (passwordStrength <= 75) return "medium";
+    return "strong";
   };
 
   return (
-    <div className="profile-container">
+    <div className="auth-profile-container">
       {/* Partículas de fondo */}
-      <div className="particles"></div>
-      
-      <div className="profile-card">
-        <div className="profile-header">
-          <h2>Mi perfil</h2>
-          <p>Actualiza tu información personal</p>
+      <div className="auth-particles"></div>
+
+      {/* Botón de idioma en la esquina superior derecha */}
+      <div className="auth-lang-container">
+        <LanguageSelector />
+      </div>
+
+      <div className="auth-profile-card">
+        <div className="auth-profile-header">
+          <h2>{t("profile.editProfile")}</h2>
+          <p>{t("profile.personalInfo")}</p>
         </div>
-        
+
         {successMessage && (
-          <div className="success-message">
+          <div className="auth-success-message">
             <i className="fas fa-check-circle"></i>
             {successMessage}
           </div>
         )}
-        
-        <div className="profile-tabs">
-          <button 
-            className={`tab-button ${activeTab === 'profile' ? 'active' : ''}`}
-            onClick={() => setActiveTab('profile')}
+
+        {errors.general && <div className="auth-error">{errors.general}</div>}
+
+        <div className="auth-profile-tabs">
+          <button
+            className={`auth-tab-button ${
+              activeTab === "profile" ? "active" : ""
+            }`}
+            onClick={() => setActiveTab("profile")}
           >
             <i className="fas fa-user"></i>
-            Información personal
+            {t("profile.personalInfo")}
           </button>
-          <button 
-            className={`tab-button ${activeTab === 'password' ? 'active' : ''}`}
-            onClick={() => setActiveTab('password')}
+          <button
+            className={`auth-tab-button ${
+              activeTab === "password" ? "active" : ""
+            }`}
+            onClick={() => setActiveTab("password")}
           >
             <i className="fas fa-lock"></i>
-            Cambiar contraseña
+            {t("profile.changePassword")}
           </button>
         </div>
-        
-        <form onSubmit={handleSubmit} className="profile-form">
-          {activeTab === 'profile' && (
+
+        <form onSubmit={handleSubmit} className="auth-profile-form">
+          {activeTab === "profile" && (
             <>
-              <div className="avatar-section">
-                <div className="avatar-preview-large">
-                  <img 
-                    src={previewAvatar} 
-                    alt="Avatar preview" 
-                    className="avatar-image"
+              <div className="auth-avatar-section">
+                <div className="auth-avatar-preview-large">
+                  <img
+                    src={previewAvatar}
+                    alt="Avatar preview"
+                    className="auth-avatar-image"
                   />
-                  <label htmlFor="avatar" className="avatar-edit-button">
+                  <label htmlFor="avatar" className="auth-avatar-edit-button">
                     <i className="fas fa-camera"></i>
                   </label>
                   <input
@@ -250,14 +374,14 @@ function UpdateProfile() {
                     name="avatar"
                     accept="image/*"
                     onChange={handleChange}
-                    className="file-input"
+                    className="auth-file-input"
                   />
                 </div>
               </div>
-              
-              <div className="form-group">
-                <label htmlFor="name">Nombre completo</label>
-                <div className="input-with-icon">
+
+              <div className="auth-form-group">
+                <label htmlFor="name">{t("auth.name")}</label>
+                <div className="auth-input-with-icon">
                   <i className="fas fa-user"></i>
                   <input
                     type="text"
@@ -265,15 +389,73 @@ function UpdateProfile() {
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
-                    placeholder="Tu nombre completo"
+                    placeholder={t("auth.name")}
                   />
                 </div>
-                {errors.name && <span className="form-error">{errors.name}</span>}
+                {errors.name && (
+                  <span className="auth-form-error">{errors.name}</span>
+                )}
               </div>
-              
-              <div className="form-group">
-                <label htmlFor="email">Correo electrónico</label>
-                <div className="input-with-icon">
+
+              <div className="auth-form-group">
+                <label htmlFor="surname">{t("auth.lastName")}</label>
+                <div className="auth-input-with-icon">
+                  <i className="fas fa-user"></i>
+                  <input
+                    type="text"
+                    id="surname"
+                    name="surname"
+                    value={formData.surname}
+                    onChange={handleChange}
+                    placeholder={t("auth.lastName")}
+                  />
+                </div>
+                {errors.surname && (
+                  <span className="auth-form-error">{errors.surname}</span>
+                )}
+              </div>
+
+              <div className="auth-form-group">
+                <label htmlFor="username">{t("auth.username")}</label>
+                <div className="auth-input-with-icon">
+                  <i className="fas fa-user-tag"></i>
+                  <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    value={formData.username}
+                    onChange={handleChange}
+                    placeholder={t("auth.username")}
+                  />
+                </div>
+                {errors.username && (
+                  <span className="auth-form-error">{errors.username}</span>
+                )}
+              </div>
+
+              <div className="auth-form-group">
+                <label htmlFor="date_of_birth">{t("auth.dateOfBirth")}</label>
+                <div className="auth-input-with-icon">
+                  <i className="fas fa-calendar"></i>
+                  <input
+                    type="date"
+                    id="date_of_birth"
+                    name="date_of_birth"
+                    value={formData.date_of_birth}
+                    onChange={handleChange}
+                    max={new Date().toISOString().split("T")[0]}
+                  />
+                </div>
+                {errors.date_of_birth && (
+                  <span className="auth-form-error">
+                    {errors.date_of_birth}
+                  </span>
+                )}
+              </div>
+
+              <div className="auth-form-group">
+                <label htmlFor="email">{t("auth.email")}</label>
+                <div className="auth-input-with-icon">
                   <i className="fas fa-envelope"></i>
                   <input
                     type="email"
@@ -281,20 +463,24 @@ function UpdateProfile() {
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
-                    placeholder="Tu correo electrónico"
+                    placeholder={t("auth.email")}
                     disabled
                   />
                 </div>
-                <span className="input-note">No puedes cambiar tu correo electrónico</span>
+                <span className="auth-input-note">
+                  {t("profile.cannotChangeEmail")}
+                </span>
               </div>
             </>
           )}
-          
-          {activeTab === 'password' && (
+
+          {activeTab === "password" && (
             <>
-              <div className="form-group">
-                <label htmlFor="currentPassword">Contraseña actual</label>
-                <div className="input-with-icon">
+              <div className="auth-form-group">
+                <label htmlFor="currentPassword">
+                  {t("profile.currentPassword")}
+                </label>
+                <div className="auth-input-with-icon">
                   <i className="fas fa-lock"></i>
                   <input
                     type={showPassword.current ? "text" : "password"}
@@ -302,19 +488,25 @@ function UpdateProfile() {
                     name="currentPassword"
                     value={formData.currentPassword}
                     onChange={handleChange}
-                    placeholder="Escribe tu contraseña actual"
+                    placeholder={t("profile.currentPassword")}
                   />
-                  <i 
-                    className={`fas ${showPassword.current ? 'fa-eye-slash' : 'fa-eye'} password-toggle`}
-                    onClick={() => togglePasswordVisibility('current')}
+                  <i
+                    className={`fas ${
+                      showPassword.current ? "fa-eye-slash" : "fa-eye"
+                    } auth-password-toggle`}
+                    onClick={() => togglePasswordVisibility("current")}
                   ></i>
                 </div>
-                {errors.currentPassword && <span className="form-error">{errors.currentPassword}</span>}
+                {errors.currentPassword && (
+                  <span className="auth-form-error">
+                    {errors.currentPassword}
+                  </span>
+                )}
               </div>
-              
-              <div className="form-group">
-                <label htmlFor="newPassword">Nueva contraseña</label>
-                <div className="input-with-icon">
+
+              <div className="auth-form-group">
+                <label htmlFor="newPassword">{t("profile.newPassword")}</label>
+                <div className="auth-input-with-icon">
                   <i className="fas fa-lock"></i>
                   <input
                     type={showPassword.new ? "text" : "password"}
@@ -322,30 +514,41 @@ function UpdateProfile() {
                     name="newPassword"
                     value={formData.newPassword}
                     onChange={handleChange}
-                    placeholder="Escribe tu nueva contraseña"
+                    placeholder={t("profile.newPassword")}
                   />
-                  <i 
-                    className={`fas ${showPassword.new ? 'fa-eye-slash' : 'fa-eye'} password-toggle`}
-                    onClick={() => togglePasswordVisibility('new')}
+                  <i
+                    className={`fas ${
+                      showPassword.new ? "fa-eye-slash" : "fa-eye"
+                    } auth-password-toggle`}
+                    onClick={() => togglePasswordVisibility("new")}
                   ></i>
                 </div>
                 {passwordStrength > 0 && (
-                  <div className="password-strength">
-                    <div className="strength-bar">
-                      <div 
-                        className={`strength-progress ${getPasswordStrengthClass()}`} 
+                  <div className="auth-password-strength">
+                    <div className="auth-strength-bar">
+                      <div
+                        className={`auth-strength-progress ${getPasswordStrengthClass()}`}
                         style={{ width: `${passwordStrength}%` }}
                       ></div>
                     </div>
-                    <span className="strength-text">{getPasswordStrengthText()}</span>
+                    <span className="auth-strength-text">
+                      {getPasswordStrengthText()}
+                    </span>
                   </div>
                 )}
-                {errors.newPassword && <span className="form-error">{errors.newPassword}</span>}
+                {errors.newPassword && (
+                  <span className="auth-form-error">{errors.newPassword}</span>
+                )}
+                {errors.password && (
+                  <span className="auth-form-error">{errors.password}</span>
+                )}
               </div>
-              
-              <div className="form-group">
-                <label htmlFor="confirmPassword">Confirmar nueva contraseña</label>
-                <div className="input-with-icon">
+
+              <div className="auth-form-group">
+                <label htmlFor="confirmPassword">
+                  {t("profile.confirmNewPassword")}
+                </label>
+                <div className="auth-input-with-icon">
                   <i className="fas fa-lock"></i>
                   <input
                     type={showPassword.confirm ? "text" : "password"}
@@ -353,50 +556,119 @@ function UpdateProfile() {
                     name="confirmPassword"
                     value={formData.confirmPassword}
                     onChange={handleChange}
-                    placeholder="Confirma tu nueva contraseña"
+                    placeholder={t("profile.confirmNewPassword")}
                   />
-                  <i 
-                    className={`fas ${showPassword.confirm ? 'fa-eye-slash' : 'fa-eye'} password-toggle`}
-                    onClick={() => togglePasswordVisibility('confirm')}
+                  <i
+                    className={`fas ${
+                      showPassword.confirm ? "fa-eye-slash" : "fa-eye"
+                    } auth-password-toggle`}
+                    onClick={() => togglePasswordVisibility("confirm")}
                   ></i>
                 </div>
-                {errors.confirmPassword && <span className="form-error">{errors.confirmPassword}</span>}
+                {errors.confirmPassword && (
+                  <span className="auth-form-error">
+                    {errors.confirmPassword}
+                  </span>
+                )}
+                {errors.password_confirmation && (
+                  <span className="auth-form-error">
+                    {errors.password_confirmation}
+                  </span>
+                )}
               </div>
-              
-              <div className="password-tips">
-                <h4>Recomendaciones para una contraseña segura:</h4>
+
+              <div className="auth-password-tips">
+                <h4>{t("auth.passwordRequirements")}</h4>
                 <ul>
-                  <li className={formData.newPassword.length >= 8 ? 'valid' : ''}>
-                    <i className={formData.newPassword.length >= 8 ? 'fas fa-check' : 'fas fa-times'}></i>
-                    Al menos 8 caracteres
+                  <li
+                    className={formData.newPassword.length >= 8 ? "valid" : ""}
+                  >
+                    <i
+                      className={
+                        formData.newPassword.length >= 8
+                          ? "fas fa-check"
+                          : "fas fa-times"
+                      }
+                    ></i>
+                    {t("auth.passwordMinChars")}
                   </li>
-                  <li className={/[A-Z]/.test(formData.newPassword) ? 'valid' : ''}>
-                    <i className={/[A-Z]/.test(formData.newPassword) ? 'fas fa-check' : 'fas fa-times'}></i>
-                    Al menos una letra mayúscula
+                  <li
+                    className={
+                      /[A-Z]/.test(formData.newPassword) ? "valid" : ""
+                    }
+                  >
+                    <i
+                      className={
+                        /[A-Z]/.test(formData.newPassword)
+                          ? "fas fa-check"
+                          : "fas fa-times"
+                      }
+                    ></i>
+                    {t("auth.passwordUppercase")}
                   </li>
-                  <li className={/[0-9]/.test(formData.newPassword) ? 'valid' : ''}>
-                    <i className={/[0-9]/.test(formData.newPassword) ? 'fas fa-check' : 'fas fa-times'}></i>
-                    Al menos un número
+                  <li
+                    className={
+                      /[a-z]/.test(formData.newPassword) ? "valid" : ""
+                    }
+                  >
+                    <i
+                      className={
+                        /[a-z]/.test(formData.newPassword)
+                          ? "fas fa-check"
+                          : "fas fa-times"
+                      }
+                    ></i>
+                    {t("auth.passwordLowercase")}
                   </li>
-                  <li className={/[^a-zA-Z0-9]/.test(formData.newPassword) ? 'valid' : ''}>
-                    <i className={/[^a-zA-Z0-9]/.test(formData.newPassword) ? 'fas fa-check' : 'fas fa-times'}></i>
-                    Al menos un carácter especial
+                  <li
+                    className={
+                      /[0-9]/.test(formData.newPassword) ? "valid" : ""
+                    }
+                  >
+                    <i
+                      className={
+                        /[0-9]/.test(formData.newPassword)
+                          ? "fas fa-check"
+                          : "fas fa-times"
+                      }
+                    ></i>
+                    {t("auth.passwordNumber")}
+                  </li>
+                  <li
+                    className={
+                      /[^a-zA-Z0-9]/.test(formData.newPassword) ? "valid" : ""
+                    }
+                  >
+                    <i
+                      className={
+                        /[^a-zA-Z0-9]/.test(formData.newPassword)
+                          ? "fas fa-check"
+                          : "fas fa-times"
+                      }
+                    ></i>
+                    {t("auth.passwordSpecialChar")}
                   </li>
                 </ul>
               </div>
             </>
           )}
-          
+
           <button type="submit" className="auth-button" disabled={isLoading}>
             {isLoading ? (
               <>
-                Guardando...
-                <i className="fas fa-ellipsis-h button-icon-right"></i>
+                {t("profile.saving")}
+                <i className="fas fa-spinner fa-spin auth-button-icon-right"></i>
               </>
             ) : (
               <>
-                {activeTab === 'profile' ? 'Guardar cambios' : 'Actualizar contraseña'}
-                <i className={`fas ${activeTab === 'profile' ? 'fa-save' : 'fa-key'} button-icon-right`}></i>
+                {activeTab === "profile"
+                  ? t("profile.saveChanges")
+                  : t("profile.updatePassword")}
+                <i
+                  className={`fas ${
+                    activeTab === "profile" ? "fa-save" : "fa-key"
+                  } auth-button-icon-right`}
+                ></i>
               </>
             )}
           </button>

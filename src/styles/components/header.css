@@ -1,7 +1,11 @@
 /* Header Premium con Efectos Visuales */
 
 header {
-  background: linear-gradient(180deg, rgba(5, 11, 20, 0.98) 0%, rgba(8, 16, 28, 0.95) 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(5, 11, 20, 0.98) 0%,
+    rgba(8, 16, 28, 0.95) 100%
+  );
   position: sticky;
   top: 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
@@ -14,14 +18,15 @@ header {
 
 /* Sutile gradiente en vez de malla */
 header::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, 
-    rgba(16, 23, 37, 0.4) 0%, 
+  background: linear-gradient(
+    135deg,
+    rgba(16, 23, 37, 0.4) 0%,
     rgba(5, 11, 20, 0.2) 100%
   );
   opacity: 0.3;
@@ -31,15 +36,16 @@ header::before {
 
 /* Efecto de borde iluminado mejorado */
 header:after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -1px;
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(90deg, 
-    transparent 0%, 
-    rgba(251, 197, 0, 0.1) 20%, 
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(251, 197, 0, 0.1) 20%,
     rgba(251, 197, 0, 0.4) 50%,
     rgba(251, 197, 0, 0.1) 80%,
     transparent 100%
@@ -57,8 +63,15 @@ header:hover:after {
 }
 
 @keyframes glow {
-  0%, 100% { opacity: 0.3; transform: translateX(-30%) scaleX(0.8); }
-  50% { opacity: 0.7; transform: translateX(30%) scaleX(0.8); }
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: translateX(-30%) scaleX(0.8);
+  }
+  50% {
+    opacity: 0.7;
+    transform: translateX(30%) scaleX(0.8);
+  }
 }
 
 /* Mejora en la transición del header al hacer scroll */
@@ -114,13 +127,13 @@ header.scrolled {
   font-size: 28px;
   font-weight: 800;
   text-transform: uppercase;
-  background: linear-gradient(120deg, #FFFFFF, var(--color-accent), #FFFFFF);
+  background: linear-gradient(120deg, #ffffff, var(--color-accent), #ffffff);
   background-size: 200% auto;
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
   letter-spacing: 1px;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   position: relative;
   animation: shimmer-text 8s ease-in-out infinite;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
@@ -128,14 +141,20 @@ header.scrolled {
 }
 
 @keyframes shimmer-text {
-  0% { background-position: 0% center; }
-  50% { background-position: 100% center; }
-  100% { background-position: 0% center; }
+  0% {
+    background-position: 0% center;
+  }
+  50% {
+    background-position: 100% center;
+  }
+  100% {
+    background-position: 0% center;
+  }
 }
 
 /* Efecto de resplandor detrás del logo */
 .logo a::before {
-  content: '';
+  content: "";
   position: absolute;
   width: 100%;
   height: 100%;
@@ -155,13 +174,20 @@ header.scrolled {
 }
 
 @keyframes pulse-logo {
-  0%, 100% { transform: scale(1.5); opacity: 0.7; }
-  50% { transform: scale(1.8); opacity: 0.5; }
+  0%,
+  100% {
+    transform: scale(1.5);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.8);
+    opacity: 0.5;
+  }
 }
 
 /* Destello dorado ocasional */
 .logo::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
@@ -189,9 +215,18 @@ header.scrolled {
 }
 
 @keyframes logo-flash {
-  0% { left: -100%; opacity: 0; }
-  10% { opacity: 1; }
-  50%, 100% { left: 90%; opacity: 0; }
+  0% {
+    left: -100%;
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    left: 90%;
+    opacity: 0;
+  }
 }
 
 /* Sección central con navegación premium mejorada */
@@ -204,14 +239,15 @@ header.scrolled {
 
 /* Efecto de línea bajo el nav */
 .nav-center::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -15px;
   left: 0;
   width: 100%;
   height: 1px;
-  background: linear-gradient(90deg, 
-    transparent 0%, 
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
     rgba(255, 255, 255, 0.05) 20%,
     rgba(255, 255, 255, 0.1) 50%,
     rgba(255, 255, 255, 0.05) 80%,
@@ -230,7 +266,7 @@ header.scrolled {
 .nav-center li {
   position: relative;
   padding: 10px 5px;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   font-size: 15.5px;
   font-weight: 500;
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
@@ -249,20 +285,21 @@ header.scrolled {
 
 .nav-center li:hover a,
 .nav-center li.active a {
-  color: #FFF;
+  color: #fff;
   text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
   transform: translateY(-1px);
 }
 
 /* Efecto de subrayado con gradiente animado */
 .nav-center li a::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -2px;
   left: 50%;
   width: 0%;
   height: 2px;
-  background: linear-gradient(90deg, 
+  background: linear-gradient(
+    90deg,
     transparent 0%,
     var(--color-accent) 40%,
     var(--color-accent) 60%,
@@ -306,9 +343,7 @@ header.scrolled {
   opacity: 0;
   transform: translateY(12px) scale(0.98);
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 
-    0 15px 35px rgba(0, 0, 0, 0.5),
-    0 5px 15px rgba(0, 0, 0, 0.3),
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), 0 5px 15px rgba(0, 0, 0, 0.3),
     0 0 0 1px rgba(255, 255, 255, 0.05);
   border-radius: var(--radius-lg);
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -319,14 +354,17 @@ header.scrolled {
 /* Efecto de fondo para los dropdowns */
 .dropdown::after,
 .dropdown-content::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: 
-    radial-gradient(circle at 10% 90%, rgba(255, 255, 255, 0.02) 0%, transparent 60%);
+  background: radial-gradient(
+    circle at 10% 90%,
+    rgba(255, 255, 255, 0.02) 0%,
+    transparent 60%
+  );
   z-index: -1;
   opacity: 0.5;
   pointer-events: none;
@@ -335,7 +373,7 @@ header.scrolled {
 /* Flecha elegante para los dropdowns con sombra */
 .dropdown::before,
 .dropdown-content::before {
-  content: '';
+  content: "";
   position: absolute;
   top: -6px;
   left: 20px;
@@ -389,13 +427,17 @@ header.scrolled {
 /* Efecto de onda al hacer clic */
 .dropdown-content .profile-item:active::after,
 .dropdown-content .language-item:active::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 50%;
   left: 50%;
   width: 100%;
   height: 100%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.3) 0%,
+    transparent 70%
+  );
   border-radius: 50%;
   transform: translate(-50%, -50%) scale(0);
   opacity: 0.6;
@@ -464,7 +506,7 @@ header.scrolled {
 }
 
 /* SOLUCIÓN AL DOBLE BORDE: Botones de idioma y perfil mejorados */
-.profile-icon, .language-selector {
+.profile-icon {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -476,9 +518,54 @@ header.scrolled {
   border: 1px solid rgba(251, 197, 0, 0.1);
   outline: none;
   color: var(--color-text);
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   font-size: 14px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Estilos específicos para el selector de idioma */
+.language-selector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 10px;
+  gap: 6px;
+  border-radius: var(--radius-md);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  background: rgba(16, 23, 37, 0.7);
+  border: 1px solid rgba(251, 197, 0, 0.1);
+  outline: none;
+  color: var(--color-text);
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  min-width: 0;
+  max-width: fit-content;
+  position: relative;
+}
+
+.language-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  color: var(--color-text);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* Efecto hover */
+.profile-icon:hover,
+.language-selector:hover,
+.profile.active .profile-icon {
+  background: rgba(22, 31, 48, 0.8);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3), 0 0 0 2px rgba(251, 197, 0, 0.15),
+    0 0 20px rgba(251, 197, 0, 0.3);
+  border-color: rgba(251, 197, 0, 0.3);
 }
 
 /* Botón de búsqueda con efectos especiales mejorados */
@@ -498,24 +585,29 @@ header.scrolled {
 }
 
 .search-btn::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: -4px;
   border-radius: inherit;
   opacity: 0;
   transition: all 0.5s ease;
-  background: radial-gradient(circle, rgba(251, 197, 0, 0.2) 0%, transparent 70%);
+  background: radial-gradient(
+    circle,
+    rgba(251, 197, 0, 0.2) 0%,
+    transparent 70%
+  );
   z-index: -1;
   transform: scale(0.6);
 }
 
 .search-btn::after {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, 
-    rgba(255, 255, 255, 0.05) 0%, 
-    transparent 50%, 
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.05) 0%,
+    transparent 50%,
     rgba(255, 255, 255, 0.05) 100%
   );
   opacity: 0;
@@ -526,9 +618,7 @@ header.scrolled {
   background: rgba(16, 23, 37, 0.9);
   border-color: rgba(251, 197, 0, 0.3);
   transform: translateY(-4px);
-  box-shadow: 
-    0 12px 24px rgba(0, 0, 0, 0.3),
-    0 0 0 2px rgba(251, 197, 0, 0.15),
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3), 0 0 0 2px rgba(251, 197, 0, 0.15),
     0 0 20px rgba(251, 197, 0, 0.3);
 }
 
@@ -543,8 +633,15 @@ header.scrolled {
 }
 
 @keyframes pulse-search {
-  0%, 100% { transform: scale(1); opacity: 0.3; }
-  50% { transform: scale(1.2); opacity: 0.5; }
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.3;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.5;
+  }
 }
 
 .search-btn i {
@@ -559,7 +656,8 @@ header.scrolled {
 }
 
 /* SOLUCIÓN AL PROBLEMA: Mejora del perfil y las banderas de idioma */
-.profile, .language {
+.profile,
+.language {
   padding: 0;
   border-radius: var(--radius-md);
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -571,12 +669,13 @@ header.scrolled {
 /* Efectos de fondo para botones de idioma y perfil */
 .language-selector::after,
 .profile-icon::after {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, 
-    rgba(255, 255, 255, 0.1) 0%, 
-    transparent 50%, 
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    transparent 50%,
     rgba(255, 255, 255, 0.1) 100%
   );
   opacity: 0;
@@ -591,13 +690,13 @@ header.scrolled {
 }
 
 /* Efecto hover */
-.profile-icon:hover, .language-selector:hover,
-.profile.active .profile-icon, .language.active .language-selector {
+.profile-icon:hover,
+.language-selector:hover,
+.profile.active .profile-icon,
+.language.active .language-selector {
   background: rgba(22, 31, 48, 0.8);
   transform: translateY(-4px);
-  box-shadow: 
-    0 12px 24px rgba(0, 0, 0, 0.3),
-    0 0 0 2px rgba(251, 197, 0, 0.15),
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3), 0 0 0 2px rgba(251, 197, 0, 0.15),
     0 0 20px rgba(251, 197, 0, 0.3);
   border-color: rgba(251, 197, 0, 0.3);
 }
@@ -616,7 +715,7 @@ header.scrolled {
 
 /* Efecto de brillo alrededor de la bandera */
 .language .flag-icon::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: -2px;
   background: rgba(255, 255, 255, 0.2);
@@ -739,8 +838,8 @@ header.scrolled {
 }
 
 .search-box::before {
-  content: '\f002';
-  font-family: 'Font Awesome 5 Free';
+  content: "\f002";
+  font-family: "Font Awesome 5 Free";
   font-weight: 900;
   position: absolute;
   left: 25px;
@@ -778,12 +877,13 @@ header.scrolled {
 }
 
 .search-overlay .close-search::after {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, 
-    rgba(255, 255, 255, 0.05) 0%, 
-    transparent 50%, 
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.05) 0%,
+    transparent 50%,
     rgba(255, 255, 255, 0.05) 100%
   );
   opacity: 0;
@@ -793,9 +893,7 @@ header.scrolled {
 .search-overlay .close-search:hover {
   background: rgba(251, 197, 0, 0.9);
   transform: rotate(90deg) scale(1.1);
-  box-shadow: 
-    0 8px 20px rgba(0, 0, 0, 0.3),
-    0 0 20px rgba(251, 197, 0, 0.5);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3), 0 0 20px rgba(251, 197, 0, 0.5);
 }
 
 .search-overlay .close-search:hover::after {
@@ -824,7 +922,7 @@ header.scrolled {
 
 /* Añadir clase personalizada para la bandera catalana que no está en la librería */
 .flag-icon-cat {
-  background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NDAgNDgwIj48cGF0aCBmaWxsPSIjRkNERDAyIiBkPSJNMCAwaDY0MHY0ODBIMHoiLz48cGF0aCBzdHJva2U9IiNEQTEyMUEiIHN0cm9rZS13aWR0aD0iNjAiIGQ9Ik0wIDkwaDY0MG0wIDEyMEgwbTAgMTIwaDY0MCIvPjwvc3ZnPg==');
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NDAgNDgwIj48cGF0aCBmaWxsPSIjRkNERDAyIiBkPSJNMCAwaDY0MHY0ODBIMHoiLz48cGF0aCBzdHJva2U9IiNEQTEyMUEiIHN0cm9rZS13aWR0aD0iNjAiIGQ9Ik0wIDkwaDY0MG0wIDEyMEgwbTAgMTIwaDY0MCIvPjwvc3ZnPg==");
   background-repeat: no-repeat;
   background-size: cover;
 }
@@ -855,9 +953,7 @@ header.scrolled {
 .mobile-menu-toggle:hover {
   background: rgba(22, 31, 48, 0.9);
   transform: translateY(-2px);
-  box-shadow: 
-    0 8px 20px rgba(0, 0, 0, 0.3),
-    0 0 0 2px rgba(251, 197, 0, 0.15);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3), 0 0 0 2px rgba(251, 197, 0, 0.15);
 }
 
 .mobile-menu-toggle:hover i {
@@ -910,11 +1006,11 @@ header.scrolled {
   .navbar {
     padding: 15px 20px;
   }
-  
+
   .logo span {
     font-size: 24px;
   }
-  
+
   .nav-center {
     gap: 25px;
   }
@@ -926,23 +1022,23 @@ header.scrolled {
     display: flex;
     order: 3;
   }
-  
+
   /* Reordenar elementos en móvil */
   .navbar {
     padding: 12px 16px;
     flex-wrap: wrap;
   }
-  
+
   .logo {
     order: 1;
   }
-  
+
   .nav-right {
     order: 2;
     margin-left: auto;
     margin-right: 15px;
   }
-  
+
   /* Menú central en pantalla completa */
   .nav-center {
     order: 4;
@@ -966,13 +1062,13 @@ header.scrolled {
     gap: 15px;
     overflow-y: auto;
   }
-  
+
   .nav-center.mobile-active {
     transform: translateY(0);
     opacity: 1;
     visibility: visible;
   }
-  
+
   /* Adaptar dropdowns en móvil */
   .nav-center li {
     font-size: 18px;
@@ -980,8 +1076,8 @@ header.scrolled {
     max-width: 300px;
     text-align: center;
   }
-  
-  .dropdown, 
+
+  .dropdown,
   .dropdown.explorar {
     position: relative;
     top: 0;
@@ -993,23 +1089,23 @@ header.scrolled {
     box-shadow: none;
     border-radius: var(--radius-md);
   }
-  
+
   .dropdown.explorar .column {
     width: 100%;
   }
-  
+
   .dropdown-content {
     top: 0;
     position: relative;
     width: 100%;
     margin-top: 10px;
   }
-  
+
   /* Ajustar overlay de búsqueda para móvil */
   .search-box {
     width: 90%;
   }
-  
+
   .search-overlay .close-search {
     top: 20px;
     right: 20px;
@@ -1020,7 +1116,7 @@ header.scrolled {
 
 /* Asegurar que el botón de cierre de búsqueda solo aparezca cuando se activa */
 .search-overlay:not(.active) .close-search {
-  opacity: 0 !important; 
+  opacity: 0 !important;
   pointer-events: none;
 }
 
@@ -1068,3 +1164,216 @@ header.scrolled {
   animation: slideIn 0.3s forwards;
 }
 
+/* Agregar estos estilos al final del archivo header.css */
+
+.auth-buttons {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.login-btn,
+.register-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 15px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.login-btn {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.register-btn {
+  background: #fbc500;
+  color: #1a202c;
+  border: none;
+  box-shadow: 0 4px 10px rgba(251, 197, 0, 0.3);
+}
+
+.login-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.register-btn:hover {
+  background: #ffd700;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(251, 197, 0, 0.4);
+}
+
+.auth-loading {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 18px;
+}
+
+/* Para dispositivos móviles, ajustamos el tamaño */
+@media (max-width: 767px) {
+  .auth-buttons {
+    gap: 8px;
+  }
+
+  .login-btn,
+  .register-btn {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+
+  .login-btn span,
+  .register-btn span {
+    display: none;
+  }
+}
+
+/* Estilos para los resultados de búsqueda */
+.search-results {
+  position: absolute;
+  top: calc(100% + 15px);
+  left: 0;
+  width: 100%;
+  background: rgba(16, 23, 37, 0.95);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3), 0 5px 15px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+  z-index: 10020;
+  backdrop-filter: blur(10px);
+  padding: 10px;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.search-result-item {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  border-radius: var(--radius-md);
+  margin-bottom: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.search-result-item:hover {
+  background: rgba(251, 197, 0, 0.15);
+  transform: translateX(3px);
+}
+
+/* Efecto de onda al hacer clic en un resultado */
+.search-result-item:active::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100px;
+  height: 100px;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.3) 0%,
+    transparent 70%
+  );
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0.6;
+  animation: ripple 0.5s ease-out;
+}
+
+.search-result-image {
+  width: 60px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  margin-right: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.search-result-item:hover .search-result-image {
+  transform: scale(1.05);
+}
+
+.search-result-image-placeholder {
+  width: 60px;
+  height: 90px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-sm);
+  margin-right: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 24px;
+}
+
+.search-result-info {
+  flex: 1;
+}
+
+.search-result-title {
+  margin: 0 0 5px;
+  font-size: 16px;
+  color: var(--color-text);
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.search-result-meta {
+  display: flex;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--color-text-tertiary);
+}
+
+.search-result-type {
+  color: var(--color-accent);
+  font-weight: 500;
+}
+
+.search-loading {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-text-tertiary);
+  font-size: 18px;
+}
+
+/* Mejoras para móvil */
+@media (max-width: 768px) {
+  .search-results {
+    padding: 8px;
+  }
+
+  .search-result-item {
+    padding: 8px;
+  }
+
+  .search-result-image,
+  .search-result-image-placeholder {
+    width: 45px;
+    height: 68px;
+    margin-right: 10px;
+  }
+
+  .search-result-title {
+    font-size: 14px;
+  }
+
+  .search-result-meta {
+    font-size: 12px;
+  }
+}

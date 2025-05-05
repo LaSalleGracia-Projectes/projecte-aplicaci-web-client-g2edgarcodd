@@ -1,23 +1,29 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React, { useState, useEffect, useRef, useContext } from "react";
+import { Link, useLocation, NavLink } from "react-router-dom";
+import { useLanguage } from "../../contexts/LanguageContext";
+import { AuthContext } from "../../contexts/AuthContext";
+import LanguageSelector from "../UI/LanguageSelector";
 
-function Navbar({ toggleSearch, logo, isScrolled }) {
+function Navbar({
+  toggleSearch,
+  logo,
+  isScrolled,
+  isAuthenticated,
+  isLoading,
+}) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
-  const [currentLanguage, setCurrentLanguage] = useState({ 
-    code: 'es', 
-    name: 'Español', 
-    flag: 'es' 
-  });
   const location = useLocation();
   const navRef = useRef(null);
-  
+  const { t, language } = useLanguage();
+  const { logout } = useContext(AuthContext);
+
   // Cerrar el menú móvil al cambiar de ruta
   useEffect(() => {
     setMobileMenuOpen(false);
     setActiveDropdown(null);
   }, [location.pathname]);
-  
+
   // Cerrar menú al hacer clic fuera
   useEffect(() => {
     function handleClickOutside(event) {
@@ -25,151 +31,186 @@ function Navbar({ toggleSearch, logo, isScrolled }) {
         setActiveDropdown(null);
       }
     }
-    
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
     if (activeDropdown) setActiveDropdown(null);
   };
-  
+
   // Función mejorada para controlar los desplegables
   const toggleDropdown = (dropdown, e) => {
     if (e) {
       e.preventDefault();
       e.stopPropagation();
     }
-    
-    console.log("Toggling dropdown:", dropdown, "Current:", activeDropdown);
+
     setActiveDropdown(activeDropdown === dropdown ? null : dropdown);
-  };
-  
-  const languages = [
-    { code: 'es', name: 'Español', flag: 'es' },
-    { code: 'ca', name: 'Catalán', flag: 'cat' },
-    { code: 'en', name: 'Inglés', flag: 'gb' }
-  ];
-  
-  const changeLanguage = (language) => {
-    setCurrentLanguage(language);
-    setActiveDropdown(null);
   };
 
   const isActive = (path) => {
-    return location.pathname === path ? 'active' : '';
+    if (path === "/explore") {
+      // Para considerar activas también las rutas hijas de explore
+      return location.pathname.startsWith(path) ? "active" : "";
+    }
+    return location.pathname === path ? "active" : "";
+  };
+
+  const handleLogout = (e) => {
+    e.preventDefault();
+    logout();
+    // Redireccionar a home o login después del logout
+    window.location.href = "/";
   };
 
   return (
-    <nav className={`navbar ${isScrolled ? 'scrolled' : ''}`} ref={navRef}>
+    <nav className={`navbar ${isScrolled ? "scrolled" : ""}`} ref={navRef}>
       <div className="logo">
         <Link to="/">
-          <img src={logo} alt="Streamhub" />
-          <span>Streamhub</span>
+          <img src={logo} alt={t("common.appName")} />
+          <span>{t("common.appName")}</span>
         </Link>
       </div>
-      
-      <div 
-        className={`mobile-menu-toggle ${mobileMenuOpen ? 'active' : ''}`} 
+
+      <div
+        className={`mobile-menu-toggle ${mobileMenuOpen ? "active" : ""}`}
         onClick={toggleMobileMenu}
       >
-        <i className={`fas ${mobileMenuOpen ? 'fa-times' : 'fa-bars'}`}></i>
+        <i className={`fas ${mobileMenuOpen ? "fa-times" : "fa-bars"}`}></i>
       </div>
-      
-      <ul className={`nav-center ${mobileMenuOpen ? 'mobile-active' : ''}`}>
-        <li className={isActive('/')}>
-          <Link to="/">Inicio</Link>
+
+      <ul className={`nav-center ${mobileMenuOpen ? "mobile-active" : ""}`}>
+        <li className={isActive("/")}>
+          <Link to="/">{t("navbar.home")}</Link>
         </li>
-        <li className={`has-dropdown ${activeDropdown === 'explorar' ? 'active' : ''}`}>
-          <Link to="#" onClick={(e) => toggleDropdown('explorar', e)}>
-            Explorar
+        <li
+          className={`has-dropdown ${
+            activeDropdown === "explorar" ? "active" : ""
+          } ${isActive("/explore")}`}
+        >
+          <Link
+            to="/explore"
+            onClick={(e) => {
+              e.preventDefault();
+              toggleDropdown("explorar", e);
+            }}
+          >
+            {t("navbar.explore")}
           </Link>
-          <div className={`dropdown explorar ${activeDropdown === 'explorar' ? 'visible' : ''}`}>
+          <div
+            className={`dropdown explorar ${
+              activeDropdown === "explorar" ? "visible" : ""
+            }`}
+          >
             <div className="column">
-              <li><Link to="/peliculas">Películas</Link></li>
-              <li><Link to="/series">Series</Link></li>
+              <li>
+                <Link to="/explore">{t("explore.allContent")}</Link>
+              </li>
+              <li>
+                <Link to="/explore/films">{t("explore.films")}</Link>
+              </li>
+              <li>
+                <Link to="/explore/series">{t("explore.series")}</Link>
+              </li>
             </div>
             <div className="column">
-              <li><Link to="/accion">Acción</Link></li>
-              <li><Link to="/aventura">Aventura</Link></li>
-              <li><Link to="/fantasia">Fantasía</Link></li>
-              <li><Link to="/ciencia-ficcion">Ciencia Ficción</Link></li>
-              <li><Link to="/romance">Romance</Link></li>
-              <li><Link to="/drama">Drama</Link></li>
+              <li>
+                <Link to="/explore?genre=action">{t("genres.action")}</Link>
+              </li>
+              <li>
+                <Link to="/explore?genre=adventure">
+                  {t("genres.adventure")}
+                </Link>
+              </li>
+              <li>
+                <Link to="/explore?genre=fantasy">{t("genres.fantasy")}</Link>
+              </li>
+              <li>
+                <Link to="/explore?genre=scifi">{t("genres.scifi")}</Link>
+              </li>
+              <li>
+                <Link to="/explore?genre=romance">{t("genres.romance")}</Link>
+              </li>
+              <li>
+                <Link to="/explore?genre=drama">{t("genres.drama")}</Link>
+              </li>
             </div>
           </div>
         </li>
-        <li className={isActive('/blog')}>
-          <Link to="/blog">Blog</Link>
+        <li className={isActive("/blog")}>
+          <Link to="/blog">{t("navbar.blog")}</Link>
         </li>
-        <li className={isActive('/forum')}>
-          <Link to="/forum">Foro</Link>
+        <li className={isActive("/forum")}>
+          <Link to="/forum">{t("navbar.forum")}</Link>
+        </li>
+        <li className={isActive("/contact")}>
+          <Link to="/contact">{t("navbar.contact")}</Link>
         </li>
       </ul>
-      
+
       <div className="nav-right">
-        {/* COMPONENTE DE IDIOMA MEJORADO */}
-        <div className={`language ${activeDropdown === 'language' ? 'active' : ''}`}>
-          <button 
-            onClick={(e) => toggleDropdown('language', e)} 
-            className="language-selector"
-            aria-label="Seleccionar idioma"
-            type="button"
-          >
-            <i className={`flag-icon flag-icon-${currentLanguage.flag}`}></i>
-            <span>{currentLanguage.name}</span>
-          </button>
-          {activeDropdown === 'language' && (
-            <div className="dropdown-content language-dropdown visible">
-              {languages.map(lang => (
-                <div 
-                  key={lang.code} 
-                  className="language-item"
-                  onClick={() => changeLanguage(lang)}
-                >
-                  <i className={`flag-icon flag-icon-${lang.flag}`}></i>
-                  <span>{lang.name}</span>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-        
+        <LanguageSelector />
+
         <div className="search-btn" onClick={toggleSearch}>
           <i className="fas fa-search"></i>
         </div>
-        
-        {/* COMPONENTE DE PERFIL MEJORADO */}
-        <div className={`profile ${activeDropdown === 'profile' ? 'active' : ''}`}>
-          <button 
-            onClick={(e) => toggleDropdown('profile', e)} 
-            className="profile-icon"
-            aria-label="Menú de perfil"
-            type="button"
+
+        {/* Mostrar distintos botones según el estado de autenticación */}
+        {isLoading ? (
+          // Mostrar indicador de carga mientras verificamos la autenticación
+          <div className="auth-loading">
+            <i className="fas fa-spinner fa-spin"></i>
+          </div>
+        ) : isAuthenticated ? (
+          // Usuario autenticado: Mostrar menú de perfil
+          <div
+            className={`profile ${
+              activeDropdown === "profile" ? "active" : ""
+            }`}
           >
-            <i className="fas fa-user"></i>
-          </button>
-          {activeDropdown === 'profile' && (
-            <div className="dropdown-content profile-dropdown visible">
-              <div className="profile-item">
-                <Link to="/profile">Mi perfil</Link>
+            <button
+              onClick={(e) => toggleDropdown("profile", e)}
+              className="profile-icon"
+              aria-label={t("profile.myProfile")}
+              type="button"
+            >
+              <i className="fas fa-user"></i>
+            </button>
+            {activeDropdown === "profile" && (
+              <div className="dropdown-content profile-dropdown visible">
+                <div className="profile-item">
+                  <Link to="/profile">{t("profile.myProfile")}</Link>
+                </div>
+                <div className="profile-item">
+                  <Link to="/lists/favorites">{t("lists.favorites")}</Link>
+                </div>
+                <div className="profile-item">
+                  <Link to="/lists/collections">{t("lists.myLists")}</Link>
+                </div>
+                <div className="profile-item">
+                  <a href="#" onClick={handleLogout}>
+                    {t("profile.logOut")}
+                  </a>
+                </div>
               </div>
-              <div className="profile-item">
-                <Link to="/favorites">Favoritos</Link>
-              </div>
-              <div className="profile-item">
-                <Link to="/lists">Mis listas</Link>
-              </div>
-              <div className="profile-item">
-                <Link to="/settings">Opciones</Link>
-              </div>
-              <div className="profile-item">
-                <Link to="/logout">Desconectar</Link>
-              </div>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
+        ) : (
+          // Usuario no autenticado: Mostrar botones de login y registro
+          <div className="auth-buttons">
+            <Link to="/login" className="login-btn">
+              <i className="fas fa-sign-in-alt"></i>
+              <span>{t("auth.login")}</span>
+            </Link>
+            <Link to="/register" className="register-btn">
+              <i className="fas fa-user-plus"></i>
+              <span>{t("auth.register")}</span>
+            </Link>
+          </div>
+        )}
       </div>
     </nav>
   );
