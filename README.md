@@ -28,7 +28,8 @@
 
 ## 📺 Sobre el Proyecto
 
-[![StreamHub Screen Shot][product-screenshot]](https://example.com)
+[![StreamHub Screen Shot](https://raw.githubusercontent.com/LaSalleGracia-Projectes/projecte-aplicaci-web-client-g2edgarcodd/refs/heads/main/src/assets/scr.png)
+
 
 StreamHub es una aplicación web moderna desarrollada con React y Vite que permite a los usuarios descubrir, explorar y gestionar contenido de múltiples plataformas de streaming desde un único lugar. La aplicación ofrece una experiencia de usuario intuitiva y visual con un diseño moderno y responsivo.
 
