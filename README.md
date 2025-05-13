@@ -2,13 +2,12 @@
 
 <!-- PROJECT SHIELDS -->
 
-[![Contributors][contributors-shield]]
-[![MIT License][license-shield]]
+[![MIT License](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <img src="./src/assets/logos/logo.png" alt="StreamHub Logo" width="120" height="120">
+  <img src="https://raw.githubusercontent.com/LaSalleGracia-Projectes/projecte-aplicaci-web-client-g2edgarcodd/refs/heads/main/src/assets/streamhub.png" alt="StreamHub Logo" width="120" height="120">
 
   <h3 align="center">StreamHub - Plataforma de Agregación de Streaming</h3>
 
