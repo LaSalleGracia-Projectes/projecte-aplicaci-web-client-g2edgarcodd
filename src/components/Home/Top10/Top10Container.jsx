@@ -17,6 +17,18 @@ function Top10Container() {
   const sliderRef = useRef(null);
   const { t } = useLanguage();
 
+  function Top10Container() {
+  const [activeCategory, setActiveCategory] = useState("movies");
+  
+  // Carga y procesa los datos de películas/series mejor valoradas
+  useEffect(() => {
+    const fetchTop10Data = async () => {
+      // Obtiene datos y los procesa para mostrar
+    };
+    fetchTop10Data();
+  }, []);
+}
+
   // Cargar datos de la API
   useEffect(() => {
     const fetchTop10Data = async () => {

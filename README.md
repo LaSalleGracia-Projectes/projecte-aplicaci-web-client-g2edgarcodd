@@ -2,18 +2,34 @@
 
 <!-- PROJECT SHIELDS -->
 
-[![Contributors][contributors-shield]][contributors-url]
-[![MIT License][license-shield]][license-url]
+[![Contributors][contributors-shield]]
+[![MIT License][license-shield]]
 
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
   <img src="./src/assets/logos/logo.png" alt="StreamHub Logo" width="120" height="120">
+
+  <h3 align="center">StreamHub - Plataforma de Agregación de Streaming</h3>
+
+  <p align="center">
+    Descubre, explora y gestiona contenido de múltiples plataformas en un solo lugar
+    <br />
+    <a href="https://github.com/edgarcodd/projecte-aplicaci-web-client-g2edgarcodd"><strong>Explorar documentación »</strong></a>
+    <br />
+    <a href="https://github.com/edgarcodd/projecte-aplicaci-web-client-g2edgarcodd">Ver Demo</a>
+    ·
+    <a href="https://github.com/edgarcodd/projecte-aplicaci-web-client-g2edgarcodd/issues/new?labels=bug&template=bug-report---.md">Reportar Bug</a>
+    ·
+    <a href="https://github.com/edgarcodd/projecte-aplicaci-web-client-g2edgarcodd/issues/new?labels=enhancement&template=feature-request---.md">Solicitar Función</a>
+  </p>
 </div>
 
 # 🎬 StreamHub - Plataforma de Agregación de Streaming
 
 ## 📺 Sobre el Proyecto
+
+[![StreamHub Screen Shot][product-screenshot]](https://example.com)
 
 StreamHub es una aplicación web moderna desarrollada con React y Vite que permite a los usuarios descubrir, explorar y gestionar contenido de múltiples plataformas de streaming desde un único lugar. La aplicación ofrece una experiencia de usuario intuitiva y visual con un diseño moderno y responsivo.
 
@@ -39,7 +55,9 @@ StreamHub es una aplicación web moderna desarrollada con React y Vite que permi
     </li>
     <li><a href="#arquitectura">Arquitectura</a></li>
     <li><a href="#testing">Testing</a></li>
-    <li><a href="#autores">Autores</a></li>
+    <li><a href="#uso">Uso</a></li>
+    <li><a href="#roadmap">Roadmap</a></li>
+    <li><a href="#contribuyentes">Contribuyentes</a></li>
     <li><a href="#licencia">Licencia</a></li>
     <li><a href="#agradecimientos">Agradecimientos</a></li>
   </ol>
@@ -144,6 +162,13 @@ StreamHub es una aplicación web moderna desarrollada con React y Vite que permi
   - Catalán
   - Inglés
   - Sistema de traducciones personalizado
+
+### Construido Con
+
+[![React][React.js]][React-url]
+[![Vite][Vite.js]][Vite-url]
+[![React Router][ReactRouter.js]][ReactRouter-url]
+[![FontAwesome][FontAwesome.js]][FontAwesome-url]
 
 ### 📚 Dependencias Principales
 
@@ -328,11 +353,31 @@ streamhub/
   ```
 - La meta es mantener al menos 70% de cobertura en componentes críticos.
 
-## ✍️ Autores
+## 📱 Uso
 
-- **Nombre 1** - _Desarrollador Frontend_ - [GitHub](https://github.com/usuario1)
-- **Nombre 2** - _UI/UX Designer_ - [GitHub](https://github.com/usuario2)
-- **Nombre 3** - _Desarrollador Backend_ - [GitHub](https://github.com/usuario3)
+Aquí puedes ver ejemplos útiles de cómo utilizar StreamHub:
+
+- **Búsqueda de contenido**: Utiliza la barra de búsqueda para encontrar películas y series
+- **Gestión de listas**: Crea y organiza tus colecciones personales
+- **Integración social**: Comparte opiniones y recomendaciones con otros usuarios
+
+Para más ejemplos, consulta la [Documentación completa](https://github.com/edgarcodd/projecte-aplicaci-web-client-g2edgarcodd) o mira el [Video demostrativo](https://example.com)
+
+## 🚧 Roadmap
+
+- [x] Integración con API de TMDB
+- [x] Sistema de autenticación de usuarios
+- [ ] Integración con proveedores de streaming adicionales
+- [ ] Sistema de recomendaciones avanzado
+  - [x] Basado en géneros favoritos
+  - [ ] Basado en comportamiento de usuarios similares
+- [ ] Aplicación móvil complementaria
+
+## 👥 Contribuyentes
+
+- **gr1fox** - _Desarrollador Principal_ - [GitHub](https://github.com/gr1f0x)
+- **gr1fox** - _UI/UX Designer_ - [GitHub](https://github.com/gr1f0x)
+- **RatWithHat** - _Desarrollador Backend_ - [GitHub](https://github.com/RatWitHat)
 
 ## 📄 Licencia
 
@@ -351,6 +396,10 @@ Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE.md](LICENSE.m
   - JustWatch por el concepto
   - Netflix por la experiencia de usuario
   - Letterboxd por las características sociales
+- **Recursos:**
+  - [Choose an Open Source License](https://choosealicense.com)
+  - [Img Shields](https://shields.io)
+  - [GitHub Pages](https://pages.github.com)
 
 ---
 
@@ -362,3 +411,12 @@ Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE.md](LICENSE.m
 [contributors-url]: https://github.com/edgarcodd/projecte-aplicaci-web-client-g2edgarcodd/graphs/contributors
 [license-shield]: https://img.shields.io/github/license/edgarcodd/projecte-aplicaci-web-client-g2edgarcodd.svg?style=for-the-badge
 [license-url]: https://github.com/edgarcodd/projecte-aplicaci-web-client-g2edgarcodd/blob/master/LICENSE.txt
+[product-screenshot]: ./src/assets/images/screenshot.png
+[React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
+[React-url]: https://reactjs.org/
+[Vite.js]: https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white
+[Vite-url]: https://vitejs.dev/
+[ReactRouter.js]: https://img.shields.io/badge/React_Router-CA4245?style=for-the-badge&logo=react-router&logoColor=white
+[ReactRouter-url]: https://reactrouter.com/
+[FontAwesome.js]: https://img.shields.io/badge/Font_Awesome-339AF0?style=for-the-badge&logo=fontawesome&logoColor=white
+[FontAwesome-url]: https://fontawesome.com/
