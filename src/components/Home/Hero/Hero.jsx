@@ -975,7 +975,11 @@ function Hero() {
 
                 {!showTrailer && (
                   <Link
-                    to={`/${currentContent.type}/${currentContent.id}`}
+                    to={
+                      activeSlide === 1
+                        ? `/series/${currentContent.id}`
+                        : `/${currentContent.type}/${currentContent.id}`
+                    }
                     className="btn-info"
                   >
                     <i className="fas fa-info-circle"></i>

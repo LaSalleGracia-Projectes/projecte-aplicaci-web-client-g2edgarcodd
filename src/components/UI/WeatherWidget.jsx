@@ -1,14 +1,22 @@
 import { useState, useEffect } from "react";
 import { useLanguage } from "../../contexts/LanguageContext";
+import { Link } from "react-router-dom";
 import {
   getCurrentWeatherByCoords,
   getUserLocation,
   getWeatherBasedRecommendations,
 } from "../../utils/weatherApi";
+import {
+  getContentByGenres,
+  getImageUrl,
+  LANGUAGE_MAPPING,
+} from "../../utils/api";
 import "../../styles/components/WeatherWidget.css";
 
 // Clave para almacenar datos en localStorage
 const WEATHER_CACHE_KEY = "streamhub_weather_cache";
+// Clave para almacenar las recomendaciones de películas
+const WEATHER_MOVIES_CACHE_KEY = "streamhub_weather_movies_cache";
 // Tiempo de expiración de la caché en milisegundos (30 minutos)
 const CACHE_EXPIRATION = 30 * 60 * 1000;
 
@@ -21,6 +29,7 @@ const WeatherWidget = ({
   const [error, setError] = useState(null);
   const [weatherData, setWeatherData] = useState(null);
   const [recommendations, setRecommendations] = useState(null);
+  const [movieRecommendations, setMovieRecommendations] = useState([]);
 
   // Función para corregir el icono según la hora del día
   const fixIconForTimeOfDay = (iconUrl, isDayTime) => {
@@ -33,6 +42,104 @@ const WeatherWidget = ({
       return iconUrl.replace("n@2x.png", "d@2x.png");
     }
     return iconUrl;
+  };
+
+  // Función para obtener géneros de películas basados en el clima
+  const getGenresBasedOnWeather = (weatherType, temperature, isDayTime) => {
+    // Asignar géneros según el clima y la hora del día
+    if (weatherType.includes("rain") || weatherType.includes("drizzle")) {
+      return isDayTime ? [18, 10751] : [9648, 27]; // Drama, Familia (día) / Misterio, Terror (noche)
+    } else if (weatherType.includes("snow")) {
+      return isDayTime ? [10751, 14] : [14, 878]; // Familia, Fantasía (día) / Fantasía, Ciencia ficción (noche)
+    } else if (weatherType.includes("clear")) {
+      if (temperature > 25) {
+        // Caluroso
+        return isDayTime ? [12, 28] : [10749, 53]; // Aventura, Acción (día) / Romance, Thriller (noche)
+      } else {
+        return isDayTime ? [35, 12] : [9648, 80]; // Comedia, Aventura (día) / Misterio, Crimen (noche)
+      }
+    } else if (weatherType.includes("cloud")) {
+      return isDayTime ? [18, 36] : [878, 53]; // Drama, Historia (día) / Ciencia ficción, Thriller (noche)
+    } else if (
+      weatherType.includes("storm") ||
+      weatherType.includes("thunder")
+    ) {
+      return isDayTime ? [28, 53] : [27, 9648]; // Acción, Thriller (día) / Terror, Misterio (noche)
+    } else if (weatherType.includes("fog") || weatherType.includes("mist")) {
+      return isDayTime ? [9648, 36] : [27, 53]; // Misterio, Historia (día) / Terror, Thriller (noche)
+    }
+
+    // Géneros por defecto
+    return isDayTime ? [35, 12] : [878, 9648]; // Comedia, Aventura (día) / Ciencia ficción, Misterio (noche)
+  };
+
+  // Obtener películas recomendadas desde TMDB según el clima
+  const fetchWeatherBasedMovies = async (weatherData) => {
+    try {
+      // Verificar si hay datos en caché
+      const cachedMovies = localStorage.getItem(WEATHER_MOVIES_CACHE_KEY);
+      if (cachedMovies) {
+        const { timestamp, movies } = JSON.parse(cachedMovies);
+        if (Date.now() - timestamp < CACHE_EXPIRATION) {
+          setMovieRecommendations(movies);
+          return;
+        }
+      }
+
+      if (!weatherData || !weatherData.weather) return;
+
+      const { weather, temperature } = weatherData;
+      const isDayTime = weather.isDayTime;
+      const weatherType = weather.main.toLowerCase();
+
+      // Obtener géneros apropiados según el clima y hora
+      const genreIds = getGenresBasedOnWeather(
+        weatherType,
+        temperature.current,
+        isDayTime
+      );
+
+      // Obtener idioma actual
+      const currentLanguage = document.documentElement.lang || "es";
+
+      // Obtener películas de TMDB por géneros
+      const movies = await getContentByGenres(
+        genreIds,
+        "movie",
+        1,
+        currentLanguage
+      );
+
+      // Seleccionar 2 películas aleatoriamente
+      const randomMovies = movies
+        .sort(() => 0.5 - Math.random())
+        .slice(0, 2)
+        .map((movie) => ({
+          id: movie.id,
+          title: movie.title,
+          poster_path: getImageUrl(movie.poster_path, "medium", "poster"),
+          genre_ids: movie.genre_ids,
+          vote_average: movie.vote_average,
+          release_date: movie.release_date,
+        }));
+
+      setMovieRecommendations(randomMovies);
+
+      // Guardar en caché
+      localStorage.setItem(
+        WEATHER_MOVIES_CACHE_KEY,
+        JSON.stringify({
+          timestamp: Date.now(),
+          movies: randomMovies,
+        })
+      );
+    } catch (error) {
+      console.error(
+        "Error al obtener películas recomendadas por clima:",
+        error
+      );
+      setMovieRecommendations([]);
+    }
   };
 
   useEffect(() => {
@@ -107,6 +214,9 @@ const WeatherWidget = ({
               onWeatherDataReceived(cachedData.weather);
             }
 
+            // Obtener recomendaciones de películas para el clima en caché
+            fetchWeatherBasedMovies(cachedData.weather);
+
             setLoading(false);
             return; // Usar datos en caché, no continuar con la petición
           }
@@ -154,6 +264,9 @@ const WeatherWidget = ({
         if (onWeatherDataReceived) {
           onWeatherDataReceived(weather);
         }
+
+        // Obtener recomendaciones de películas para el clima
+        fetchWeatherBasedMovies(weather);
 
         setLoading(false);
       } catch (err) {
@@ -312,18 +425,42 @@ const WeatherWidget = ({
         </div>
       </div>
 
-      {recommendations && (
-        <div className="weather-recommendations">
+      {/* Sección de películas recomendadas por el clima */}
+      {movieRecommendations.length > 0 && (
+        <div className="weather-movie-recommendations">
           <h4>
-            {isDayTime
-              ? t("weather.dayRecommendations")
-              : t("weather.nightRecommendations")}
+            {t("weather.movieRecommendations") || "Películas recomendadas"}
           </h4>
-          <p>
-            {isDayTime
-              ? `${recommendations.message} ${t("weather.dayTip")}`
-              : `${recommendations.message} ${t("weather.nightTip")}`}
-          </p>
+          <div className="movie-recommendations-container">
+            {movieRecommendations.map((movie) => (
+              <Link
+                key={movie.id}
+                to={`/movie/${movie.id}`}
+                className="movie-recommendation-card"
+              >
+                <img
+                  src={movie.poster_path}
+                  alt={movie.title}
+                  className="movie-poster"
+                  onError={(e) => {
+                    e.target.src =
+                      "https://via.placeholder.com/150x225?text=Sin+imagen";
+                  }}
+                />
+                <div className="movie-info">
+                  <h5>{movie.title}</h5>
+                  <div className="movie-rating">
+                    <i className="fas fa-star"></i>
+                    <span>
+                      {movie.vote_average
+                        ? Number(movie.vote_average).toFixed(1)
+                        : "N/A"}
+                    </span>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
         </div>
       )}
     </div>

@@ -40,44 +40,51 @@ function SearchOverlay({ active, toggleSearch }) {
 
     setIsLoading(true);
     try {
-      // Buscar películas y series en paralelo
+      // Buscar películas y series en paralelo usando el idioma actual
+      // Pasamos el idioma como tercer parámetro (el segundo es la página)
       const [moviesData, tvShowsData] = await Promise.all([
-        searchTMDBMovies(term),
-        searchTMDBTVShows(term),
+        searchTMDBMovies(term, 1, language),
+        searchTMDBTVShows(term, 1, language),
       ]);
 
       // Preparar datos de películas
-      const movies = moviesData.map((movie) => ({
-        id: movie.id,
-        title: movie.title,
-        image: movie.poster_path
-          ? getImageUrl(movie.poster_path, "small", "poster")
-          : null,
-        year: movie.release_date
-          ? new Date(movie.release_date).getFullYear()
-          : "",
-        type: "movie",
-      }));
+      const movies = Array.isArray(moviesData)
+        ? moviesData.map((movie) => ({
+            id: movie.id,
+            title: movie.title,
+            image: movie.poster_path
+              ? getImageUrl(movie.poster_path, "small", "poster")
+              : null,
+            year: movie.release_date
+              ? new Date(movie.release_date).getFullYear()
+              : "",
+            type: "movie",
+          }))
+        : [];
 
       // Preparar datos de series
-      const tvShows = tvShowsData.map((show) => ({
-        id: show.id,
-        title: show.name,
-        image: show.poster_path
-          ? getImageUrl(show.poster_path, "small", "poster")
-          : null,
-        year: show.first_air_date
-          ? new Date(show.first_air_date).getFullYear()
-          : "",
-        type: "tv",
-      }));
+      const tvShows = Array.isArray(tvShowsData)
+        ? tvShowsData.map((show) => ({
+            id: show.id,
+            title: show.name,
+            image: show.poster_path
+              ? getImageUrl(show.poster_path, "small", "poster")
+              : null,
+            year: show.first_air_date
+              ? new Date(show.first_air_date).getFullYear()
+              : "",
+            type: "tv",
+          }))
+        : [];
 
       // Combinar resultados: 3 películas y 3 series como máximo
       const combinedResults = [...movies.slice(0, 3), ...tvShows.slice(0, 3)];
 
+      console.log("Resultados de búsqueda:", combinedResults);
       setSearchResults(combinedResults);
     } catch (error) {
       console.error("Error al realizar la búsqueda:", error);
+      setSearchResults([]);
     } finally {
       setIsLoading(false);
     }
@@ -161,7 +168,7 @@ function SearchOverlay({ active, toggleSearch }) {
                     <span className="search-result-type">
                       {result.type === "movie"
                         ? t("common.movie")
-                        : t("common.tvShow")}
+                        : t("common.series")}
                     </span>
                   </div>
                 </div>

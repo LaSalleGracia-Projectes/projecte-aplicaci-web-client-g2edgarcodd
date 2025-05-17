@@ -591,6 +591,87 @@
   opacity: 1;
 }
 
+/* Mejoras para la lista de géneros */
+.genre-selector .genre-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.genre-selector .genre-item {
+  padding: 10px 15px;
+  margin-bottom: 5px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background-color: rgba(0, 0, 0, 0.05);
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.genre-selector .genre-item:hover {
+  background-color: rgba(var(--primary-rgb), 0.1);
+  transform: translateX(5px);
+}
+
+.genre-selector .genre-item.active {
+  background-color: rgba(var(--primary-rgb), 0.2);
+  font-weight: 500;
+  color: var(--primary-color);
+}
+
+.genre-selector .genre-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.genre-selector .genre-name {
+  flex-grow: 1;
+}
+
+.genre-selector .genre-check {
+  color: var(--primary-color);
+  margin-left: 8px;
+}
+
+/* Estilos para mejorar la accesibilidad cuando se usa teclado */
+.genre-selector .genre-item:focus {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+/* Indicador de género activo más visible */
+.genre-selector .genre-item.active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background-color: var(--primary-color);
+  border-radius: 4px 0 0 4px;
+}
+
+/* Efecto de hover más distintivo */
+.genre-selector .genre-item:hover .genre-name {
+  transform: translateX(3px);
+}
+
+/* Animación para el check */
+.genre-selector .genre-check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+}
+
+.genre-selector .genre-item.active .genre-check {
+  transform: scale(1.2);
+}
+
 /* ===== RESULTADOS DE EXPLORACIÓN ===== */
 .explore-results {
   flex: 1;
@@ -1203,5 +1284,62 @@
     font-size: 10px;
     top: 5px;
     right: 5px;
+  }
+}
+
+/* Estilos para botones de géneros populares en la sección hero */
+.popular-genres {
+  margin-top: 2rem;
+  width: 100%;
+}
+
+.popular-genres-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+.genre-button {
+  background-color: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(5px);
+}
+
+.genre-button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.genre-button.active {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: white;
+}
+
+/* Mejoras para la versión móvil */
+@media (max-width: 768px) {
+  .popular-genres-list {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    justify-content: flex-start;
+    padding: 0.5rem 0;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+  }
+
+  .popular-genres-list::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
+
+  .genre-button {
+    white-space: nowrap;
+    flex: 0 0 auto;
   }
 }

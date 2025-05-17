@@ -1,0 +1,197 @@
+/* Estilos para componentes de UI reutilizables */
+
+/* Rating Component */
+.rating-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-primary);
+}
+
+.rating-stars {
+  display: flex;
+  gap: 2px;
+}
+
+.rating-value {
+  font-weight: 600;
+}
+
+.rating-max {
+  font-weight: normal;
+  opacity: 0.7;
+  margin-left: 2px;
+}
+
+/* Rating Colors */
+.rating-excellent i {
+  color: #4caf50;
+}
+
+.rating-good i {
+  color: #8bc34a;
+}
+
+.rating-average i {
+  color: #ffc107;
+}
+
+.rating-poor i {
+  color: #ff9800;
+}
+
+.rating-bad i {
+  color: #f44336;
+}
+
+/* Rating Sizes */
+.rating-container.xs {
+  font-size: 0.75rem;
+}
+
+.rating-container.sm {
+  font-size: 0.875rem;
+}
+
+.rating-container.md {
+  font-size: 1rem;
+}
+
+.rating-container.lg {
+  font-size: 1.25rem;
+}
+
+.rating-container.xl {
+  font-size: 1.5rem;
+}
+
+/* Favorite Button */
+.favorite-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 8px;
+  border-radius: 4px;
+  color: var(--text-light);
+}
+
+.favorite-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.favorite-button.active {
+  color: #e91e63;
+}
+
+.favorite-button.active:hover {
+  color: #c2185b;
+}
+
+.favorite-button.animating i {
+  animation: heart-beat 0.5s ease;
+}
+
+@keyframes heart-beat {
+  0% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1.2);
+  }
+  50% {
+    transform: scale(0.95);
+  }
+  75% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Favorite Button Sizes */
+.favorite-button.xs {
+  font-size: 0.75rem;
+}
+
+.favorite-button.sm {
+  font-size: 0.875rem;
+}
+
+.favorite-button.md {
+  font-size: 1rem;
+}
+
+.favorite-button.lg {
+  font-size: 1.25rem;
+}
+
+.favorite-button.xl {
+  font-size: 1.5rem;
+}
+
+/* Content Tabs */
+.content-tabs-container {
+  width: 100%;
+}
+
+.content-tabs-header {
+  display: flex;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 20px;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.content-tab-button {
+  padding: 12px 18px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--text-light);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.content-tab-button:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+}
+
+.content-tab-button.active {
+  color: var(--accent-color);
+  border-bottom-color: var(--accent-color);
+}
+
+.content-tab-badge {
+  background-color: var(--accent-color);
+  color: #fff;
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-size: 0.75rem;
+  min-width: 20px;
+  text-align: center;
+}
+
+.content-tabs-body {
+  animation: fade-in 0.3s ease;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

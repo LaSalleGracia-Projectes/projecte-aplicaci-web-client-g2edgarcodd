@@ -137,10 +137,14 @@ function AwardsShowcase() {
             </div>
 
             <Link
-              to={`/${awardedContent[activeAward].type}/${awardedContent[activeAward].id}`}
+              to={`/explore?content=${
+                awardedContent[activeAward].type === "movie"
+                  ? "films"
+                  : "series"
+              }`}
               className="watch-now-btn"
             >
-              <i className="fas fa-play"></i> {t("common.watchNow")}
+              <i className="fas fa-play"></i> {t("common.exploreMovies")}
             </Link>
           </div>
 

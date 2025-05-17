@@ -930,8 +930,8 @@ header.scrolled {
 /* Botón de menú móvil - Oculto en desktop */
 .mobile-menu-toggle {
   display: none;
-  width: 45px;
-  height: 45px;
+  width: 48px;
+  height: 48px;
   border-radius: var(--radius-md);
   align-items: center;
   justify-content: center;
@@ -939,30 +939,59 @@ header.scrolled {
   border: 1px solid rgba(251, 197, 0, 0.1);
   cursor: pointer;
   position: relative;
-  z-index: 1002;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 1005;
+  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
 }
 
+/* Animación mejorada para el icono del menú */
 .mobile-menu-toggle i {
   color: var(--color-text);
   font-size: 22px;
-  transition: transform 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Efecto de brillo detrás del botón */
+.mobile-menu-toggle::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background: radial-gradient(
+    circle at center,
+    rgba(251, 197, 0, 0.15) 0%,
+    transparent 70%
+  );
+  opacity: 0;
+  transition: all 0.5s ease;
+  transform: scale(0.6);
+  filter: blur(5px);
 }
 
 .mobile-menu-toggle:hover {
-  background: rgba(22, 31, 48, 0.9);
-  transform: translateY(-2px);
+  transform: translateY(-3px);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3), 0 0 0 2px rgba(251, 197, 0, 0.15);
+  background: rgba(22, 31, 48, 0.9);
+}
+
+.mobile-menu-toggle:hover::before {
+  opacity: 1;
+  transform: scale(1);
 }
 
 .mobile-menu-toggle:hover i {
   color: var(--color-accent);
 }
 
+/* Estado activo del botón mejorado */
 .mobile-menu-toggle.active {
-  background: rgba(251, 197, 0, 0.1);
-  border-color: rgba(251, 197, 0, 0.3);
+  background: rgba(251, 197, 0, 0.15);
+  border-color: rgba(251, 197, 0, 0.4);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4), 0 0 0 2px rgba(251, 197, 0, 0.4);
 }
 
 .mobile-menu-toggle.active i {
@@ -970,52 +999,29 @@ header.scrolled {
   color: var(--color-accent);
 }
 
-/* Explorar Dropdown con dos columnas */
-.dropdown.explorar {
-  display: flex;
-  gap: 20px;
-  min-width: 380px;
-  padding: 24px;
+/* Animación más suave para el overlay del menú */
+.mobile-menu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(5, 11, 20, 0.85);
+  backdrop-filter: blur(5px);
+  z-index: 999;
+  animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.dropdown.explorar .column {
-  flex: 1;
-}
-
-.dropdown.explorar .column li {
-  padding: 8px 0;
-}
-
-.dropdown.explorar .column li a {
-  color: var(--color-text-secondary);
-  text-decoration: none;
-  display: block;
-  padding: 6px 10px;
-  border-radius: var(--radius-md);
-  transition: all 0.3s ease;
-}
-
-.dropdown.explorar .column li a:hover {
-  background: rgba(251, 197, 0, 0.1);
-  color: var(--color-accent);
-  transform: translateX(3px);
-}
-
-/* Mejoras para móvil */
-@media (max-width: 992px) {
-  .navbar {
-    padding: 15px 20px;
+@keyframes fadeIn {
+  from {
+    opacity: 0;
   }
-
-  .logo span {
-    font-size: 24px;
-  }
-
-  .nav-center {
-    gap: 25px;
+  to {
+    opacity: 1;
   }
 }
 
+/* Mejoras para la versión móvil del menú */
 @media (max-width: 768px) {
   /* Mostrar botón de hamburguesa en móvil */
   .mobile-menu-toggle {
@@ -1056,17 +1062,19 @@ header.scrolled {
     opacity: 0;
     visibility: hidden;
     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    z-index: 1000;
+    z-index: 1001;
     backdrop-filter: blur(10px);
     width: 100%;
     gap: 15px;
     overflow-y: auto;
+    height: calc(100vh - 70px);
   }
 
   .nav-center.mobile-active {
     transform: translateY(0);
     opacity: 1;
     visibility: visible;
+    pointer-events: auto;
   }
 
   /* Adaptar dropdowns en móvil */
@@ -1094,74 +1102,144 @@ header.scrolled {
     width: 100%;
   }
 
-  .dropdown-content {
-    top: 0;
-    position: relative;
-    width: 100%;
-    margin-top: 10px;
+  /* Mejorar los estilos y la interactividad de los dropdowns en móvil */
+  .dropdown::before,
+  .dropdown-content::before {
+    display: none;
   }
 
-  /* Ajustar overlay de búsqueda para móvil */
-  .search-box {
-    width: 90%;
+  .dropdown:not(.visible),
+  .dropdown-content:not(.visible) {
+    display: none;
   }
 
-  .search-overlay .close-search {
-    top: 20px;
-    right: 20px;
-    width: 40px;
-    height: 40px;
+  .dropdown.visible,
+  .dropdown-content.visible {
+    display: block;
+    visibility: visible;
+    opacity: 1;
+    transform: none;
   }
-}
 
-/* Asegurar que el botón de cierre de búsqueda solo aparezca cuando se activa */
-.search-overlay:not(.active) .close-search {
-  opacity: 0 !important;
-  pointer-events: none;
-}
-
-/* Corregir contraste en menús dropdown */
-.dropdown-content .profile-item,
-.dropdown-content .language-item {
-  color: var(--color-text-secondary);
-}
-
-.dropdown-content .profile-item:hover,
-.dropdown-content .language-item:hover {
-  color: var(--color-accent);
-}
-
-/* Estilo para menú activo */
-.mobile-active-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 999;
-  display: none;
-}
-
-.mobile-active-overlay.active {
-  display: block;
-}
-
-/* Mejorar animación de aparición del menú */
-@keyframes slideIn {
-  from {
-    transform: translateY(-10px);
-    opacity: 0;
+  /* Menú central mejorado */
+  .nav-center {
+    /* ...existing code... */
+    transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    padding-top: 15px;
   }
-  to {
+
+  /* Animación de entrada mejorada para el menú móvil */
+  .nav-center.mobile-active {
     transform: translateY(0);
     opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
   }
-}
 
-.dropdown.visible,
-.dropdown-content.visible {
-  animation: slideIn 0.3s forwards;
+  /* Estilo mejorado para elementos del menú */
+  .nav-center li {
+    font-size: 18px;
+    width: 100%;
+    max-width: 300px;
+    text-align: center;
+    margin: 8px 0;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  /* Animación secuencial de los elementos del menú */
+  .nav-center.mobile-active li {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Delay personalizado para animar elementos secuencialmente */
+  .nav-center.mobile-active li:nth-child(1) {
+    transition-delay: 0.1s;
+  }
+  .nav-center.mobile-active li:nth-child(2) {
+    transition-delay: 0.15s;
+  }
+  .nav-center.mobile-active li:nth-child(3) {
+    transition-delay: 0.2s;
+  }
+  .nav-center.mobile-active li:nth-child(4) {
+    transition-delay: 0.25s;
+  }
+  .nav-center.mobile-active li:nth-child(5) {
+    transition-delay: 0.3s;
+  }
+
+  /* Mejoras en links del menú móvil */
+  .nav-center li a {
+    padding: 12px 16px;
+    display: block;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--color-text);
+    letter-spacing: 0.5px;
+    border-radius: var(--radius-md);
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    border: 1px solid transparent;
+  }
+
+  .nav-center li a:hover,
+  .nav-center li.active a {
+    background: rgba(251, 197, 0, 0.1);
+    color: var(--color-accent);
+    border-color: rgba(251, 197, 0, 0.15);
+    transform: translateY(0);
+  }
+
+  /* Mejor visualización de dropdowns en móvil */
+  .dropdown,
+  .dropdown.explorar {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+    max-width: 300px;
+    margin: 5px auto;
+    flex-direction: column;
+    box-shadow: none;
+    border-radius: var(--radius-md);
+    background: rgba(16, 23, 37, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  /* Animación para mostrar/ocultar dropdowns */
+  .dropdown.visible,
+  .dropdown-content.visible {
+    animation: slideDown 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Columnas más estéticas en móvil */
+  .dropdown.explorar .column {
+    width: 100%;
+    padding: 10px 0;
+  }
+
+  /* Links dentro de dropdowns más atractivos */
+  .dropdown.explorar .column li a {
+    padding: 10px 15px;
+    font-size: 16px;
+    font-weight: normal;
+    text-transform: none;
+    margin: 3px 0;
+  }
 }
 
 /* Agregar estos estilos al final del archivo header.css */

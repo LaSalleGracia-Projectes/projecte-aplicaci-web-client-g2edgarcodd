@@ -109,15 +109,34 @@ export const getTrendingMovies = async () => {
 
 // NUEVAS FUNCIONES PARA CONECTAR CON TMDB API
 
+// Mapeo de códigos de idioma internos a códigos de TMDB
+export const LANGUAGE_MAPPING = {
+  es: "es-ES",
+  en: "en-US",
+  ca: "ca-ES", // Catalán
+  // Añadir más idiomas según sea necesario
+};
+
+/**
+ * Convierte nuestro código de idioma interno al formato que acepta TMDB
+ * @param {string} languageCode - Código de idioma interno (es, en, ca)
+ * @returns {string} - Código de idioma para TMDB
+ */
+const getAPILanguage = (languageCode = "es") => {
+  return LANGUAGE_MAPPING[languageCode] || "es-ES"; // Por defecto español
+};
+
 /**
  * Obtiene todas las películas populares de TMDB
  * @param {number} page - Número de página (1-1000)
+ * @param {string} language - Código de idioma (es, en, ca)
  * @returns {Promise<Array>} - Array de películas
  */
-export const getAllMovies = async (page = 1) => {
+export const getAllMovies = async (page = 1, language = "es") => {
   try {
+    const apiLanguage = getAPILanguage(language);
     const response = await fetch(
-      `${TMDB_BASE_URL}/movie/popular?language=es-ES&page=${page}&api_key=${API_KEY}`,
+      `${TMDB_BASE_URL}/movie/popular?language=${apiLanguage}&page=${page}&api_key=${API_KEY}`,
       TMDB_OPTIONS
     );
 
@@ -136,12 +155,14 @@ export const getAllMovies = async (page = 1) => {
 /**
  * Obtiene detalles de una película específica
  * @param {number} movieId - ID de la película en TMDB
+ * @param {string} language - Código de idioma (es, en, ca)
  * @returns {Promise<Object>} - Datos de la película
  */
-export const getMovieDetails = async (movieId) => {
+export const getMovieDetails = async (movieId, language = "es") => {
   try {
+    const apiLanguage = getAPILanguage(language);
     const response = await fetch(
-      `${TMDB_BASE_URL}/movie/${movieId}?language=es-ES&append_to_response=credits,videos,images&api_key=${API_KEY}`,
+      `${TMDB_BASE_URL}/movie/${movieId}?language=${apiLanguage}&append_to_response=credits,videos,images&api_key=${API_KEY}`,
       TMDB_OPTIONS
     );
 
@@ -163,14 +184,20 @@ export const getMovieDetails = async (movieId) => {
  * Busca películas por término de búsqueda
  * @param {string} searchTerm - Término de búsqueda
  * @param {number} page - Número de página
+ * @param {string} language - Código de idioma (es, en, ca)
  * @returns {Promise<Array>} - Resultados de búsqueda
  */
-export const searchTMDBMovies = async (searchTerm, page = 1) => {
+export const searchTMDBMovies = async (
+  searchTerm,
+  page = 1,
+  language = "es"
+) => {
   try {
+    const apiLanguage = getAPILanguage(language);
     const response = await fetch(
       `${TMDB_BASE_URL}/search/movie?query=${encodeURIComponent(
         searchTerm
-      )}&language=es-ES&page=${page}&api_key=${API_KEY}`,
+      )}&language=${apiLanguage}&page=${page}&api_key=${API_KEY}`,
       TMDB_OPTIONS
     );
 
@@ -190,12 +217,18 @@ export const searchTMDBMovies = async (searchTerm, page = 1) => {
  * Obtiene películas por género
  * @param {number} genreId - ID del género en TMDB
  * @param {number} page - Número de página
+ * @param {string} language - Código de idioma (es, en, ca)
  * @returns {Promise<Array>} - Películas del género especificado
  */
-export const getTMDBMoviesByGenre = async (genreId, page = 1) => {
+export const getTMDBMoviesByGenre = async (
+  genreId,
+  page = 1,
+  language = "es"
+) => {
   try {
+    const apiLanguage = getAPILanguage(language);
     const response = await fetch(
-      `${TMDB_BASE_URL}/discover/movie?with_genres=${genreId}&language=es-ES&page=${page}&api_key=${API_KEY}`,
+      `${TMDB_BASE_URL}/discover/movie?with_genres=${genreId}&language=${apiLanguage}&page=${page}&api_key=${API_KEY}`,
       TMDB_OPTIONS
     );
 
@@ -214,12 +247,17 @@ export const getTMDBMoviesByGenre = async (genreId, page = 1) => {
 /**
  * Obtiene películas en tendencia
  * @param {string} timeWindow - Ventana de tiempo ('day' o 'week')
+ * @param {string} language - Código de idioma (es, en, ca)
  * @returns {Promise<Array>} - Películas en tendencia
  */
-export const getTMDBTrendingMovies = async (timeWindow = "week") => {
+export const getTMDBTrendingMovies = async (
+  timeWindow = "week",
+  language = "es"
+) => {
   try {
+    const apiLanguage = getAPILanguage(language);
     const response = await fetch(
-      `${TMDB_BASE_URL}/trending/movie/${timeWindow}?language=es-ES&api_key=${API_KEY}`,
+      `${TMDB_BASE_URL}/trending/movie/${timeWindow}?language=${apiLanguage}&api_key=${API_KEY}`,
       TMDB_OPTIONS
     );
 
@@ -238,12 +276,14 @@ export const getTMDBTrendingMovies = async (timeWindow = "week") => {
 /**
  * Obtiene las películas mejor valoradas
  * @param {number} page - Número de página
+ * @param {string} language - Código de idioma (es, en, ca)
  * @returns {Promise<Array>} - Películas mejor valoradas
  */
-export const getTopRatedMovies = async (page = 1) => {
+export const getTopRatedMovies = async (page = 1, language = "es") => {
   try {
+    const apiLanguage = getAPILanguage(language);
     const response = await fetch(
-      `${TMDB_BASE_URL}/movie/top_rated?language=es-ES&page=${page}&api_key=${API_KEY}`,
+      `${TMDB_BASE_URL}/movie/top_rated?language=${apiLanguage}&page=${page}&api_key=${API_KEY}`,
       TMDB_OPTIONS
     );
 
@@ -261,12 +301,14 @@ export const getTopRatedMovies = async (page = 1) => {
 
 /**
  * Obtiene los géneros de películas disponibles
+ * @param {string} language - Código de idioma (es, en, ca)
  * @returns {Promise<Array>} - Lista de géneros
  */
-export const getMovieGenres = async () => {
+export const getMovieGenres = async (language = "es") => {
   try {
+    const apiLanguage = getAPILanguage(language);
     const response = await fetch(
-      `${TMDB_BASE_URL}/genre/movie/list?language=es-ES&api_key=${API_KEY}`,
+      `${TMDB_BASE_URL}/genre/movie/list?language=${apiLanguage}&api_key=${API_KEY}`,
       TMDB_OPTIONS
     );
 
@@ -285,12 +327,14 @@ export const getMovieGenres = async () => {
 /**
  * Obtiene películas que se estrenarán próximamente
  * @param {number} page - Número de página
+ * @param {string} language - Código de idioma (es, en, ca)
  * @returns {Promise<Array>} - Películas próximas
  */
-export const getUpcomingMovies = async (page = 1) => {
+export const getUpcomingMovies = async (page = 1, language = "es") => {
   try {
+    const apiLanguage = getAPILanguage(language);
     const response = await fetch(
-      `${TMDB_BASE_URL}/movie/upcoming?language=es-ES&page=${page}&api_key=${API_KEY}`,
+      `${TMDB_BASE_URL}/movie/upcoming?language=${apiLanguage}&page=${page}&api_key=${API_KEY}`,
       TMDB_OPTIONS
     );
 
@@ -311,12 +355,14 @@ export const getUpcomingMovies = async (page = 1) => {
 /**
  * Obtiene series populares de TMDB
  * @param {number} page - Número de página (1-1000)
+ * @param {string} language - Código de idioma (es, en, ca)
  * @returns {Promise<Array>} - Array de series
  */
-export const getPopularTVShows = async (page = 1) => {
+export const getPopularTVShows = async (page = 1, language = "es") => {
   try {
+    const apiLanguage = getAPILanguage(language);
     const response = await fetch(
-      `${TMDB_BASE_URL}/tv/popular?language=es-ES&page=${page}&api_key=${API_KEY}`,
+      `${TMDB_BASE_URL}/tv/popular?language=${apiLanguage}&page=${page}&api_key=${API_KEY}`,
       TMDB_OPTIONS
     );
 
@@ -340,12 +386,14 @@ export const getPopularTVShows = async (page = 1) => {
 /**
  * Obtiene series en emisión actualmente
  * @param {number} page - Número de página
+ * @param {string} language - Código de idioma (es, en, ca)
  * @returns {Promise<Array>} - Series en emisión
  */
-export const getOnTheAirTVShows = async (page = 1) => {
+export const getOnTheAirTVShows = async (page = 1, language = "es") => {
   try {
+    const apiLanguage = getAPILanguage(language);
     const response = await fetch(
-      `${TMDB_BASE_URL}/tv/on_the_air?language=es-ES&page=${page}&api_key=${API_KEY}`,
+      `${TMDB_BASE_URL}/tv/on_the_air?language=${apiLanguage}&page=${page}&api_key=${API_KEY}`,
       TMDB_OPTIONS
     );
 
@@ -369,12 +417,14 @@ export const getOnTheAirTVShows = async (page = 1) => {
 /**
  * Obtiene detalles de una serie específica
  * @param {number} tvId - ID de la serie en TMDB
+ * @param {string} language - Código de idioma (es, en, ca)
  * @returns {Promise<Object>} - Datos de la serie
  */
-export const getTVShowDetails = async (tvId) => {
+export const getTVShowDetails = async (tvId, language = "es") => {
   try {
+    const apiLanguage = getAPILanguage(language);
     const response = await fetch(
-      `${TMDB_BASE_URL}/tv/${tvId}?language=es-ES&append_to_response=credits,videos,images,seasons&api_key=${API_KEY}`,
+      `${TMDB_BASE_URL}/tv/${tvId}?language=${apiLanguage}&append_to_response=credits,videos,images,seasons&api_key=${API_KEY}`,
       TMDB_OPTIONS
     );
 
@@ -396,12 +446,14 @@ export const getTVShowDetails = async (tvId) => {
 /**
  * Obtiene series mejor valoradas
  * @param {number} page - Número de página
+ * @param {string} language - Código de idioma (es, en, ca)
  * @returns {Promise<Array>} - Series mejor valoradas
  */
-export const getTopRatedTVShows = async (page = 1) => {
+export const getTopRatedTVShows = async (page = 1, language = "es") => {
   try {
+    const apiLanguage = getAPILanguage(language);
     const response = await fetch(
-      `${TMDB_BASE_URL}/tv/top_rated?language=es-ES&page=${page}&api_key=${API_KEY}`,
+      `${TMDB_BASE_URL}/tv/top_rated?language=${apiLanguage}&page=${page}&api_key=${API_KEY}`,
       TMDB_OPTIONS
     );
 
@@ -426,14 +478,20 @@ export const getTopRatedTVShows = async (page = 1) => {
  * Busca series por término de búsqueda
  * @param {string} searchTerm - Término de búsqueda
  * @param {number} page - Número de página
+ * @param {string} language - Código de idioma (es, en, ca)
  * @returns {Promise<Array>} - Resultados de búsqueda
  */
-export const searchTMDBTVShows = async (searchTerm, page = 1) => {
+export const searchTMDBTVShows = async (
+  searchTerm,
+  page = 1,
+  language = "es"
+) => {
   try {
+    const apiLanguage = getAPILanguage(language);
     const response = await fetch(
       `${TMDB_BASE_URL}/search/tv?query=${encodeURIComponent(
         searchTerm
-      )}&language=es-ES&page=${page}&api_key=${API_KEY}`,
+      )}&language=${apiLanguage}&page=${page}&api_key=${API_KEY}`,
       TMDB_OPTIONS
     );
 
@@ -450,6 +508,234 @@ export const searchTMDBTVShows = async (searchTerm, page = 1) => {
     return processedShows;
   } catch (error) {
     console.error("Error al buscar series:", error);
+    throw error;
+  }
+};
+
+/**
+ * Obtiene reseñas para una película o serie específica
+ * @param {number} id - ID de la película o serie
+ * @param {string} type - Tipo de contenido ('movie' o 'tv')
+ * @param {number} page - Número de página
+ * @param {string} language - Código de idioma (es, en, ca)
+ * @returns {Promise<Array>} - Reseñas del contenido
+ */
+export const getContentReviews = async (
+  id,
+  type = "movie",
+  page = 1,
+  language = "es"
+) => {
+  try {
+    const apiLanguage = getAPILanguage(language);
+    const response = await fetch(
+      `${TMDB_BASE_URL}/${type}/${id}/reviews?language=${apiLanguage}&page=${page}&api_key=${API_KEY}`,
+      TMDB_OPTIONS
+    );
+
+    if (!response.ok) {
+      throw new Error(`Error HTTP: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data.results;
+  } catch (error) {
+    console.error(`Error al obtener reseñas para ${type} ${id}:`, error);
+    throw error;
+  }
+};
+
+/**
+ * Obtiene recomendaciones para una película o serie específica
+ * @param {number} id - ID de la película o serie
+ * @param {string} type - Tipo de contenido ('movie' o 'tv')
+ * @param {number} page - Número de página
+ * @param {string} language - Código de idioma (es, en, ca)
+ * @returns {Promise<Array>} - Recomendaciones de contenido similar
+ */
+export const getContentRecommendations = async (
+  id,
+  type = "movie",
+  page = 1,
+  language = "es"
+) => {
+  try {
+    const apiLanguage = getAPILanguage(language);
+    const response = await fetch(
+      `${TMDB_BASE_URL}/${type}/${id}/recommendations?language=${apiLanguage}&page=${page}&api_key=${API_KEY}`,
+      TMDB_OPTIONS
+    );
+
+    if (!response.ok) {
+      throw new Error(`Error HTTP: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const results = data.results.map((item) => ({
+      ...item,
+      media_type: type,
+    }));
+    return results;
+  } catch (error) {
+    console.error(
+      `Error al obtener recomendaciones para ${type} ${id}:`,
+      error
+    );
+    throw error;
+  }
+};
+
+/**
+ * Obtiene contenido similar a una película o serie específica
+ * @param {number} id - ID de la película o serie
+ * @param {string} type - Tipo de contenido ('movie' o 'tv')
+ * @param {number} page - Número de página
+ * @param {string} language - Código de idioma (es, en, ca)
+ * @returns {Promise<Array>} - Contenido similar
+ */
+export const getSimilarContent = async (
+  id,
+  type = "movie",
+  page = 1,
+  language = "es"
+) => {
+  try {
+    const apiLanguage = getAPILanguage(language);
+    const response = await fetch(
+      `${TMDB_BASE_URL}/${type}/${id}/similar?language=${apiLanguage}&page=${page}&api_key=${API_KEY}`,
+      TMDB_OPTIONS
+    );
+
+    if (!response.ok) {
+      throw new Error(`Error HTTP: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const results = data.results.map((item) => ({
+      ...item,
+      media_type: type,
+    }));
+    return results;
+  } catch (error) {
+    console.error(
+      `Error al obtener contenido similar para ${type} ${id}:`,
+      error
+    );
+    throw error;
+  }
+};
+
+/**
+ * Obtiene películas o series populares según una lista de géneros
+ * @param {Array} genreIds - IDs de géneros
+ * @param {string} type - Tipo de contenido ('movie' o 'tv')
+ * @param {number} page - Número de página
+ * @param {string} language - Código de idioma (es, en, ca)
+ * @returns {Promise<Array>} - Contenido filtrado por géneros
+ */
+export const getContentByGenres = async (
+  genreIds,
+  type = "movie",
+  page = 1,
+  language = "es"
+) => {
+  try {
+    const apiLanguage = getAPILanguage(language);
+    const genresParam = genreIds.join(",");
+    const response = await fetch(
+      `${TMDB_BASE_URL}/discover/${type}?with_genres=${genresParam}&language=${apiLanguage}&page=${page}&api_key=${API_KEY}`,
+      TMDB_OPTIONS
+    );
+
+    if (!response.ok) {
+      throw new Error(`Error HTTP: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data.results;
+  } catch (error) {
+    console.error(`Error al obtener contenido por géneros:`, error);
+    throw error;
+  }
+};
+
+/**
+ * Obtiene series por género
+ * @param {number} genreId - ID del género en TMDB
+ * @param {number} page - Número de página
+ * @param {string} language - Código de idioma (es, en, ca)
+ * @returns {Promise<Array>} - Series del género especificado
+ */
+export const getTVShowsByGenre = async (genreId, page = 1, language = "es") => {
+  try {
+    const apiLanguage = getAPILanguage(language);
+    const response = await fetch(
+      `${TMDB_BASE_URL}/discover/tv?with_genres=${genreId}&language=${apiLanguage}&page=${page}&api_key=${API_KEY}`,
+      TMDB_OPTIONS
+    );
+
+    if (!response.ok) {
+      throw new Error(`Error HTTP: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data.results;
+  } catch (error) {
+    console.error(`Error al obtener series del género ${genreId}:`, error);
+    throw error;
+  }
+};
+
+/**
+ * Obtiene videos para una película o serie específica
+ * @param {number} id - ID de la película o serie
+ * @param {string} type - Tipo de contenido ('movie' o 'tv')
+ * @param {string} language - Código de idioma (es, en, ca)
+ * @returns {Promise<Array>} - Lista de videos disponibles
+ */
+export const getContentVideos = async (id, type = "movie", language = "es") => {
+  try {
+    const apiLanguage = getAPILanguage(language);
+    const response = await fetch(
+      `${TMDB_BASE_URL}/${type}/${id}/videos?language=${apiLanguage}&api_key=${API_KEY}`,
+      TMDB_OPTIONS
+    );
+
+    if (!response.ok) {
+      throw new Error(`Error HTTP: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data.results;
+  } catch (error) {
+    console.error(`Error al obtener videos para ${type} ${id}:`, error);
+    throw error;
+  }
+};
+
+/**
+ * Obtiene imágenes para una película o serie específica
+ * @param {number} id - ID de la película o serie
+ * @param {string} type - Tipo de contenido ('movie' o 'tv')
+ * @param {string} language - Código de idioma (es, en, ca)
+ * @returns {Promise<Object>} - Objeto con backdrops, posters y otras imágenes
+ */
+export const getContentImages = async (id, type = "movie", language = "es") => {
+  try {
+    const apiLanguage = getAPILanguage(language);
+    const response = await fetch(
+      `${TMDB_BASE_URL}/${type}/${id}/images?language=${apiLanguage}&include_image_language=null,${apiLanguage},en&api_key=${API_KEY}`,
+      TMDB_OPTIONS
+    );
+
+    if (!response.ok) {
+      throw new Error(`Error HTTP: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error(`Error al obtener imágenes para ${type} ${id}:`, error);
     throw error;
   }
 };

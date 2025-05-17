@@ -73,7 +73,7 @@
   background: transparent;
   position: relative;
   margin-bottom: 10px;
-  width: 320px;
+  width: 350px; /* Aumentado de 320px a 350px para coincidir con el nuevo ancho del widget */
   animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
   transform-origin: bottom left;
 }
@@ -126,7 +126,7 @@
   }
 
   .weather-widget-container.chatbot-style {
-    width: 290px;
+    width: 320px; /* Aumentado de 290px a 320px */
   }
 }
 
@@ -146,7 +146,7 @@
   }
 
   .weather-widget-container.chatbot-style {
-    width: 280px;
+    width: 300px; /* Aumentado de 280px a 300px */
     max-width: calc(100vw - 40px);
   }
 }

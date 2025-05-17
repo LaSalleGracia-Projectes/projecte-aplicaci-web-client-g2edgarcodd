@@ -10,6 +10,28 @@ function FeaturedCategories({ movies = [], genres = [] }) {
   // Constantes para géneros destacados que queremos mostrar si están disponibles
   const FEATURED_GENRE_IDS = [28, 35, 878, 27, 16];
 
+  // Mapa de IDs de género a claves de traducción
+  const genreKeyMap = {
+    28: "action", // Acción
+    35: "comedy", // Comedia
+    878: "scifi", // Ciencia Ficción
+    27: "horror", // Terror
+    16: "animation", // Animación
+    12: "adventure", // Aventura
+    18: "drama", // Drama
+    14: "fantasy", // Fantasía
+    80: "crime", // Crimen
+    10749: "romance", // Romance
+    99: "documentary", // Documental
+    9648: "mystery", // Misterio
+    36: "history", // Historia
+    10752: "war", // Bélico
+    10402: "musical", // Musical
+    37: "western", // Western
+    10770: "tv", // TV Movie
+    53: "thriller", // Thriller
+  };
+
   // Preparamos las categorías destacadas basadas en los géneros disponibles de la API
   const featuredCategories = useMemo(() => {
     // Imágenes de fallback para cada género por si no encontramos películas con backdrop
@@ -56,10 +78,14 @@ function FeaturedCategories({ movies = [], genres = [] }) {
         (movie) => movie.backdrop_path
       );
 
+      // Obtener la clave de traducción para este género o usar el nombre original como fallback
+      const genreKey = genreKeyMap[genre.id];
+
       // Preparar información para esta categoría
       return {
         id: genre.id,
         name: genre.name,
+        translationKey: genreKey,
         // Usar la imagen de una película real si existe, o recurrir a la imagen de fallback
         backdropPath:
           movieWithBackdrop && movieWithBackdrop.backdrop_path
@@ -74,7 +100,7 @@ function FeaturedCategories({ movies = [], genres = [] }) {
     <section className="featured-categories-section">
       <div className="section-header">
         <h2>{t("home.popularCategories")}</h2>
-        <Link to="/categories" className="see-all">
+        <Link to="/explore" className="see-all">
           {t("common.seeMore")}
         </Link>
       </div>
@@ -82,18 +108,26 @@ function FeaturedCategories({ movies = [], genres = [] }) {
       <div className="featured-categories-container">
         {featuredCategories.map((category) => (
           <Link
-            to={`/category/${category.id}`}
+            to={`/explore?genre=${category.id}`}
             className="category-card"
             key={category.id}
           >
             <div className="category-image-container">
               <img
                 src={getImageUrl(category.backdropPath, "large", "backdrop")}
-                alt={category.name}
+                alt={
+                  category.translationKey
+                    ? t(`genres.${category.translationKey}`)
+                    : category.name
+                }
                 className="category-image"
               />
               <div className="category-overlay">
-                <h3>{category.name}</h3>
+                <h3>
+                  {category.translationKey
+                    ? t(`genres.${category.translationKey}`)
+                    : category.name}
+                </h3>
               </div>
             </div>
           </Link>

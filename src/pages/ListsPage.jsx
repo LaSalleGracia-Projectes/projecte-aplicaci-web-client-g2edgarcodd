@@ -7,6 +7,7 @@ import FavoritesGrid from "../components/Lists/FavoritesGrid";
 import ListsView from "../components/Lists/ListsView";
 import CreateListButton from "../components/Lists/CreateListButton";
 import { useFavorites } from "../contexts/FavoritesContext";
+import { useLanguage } from "../contexts/LanguageContext";
 import "../styles/components/lists.css";
 
 function ListsPage() {
@@ -18,6 +19,7 @@ function ListsPage() {
   const location = useLocation();
   const navigate = useNavigate();
   const nodeRef = useRef(null);
+  const { t } = useLanguage();
 
   // Usar el contexto de favoritos
   const { favorites } = useFavorites();
@@ -30,25 +32,97 @@ function ListsPage() {
       setActiveTab("favorites");
     }
 
-    // Simular carga de listas de usuario (no de favoritos)
+    // Datos simulados con IDs que coincidan con ListDetailPage
     setTimeout(() => {
       setUserLists([
         {
           id: "list1",
-          name: "Maratón de fin de semana",
-          description: "Películas y series para ver en un fin de semana",
+          name: t("lists.weekendMarathon"),
+          description: t("lists.weekendMarathonDesc"),
           createdAt: "2024-02-15",
           updatedAt: "2024-03-20",
           itemCount: 4,
-          coverImage:
-            "https://image.tmdb.org/t/p/w500/sWgBv7LV2PRoQgkxwlibdGXKz1S.jpg",
-          items: [],
+          items: [
+            {
+              id: 1,
+              posterPath:
+                "https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg",
+              title: "The Dark Knight",
+            },
+            {
+              id: 2,
+              posterPath:
+                "https://image.tmdb.org/t/p/w500/ggFHVNu6YYI5L9pCfOacjizRGt.jpg",
+              title: "Breaking Bad",
+            },
+            {
+              id: 3,
+              posterPath:
+                "https://image.tmdb.org/t/p/w500/9gk7adHYeDvHkCSEqAvQNLV5Uge.jpg",
+              title: "Inception",
+            },
+          ],
         },
-        // Más listas pueden agregarse aquí
+        {
+          id: "oscars2023",
+          name: t("lists.oscarWinners"),
+          description: t("lists.oscarWinnersDesc"),
+          createdAt: "2023-04-10",
+          updatedAt: "2023-12-15",
+          itemCount: 3,
+          items: [
+            {
+              id: 5,
+              posterPath:
+                "https://image.tmdb.org/t/p/w500/w3LxiVYdWWRvEVdn5RYq6jIqkb1.jpg",
+              title: "Everything Everywhere All at Once",
+            },
+            {
+              id: 6,
+              posterPath:
+                "https://image.tmdb.org/t/p/w500/2IRjbi9cADuDMKmHdLK7LaqQDKA.jpg",
+              title: "All Quiet on the Western Front",
+            },
+            {
+              id: 7,
+              posterPath:
+                "https://image.tmdb.org/t/p/w500/jQ0gylJMxWSL490sy0RrPj1Lj7e.jpg",
+              title: "The Whale",
+            },
+          ],
+        },
+        {
+          id: "scienceFiction",
+          name: t("lists.sciFiEssentials"),
+          description: t("lists.sciFiEssentialsDesc"),
+          createdAt: "2022-08-15",
+          updatedAt: "2024-01-10",
+          itemCount: 3,
+          items: [
+            {
+              id: 8,
+              posterPath:
+                "https://image.tmdb.org/t/p/w500/d5NXSklXo0qyIYkgV94XAgMIckC.jpg",
+              title: "Dune",
+            },
+            {
+              id: 9,
+              posterPath:
+                "https://image.tmdb.org/t/p/w500/gajva2L0rPYkEWjzgFlBXCAVBE5.jpg",
+              title: "Blade Runner 2049",
+            },
+            {
+              id: 10,
+              posterPath:
+                "https://image.tmdb.org/t/p/w500/wikmaI7OVqmq2O9PKR9w1AJbHSO.jpg",
+              title: "The Expanse",
+            },
+          ],
+        },
       ]);
       setIsLoading(false);
     }, 800);
-  }, [location.pathname]);
+  }, [location.pathname, t]);
 
   // Función para cambiar de pestaña con transición
   const handleTabChange = (tab) => {
@@ -109,7 +183,7 @@ function ListsPage() {
         <div className="lists-page">
           <div className="lists-loading">
             <div className="loading-spinner"></div>
-            <p>Cargando tus colecciones...</p>
+            <p>{t("lists.loadingCollections")}</p>
           </div>
         </div>
       </MainLayout>
@@ -120,7 +194,8 @@ function ListsPage() {
   const filteredContent = getFilteredContent();
 
   // Cambiar dinámicamente el título según la pestaña activa
-  const pageTitle = activeTab === "favorites" ? "Favoritos" : "Mis Listas";
+  const pageTitle =
+    activeTab === "favorites" ? t("lists.favorites") : t("lists.myLists");
 
   return (
     <MainLayout>
@@ -148,8 +223,10 @@ function ListsPage() {
               <i className="fas fa-search search-icon"></i>
               <input
                 type="text"
-                placeholder={`Buscar en ${
-                  activeTab === "favorites" ? "favoritos" : "listas"
+                placeholder={`${t("common.search")} ${
+                  activeTab === "favorites"
+                    ? t("lists.favorites").toLowerCase()
+                    : t("lists.myLists").toLowerCase()
                 }...`}
                 className="search-input"
                 value={searchQuery}
@@ -170,15 +247,17 @@ function ListsPage() {
           {searchQuery.trim() !== "" && (
             <div className="search-results-info">
               <span>
-                {filteredContent.length} resultado
-                {filteredContent.length !== 1 ? "s" : ""} para{" "}
+                {filteredContent.length}{" "}
+                {filteredContent.length !== 1
+                  ? t("lists.searchResults")
+                  : t("lists.searchResult")}{" "}
                 <em>"{searchQuery}"</em>
               </span>
               <button
                 className="clear-search"
                 onClick={() => setSearchQuery("")}
               >
-                Limpiar búsqueda
+                {t("lists.clearSearch")}
               </button>
             </div>
           )}
@@ -201,7 +280,7 @@ function ListsPage() {
                     <div className="lists-actions">
                       <CreateListButton onCreateList={handleCreateList} />
                       <div className="lists-counter">
-                        {userLists.length}/25 listas
+                        {userLists.length}/25 {t("lists.listsCount")}
                       </div>
                     </div>
 
@@ -219,17 +298,20 @@ function ListsPage() {
           {filteredContent.length === 0 && searchQuery.trim() !== "" && (
             <div className="no-results">
               <i className="fas fa-search-minus no-results-icon"></i>
-              <h3>No se encontraron resultados</h3>
+              <h3>{t("lists.noResults")}</h3>
               <p>
-                No hay coincidencias para <em>"{searchQuery}"</em> en tus{" "}
-                {activeTab === "favorites" ? "favoritos" : "listas"}.
+                {t("lists.noMatchesFor")} <em>"{searchQuery}"</em>{" "}
+                {t("lists.inYour")}{" "}
+                {activeTab === "favorites"
+                  ? t("lists.favorites").toLowerCase()
+                  : t("lists.myLists").toLowerCase()}
+                .
               </p>
               <button
                 className="btn-secondary"
                 onClick={() => setSearchQuery("")}
               >
-                <i className="fas fa-arrow-left"></i> Volver a todos los
-                elementos
+                <i className="fas fa-arrow-left"></i> {t("lists.backToAll")}
               </button>
             </div>
           )}

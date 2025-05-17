@@ -226,40 +226,65 @@
   z-index: 2;
 }
 
-/* Estilos para el icono de favoritos */
+/* Estilos para el botón de favoritos - similar al de Top10 y TrendingNow */
 .favorite-icon {
   position: absolute;
   top: 10px;
   right: 10px;
-  background-color: rgba(0, 0, 0, 0.5);
-  border: none;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  width: 32px;
-  height: 32px;
+  background-color: rgba(0, 0, 0, 0.6);
+  border: none;
+  color: white;
+  font-size: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  z-index: 2;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
+  z-index: 5;
+  opacity: 0;
+  transform: scale(0.8);
 }
 
-.favorite-icon i {
-  color: white;
-  font-size: 16px;
-  transition: all 0.2s ease;
+.release-image-container:hover .favorite-icon {
+  opacity: 1;
+  transform: scale(1);
 }
 
-.favorite-icon.active i {
-  color: #e50914;
+.favorite-icon.active {
+  background-color: rgba(220, 53, 69, 0.8);
+  opacity: 1;
+  transform: scale(1);
 }
 
 .favorite-icon:hover {
-  background-color: rgba(229, 9, 20, 0.7);
+  transform: scale(1.1);
+  background-color: rgba(220, 53, 69, 0.6);
 }
 
-.favorite-icon.active:hover i {
-  color: white;
+/* Animación para el botón de favoritos */
+@keyframes heartbeat {
+  0% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1.2);
+  }
+  50% {
+    transform: scale(0.95);
+  }
+  75% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.favorite-icon.active i {
+  animation: heartbeat 0.5s ease-in-out;
 }
 
 /* Estilos para estrellas de rating */

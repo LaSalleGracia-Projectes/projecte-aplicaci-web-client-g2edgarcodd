@@ -102,10 +102,7 @@
 }
 
 .edit-cover-button {
-  position: absolute;
-  right: 20px;
-  bottom: 20px;
-  z-index: 5;
+  display: none;
 }
 
 .edit-cover-button button {
@@ -154,10 +151,43 @@
   transform: scale(1.03);
 }
 
+/* Mejorando el estilo del placeholder del avatar */
+.profile-avatar-placeholder {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  background: linear-gradient(
+    135deg,
+    var(--color-background-lighter),
+    var(--color-background-light)
+  );
+  border: 4px solid var(--color-background);
+  box-shadow: var(--box-shadow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.profile-avatar-placeholder:hover {
+  transform: scale(1.03);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.profile-avatar-placeholder i {
+  font-size: 3.5rem;
+  color: var(--color-text-tertiary);
+  opacity: 0.7;
+  transition: color 0.3s ease, opacity 0.3s ease;
+}
+
+.profile-avatar-placeholder:hover i {
+  color: var(--color-primary-light);
+  opacity: 0.9;
+}
+
 .edit-avatar-button {
-  position: absolute;
-  right: 5px;
-  bottom: 5px;
+  display: none;
 }
 
 .edit-avatar-button button {

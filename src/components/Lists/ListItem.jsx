@@ -55,7 +55,7 @@ function ListItem({ list, onRemoveList }) {
 
   return (
     <>
-      <Link to={`/list/${list.id}`} className="list-item">
+      <Link to={`/lists/${list.id}`} className="list-item">
         <div className="list-content">
           <div className="list-info">
             <h3 className="list-name">{list.name}</h3>

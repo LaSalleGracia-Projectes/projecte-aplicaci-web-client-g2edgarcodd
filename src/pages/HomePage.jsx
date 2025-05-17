@@ -23,7 +23,7 @@ import {
 import "../styles/components/homepage.css";
 
 function HomePage() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [scrolled, setScrolled] = useState(false);
   const [popularMovies, setPopularMovies] = useState([]);
   const [trendingMovies, setTrendingMovies] = useState([]);
@@ -41,7 +41,7 @@ function HomePage() {
     try {
       setLoading(true);
 
-      // Cargar los datos en paralelo para mejor rendimiento
+      // Cargar los datos en paralelo para mejor rendimiento, incluyendo el parámetro de idioma
       const [
         popularData,
         trendingData,
@@ -52,14 +52,14 @@ function HomePage() {
         onAirTV,
         topRatedTV,
       ] = await Promise.all([
-        getAllMovies(1),
-        getTMDBTrendingMovies("week"),
-        getTopRatedMovies(1),
-        getMovieGenres(),
-        getUpcomingMovies(1),
-        getPopularTVShows(1),
-        getOnTheAirTVShows(1),
-        getTopRatedTVShows(1),
+        getAllMovies(1, language),
+        getTMDBTrendingMovies("week", language),
+        getTopRatedMovies(1, language),
+        getMovieGenres(language),
+        getUpcomingMovies(1, language),
+        getPopularTVShows(1, language),
+        getOnTheAirTVShows(1, language),
+        getTopRatedTVShows(1, language),
       ]);
 
       // Procesar películas para agregar el tipo de medio
@@ -107,6 +107,11 @@ function HomePage() {
     fetchAllMovieData();
   }, []);
 
+  // Recargar datos cuando cambia el idioma
+  useEffect(() => {
+    fetchAllMovieData();
+  }, [language]);
+
   // Hook para manejar animaciones al hacer scroll
   useEffect(() => {
     const handleScrollAnimations = () => {
@@ -145,7 +150,6 @@ function HomePage() {
     return (
       <MainLayout>
         <div className="loading-container">
-          <div className="loading-spinner"></div>
           <p>{t("common.loading")}</p>
         </div>
       </MainLayout>
@@ -202,32 +206,48 @@ function HomePage() {
     <MainLayout>
       <div className="homepage-container">
         {/* Hero Banner con Slider */}
-        <Hero movies={heroMovies} />
+        <Hero movies={heroMovies} language={language} />
 
         <div className="content-wrapper">
           {/* Sección "Nuevos Lanzamientos" */}
           <section className="animated-section">
-            <NewReleases content={newReleases} />
+            <NewReleases content={newReleases} language={language} />
           </section>
 
           {/* Sección "Top 10 Películas" */}
           <section className="animated-section">
-            <Top10Container movies={topRatedMovies} tvShows={topRatedTVShows} />
+            <Top10Container
+              movies={topRatedMovies}
+              tvShows={topRatedTVShows}
+              language={language}
+            />
           </section>
 
           {/* Sección "En Tendencia" */}
           <section className="animated-section">
-            <TrendingNow movies={trendingMovies} tvShows={popularTVShows} />
+            <TrendingNow
+              movies={trendingMovies}
+              tvShows={popularTVShows}
+              language={language}
+            />
           </section>
 
           {/* Sección "Premiados y Aclamados" */}
           <section className="animated-section">
-            <AwardsShowcase movies={topRatedMovies} tvShows={topRatedTVShows} />
+            <AwardsShowcase
+              movies={topRatedMovies}
+              tvShows={topRatedTVShows}
+              language={language}
+            />
           </section>
 
           {/* Sección de Categorías Destacadas */}
           <section className="animated-section">
-            <FeaturedCategories movies={uniqueMediaItems} genres={genres} />
+            <FeaturedCategories
+              movies={uniqueMediaItems}
+              genres={genres}
+              language={language}
+            />
           </section>
 
           {/* Banner de Suscripción */}

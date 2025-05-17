@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "../../contexts/LanguageContext";
+import { getAvatarUrl } from "../../utils/avatar";
 import "../../styles/components/Blog.css";
 
 // Datos de muestra para el blog
@@ -23,7 +24,7 @@ const blogPosts = [
       "https://images.unsplash.com/photo-1522869635100-9f4c5e86aa37?ixlib=rb-1.2.1&auto=format&fit=crop&w=1500&q=80",
     category: "streaming",
     author: "María González",
-    authorImage: "https://randomuser.me/api/portraits/women/45.jpg",
+    authorImage: null,
     date: "10 Feb 2025",
     readTime: "5 min",
     views: 1245,
@@ -39,7 +40,7 @@ const blogPosts = [
       "https://images.unsplash.com/photo-1626387346567-68d0b1ee4f22?ixlib=rb-1.2.1&auto=format&fit=crop&w=1500&q=80",
     category: "tech",
     author: "Carlos Martínez",
-    authorImage: "https://randomuser.me/api/portraits/men/32.jpg",
+    authorImage: null,
     date: "5 Feb 2025",
     readTime: "8 min",
     views: 980,
@@ -55,7 +56,7 @@ const blogPosts = [
       "https://images.unsplash.com/photo-1617113930975-f9c7243ae527?ixlib=rb-1.2.1&auto=format&fit=crop&w=1500&q=80",
     category: "reviews",
     author: "Ana Pérez",
-    authorImage: "https://randomuser.me/api/portraits/women/68.jpg",
+    authorImage: null,
     date: "1 Feb 2025",
     readTime: "10 min",
     views: 1432,
@@ -71,7 +72,7 @@ const blogPosts = [
       "https://images.unsplash.com/photo-1485846234645-a62644f84728?ixlib=rb-1.2.1&auto=format&fit=crop&w=1500&q=80",
     category: "industry",
     author: "Roberto Sánchez",
-    authorImage: "https://randomuser.me/api/portraits/men/54.jpg",
+    authorImage: null,
     date: "28 Ene 2025",
     readTime: "7 min",
     views: 867,
@@ -86,7 +87,7 @@ const blogPosts = [
       "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1500&q=80",
     category: "tech",
     author: "Lucía Fernández",
-    authorImage: "https://randomuser.me/api/portraits/women/33.jpg",
+    authorImage: null,
     date: "20 Ene 2025",
     readTime: "6 min",
     views: 712,
@@ -101,7 +102,7 @@ const blogPosts = [
       "https://images.unsplash.com/photo-1559803424-045ec8c53682?ixlib=rb-1.2.1&auto=format&fit=crop&w=1500&q=80",
     category: "streaming",
     author: "Miguel Torres",
-    authorImage: "https://randomuser.me/api/portraits/men/22.jpg",
+    authorImage: null,
     date: "15 Ene 2025",
     readTime: "9 min",
     views: 934,
@@ -407,7 +408,10 @@ function Blog() {
                     <div className="featured-post-meta">
                       <div className="featured-post-author">
                         <img
-                          src={mainFeatured.authorImage}
+                          src={getAvatarUrl(
+                            mainFeatured.authorImage,
+                            mainFeatured.author
+                          )}
                           alt={mainFeatured.author}
                         />
                         <span>{mainFeatured.author}</span>
@@ -441,7 +445,10 @@ function Blog() {
                     <div className="featured-post-meta">
                       <div className="featured-post-author">
                         <img
-                          src={secondaryFeatured.authorImage}
+                          src={getAvatarUrl(
+                            secondaryFeatured.authorImage,
+                            secondaryFeatured.author
+                          )}
                           alt={secondaryFeatured.author}
                         />
                         <span>{secondaryFeatured.author}</span>
@@ -460,7 +467,6 @@ function Blog() {
           {/* Estado de carga o posts */}
           {isLoading ? (
             <div className="blog-loading">
-              <div className="loading-spinner"></div>
               <p>{safeTranslate("blog.loading", "Cargando artículos...")}</p>
             </div>
           ) : currentPosts.length > 0 ? (
@@ -482,7 +488,10 @@ function Blog() {
                     <p className="blog-post-excerpt">{post.excerpt}</p>
                     <div className="blog-post-meta">
                       <div className="blog-post-author">
-                        <img src={post.authorImage} alt={post.author} />
+                        <img
+                          src={getAvatarUrl(post.authorImage, post.author)}
+                          alt={post.author}
+                        />
                         <span>{post.author}</span>
                       </div>
                       <div className="blog-post-date">

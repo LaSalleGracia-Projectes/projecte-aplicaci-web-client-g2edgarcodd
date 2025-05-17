@@ -4,7 +4,7 @@ import { useLanguage } from "../../contexts/LanguageContext";
 import { useFavorites } from "../../contexts/FavoritesContext";
 import "../../styles/components/newreleases.css";
 
-function NewReleases({ content = { movies: [], series: [] } }) {
+function NewReleases({ content = { movies: [], series: [] }, language }) {
   const [activeCategory, setActiveCategory] = useState("all");
   const sliderRef = useRef(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
@@ -173,23 +173,6 @@ function NewReleases({ content = { movies: [], series: [] } }) {
     checkScrollability();
   };
 
-  // Función para manejar favoritos
-  const handleToggleFavorite = (e, item) => {
-    e.preventDefault(); // Prevenir navegación
-    e.stopPropagation(); // Prevenir propagación del evento
-
-    const favoriteItem = {
-      id: item.id,
-      title: item.titleKey,
-      posterPath: item.image,
-      year: item.year,
-      type: item.mediaType === "tv" ? "series" : "movie",
-      rating: item.rating,
-    };
-
-    toggleFavorite(favoriteItem);
-  };
-
   // Genera estrellas basadas en la calificación
   const renderStars = (rating) => {
     // Convertir a escala de 5 estrellas
@@ -215,6 +198,23 @@ function NewReleases({ content = { movies: [], series: [] } }) {
     }
 
     return stars;
+  };
+
+  // Función para manejar favoritos
+  const handleToggleFavorite = (e, item) => {
+    e.preventDefault(); // Prevenir navegación
+    e.stopPropagation(); // Prevenir propagación del evento
+
+    const favoriteItem = {
+      id: item.id,
+      title: item.titleKey,
+      posterPath: item.image,
+      year: item.year,
+      type: item.mediaType === "tv" ? "series" : "movie",
+      rating: item.rating,
+    };
+
+    toggleFavorite(favoriteItem);
   };
 
   return (
@@ -287,7 +287,7 @@ function NewReleases({ content = { movies: [], series: [] } }) {
                       <span className="new-badge">{t("common.new")}</span>
                     )}
 
-                    {/* Botón de favoritos */}
+                    {/* Reemplazar FavoriteButton con botón nativo similar a los otros componentes */}
                     <button
                       className={`favorite-icon ${
                         isFavorite(item.id) ? "active" : ""

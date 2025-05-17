@@ -36,8 +36,7 @@ function BlogPostPage({ initialPageLoad, globalLoading }) {
           author: {
             id: "auth1",
             name: "Laura Martínez",
-            avatar:
-              "https://source.unsplash.com/random/100x100/?portrait,woman",
+            avatar: null,
             bio: "Crítica de cine y escritora especializada en ciencia ficción y fantasía. Ha publicado artículos en revistas especializadas como 'Film Quarterly' y 'Sight & Sound'.",
             role: "Editora de Contenidos",
             socialLinks: {
@@ -134,8 +133,7 @@ function BlogPostPage({ initialPageLoad, globalLoading }) {
             {
               id: "comment1",
               authorName: "Carlos Vega",
-              authorAvatar:
-                "https://source.unsplash.com/random/60x60/?portrait,man",
+              authorAvatar: null,
               date: "2024-04-16",
               content:
                 "Excelente análisis sobre la evolución del género. Especialmente interesante la parte sobre cómo la tecnología mostrada en estas películas ha influido en desarrollos reales. Me pregunto si hay algún estudio académico que haya medido este impacto de manera más sistemática.",
@@ -144,8 +142,7 @@ function BlogPostPage({ initialPageLoad, globalLoading }) {
             {
               id: "comment2",
               authorName: "Marina Sánchez",
-              authorAvatar:
-                "https://source.unsplash.com/random/60x60/?portrait,woman2",
+              authorAvatar: null,
               date: "2024-04-16",
               content:
                 "Me gustaría que profundizaras más en el tema de la representación de género en la ciencia ficción. Ha habido una evolución interesante en los últimos años con películas como Arrival o Annihilation, que presentan protagonistas femeninas con una profundidad que antes era rara en el género.",
@@ -154,8 +151,7 @@ function BlogPostPage({ initialPageLoad, globalLoading }) {
             {
               id: "comment3",
               authorName: "David Mora",
-              authorAvatar:
-                "https://source.unsplash.com/random/60x60/?portrait,man2",
+              authorAvatar: null,
               date: "2024-04-17",
               content:
                 "Blade Runner sigue siendo insuperable. La atmósfera, la música de Vangelis, la fotografía... Una obra maestra que definió la estética cyberpunk para siempre. La secuela también es extraordinaria en términos visuales.",
@@ -180,10 +176,8 @@ function BlogPostPage({ initialPageLoad, globalLoading }) {
   return (
     <MainLayout>
       <div className={`article-page ${!isLoading ? "content-loaded" : ""}`}>
-        {/* Solo mostramos el spinner si no hay una carga global en curso */}
         {!globalLoading && isLoading ? (
           <div className="article-loading">
-            <div className="loading-spinner"></div>
             <p>{t("common.loading")}</p>
           </div>
         ) : error ? (

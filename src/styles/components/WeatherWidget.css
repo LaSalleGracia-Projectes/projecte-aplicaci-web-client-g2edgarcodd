@@ -3,16 +3,17 @@
   position: relative;
   border-radius: 16px;
   color: white;
-  padding: 20px;
+  padding: 15px;
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3);
-  margin-bottom: 24px;
-  max-width: 320px;
+  margin-bottom: 20px;
+  max-width: 350px; /* Aumentado de 280px a 350px para hacerlo más amplio */
   width: 100%;
   backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   overflow: hidden;
   z-index: 1;
+  font-size: 14px;
 }
 
 /* Temas basados en la hora del día */
@@ -278,9 +279,9 @@
 }
 
 .weather-icon {
-  width: 70px;
-  height: 70px;
-  margin-right: 16px;
+  width: 60px;
+  height: 60px;
+  margin-right: 12px;
   filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
   animation: float 3s ease-in-out infinite;
 }
@@ -298,23 +299,23 @@
 }
 
 .weather-location {
-  margin: 0 0 8px 0;
-  font-size: 18px;
+  margin: 0 0 5px 0;
+  font-size: 16px;
   font-weight: 600;
   letter-spacing: 0.5px;
   color: rgba(255, 255, 255, 0.95);
 }
 
 .weather-temp {
-  font-size: 32px;
+  font-size: 26px;
   font-weight: 700;
   display: flex;
   align-items: baseline;
-  gap: 12px;
+  gap: 10px;
 }
 
 .weather-description {
-  font-size: 15px;
+  font-size: 14px;
   opacity: 0.8;
   text-transform: capitalize;
   font-weight: 400;
@@ -323,9 +324,9 @@
 .weather-details {
   background-color: rgba(255, 255, 255, 0.08);
   border-radius: 12px;
-  padding: 16px;
-  font-size: 14px;
-  margin-bottom: 15px;
+  padding: 12px;
+  font-size: 13px;
+  margin-bottom: 12px;
   position: relative;
   z-index: 1;
   backdrop-filter: blur(4px);
@@ -354,8 +355,8 @@
   align-items: center;
   background-color: rgba(255, 255, 255, 0.08);
   border-radius: 12px;
-  padding: 12px;
-  margin-bottom: 15px;
+  padding: 10px;
+  margin-bottom: 12px;
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
@@ -436,6 +437,145 @@
   line-height: 1.4;
 }
 
+/* Estilos para recomendaciones de películas según el clima */
+.weather-movie-recommendations {
+  margin-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 12px;
+  position: relative;
+  z-index: 1;
+}
+
+.weather-movie-recommendations h4 {
+  margin: 0 0 8px 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.movie-recommendations-container {
+  display: flex;
+  gap: 12px; /* Aumentado de 8px a 12px para dar más espacio entre tarjetas */
+  overflow-x: auto;
+  padding: 4px 0;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+  margin-bottom: 8px;
+  justify-content: center; /* Centrar las películas horizontalmente */
+}
+
+.movie-recommendations-container::-webkit-scrollbar {
+  height: 4px;
+}
+
+.movie-recommendations-container::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+}
+
+.movie-recommendation-card {
+  flex: 0 0 auto;
+  width: 120px; /* Aumentado de 100px a 120px */
+  background-color: rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  cursor: pointer;
+}
+
+.movie-recommendation-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.movie-poster {
+  width: 100%;
+  height: 160px; /* Aumentado de 140px a 160px */
+  object-fit: cover;
+  display: block;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.movie-info {
+  padding: 6px;
+}
+
+.movie-info h5 {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.movie-rating {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 11px;
+  margin-top: 4px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.movie-rating i {
+  color: #ffcc33;
+  font-size: 10px;
+}
+
+.movie-recommendation-text {
+  font-size: 12px;
+  text-align: center;
+  opacity: 0.8;
+  margin: 6px 0 0 0;
+  font-style: italic;
+}
+
+/* Mejora para centrado en dispositivos móviles */
+@media (max-width: 768px) {
+  .movie-recommendation-card {
+    width: 110px; /* Aumentado de 90px a 110px */
+  }
+
+  .movie-poster {
+    height: 150px; /* Aumentado de 120px a 150px */
+  }
+
+  .movie-recommendations-container {
+    justify-content: center;
+    padding: 4px 0;
+  }
+}
+
+/* Adaptación para modo oscuro de la app */
+@media (prefers-color-scheme: dark) {
+  .weather-widget {
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5);
+  }
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+  .weather-widget {
+    max-width: 100%;
+    margin: 0 auto 20px;
+  }
+
+  .weather-icon {
+    width: 60px;
+    height: 60px;
+  }
+
+  .weather-temp {
+    font-size: 28px;
+  }
+}
+
 .weather-loading {
   display: flex;
   flex-direction: column;
@@ -485,28 +625,4 @@
   margin-bottom: 0;
   border-radius: 18px;
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
-}
-
-/* Adaptación para modo oscuro de la app */
-@media (prefers-color-scheme: dark) {
-  .weather-widget {
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5);
-  }
-}
-
-/* Estilos responsivos */
-@media (max-width: 768px) {
-  .weather-widget {
-    max-width: 100%;
-    margin: 0 auto 20px;
-  }
-
-  .weather-icon {
-    width: 60px;
-    height: 60px;
-  }
-
-  .weather-temp {
-    font-size: 28px;
-  }
 }

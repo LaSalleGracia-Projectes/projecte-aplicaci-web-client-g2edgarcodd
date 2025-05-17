@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useLanguage } from "../../contexts/LanguageContext";
 import { AuthContext } from "../../contexts/AuthContext";
 import LanguageSelector from "../UI/LanguageSelector";
+import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import "../../styles/components/auth.css";
 
 function Login() {
@@ -180,9 +181,106 @@ function Login() {
     }
   }, []);
 
-  const handleSocialLogin = (provider) => {
-    console.log(`Iniciando sesión con ${provider}`);
-    // Aquí implementarías la lógica de autenticación social
+  const handleSocialLogin = async (provider, response = null) => {
+    if (provider !== "Google" || !response) return;
+
+    setIsLoading(true);
+    setError("");
+
+    try {
+      // Enviar el token ID al backend para verificación
+      const apiResponse = await fetch(
+        "http://25.17.74.119:8000/api/auth/google/callback",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify({
+            token: response.credential,
+          }),
+        }
+      );
+
+      const data = await apiResponse.json();
+
+      if (!apiResponse.ok) {
+        setError(t("auth.googleLoginError"));
+        setIsLoading(false);
+        return;
+      }
+
+      // Si el inicio de sesión es exitoso
+      if (data.success) {
+        // Guardar datos de la sesión en localStorage
+        localStorage.setItem("auth_token", data.access_token);
+        localStorage.setItem("token_type", data.token_type);
+        localStorage.setItem("user_id", data.user_id);
+
+        // Actualizar el contexto de autenticación
+        await login(null, null, data);
+
+        // Redirigir al usuario
+        navigate("/");
+      } else {
+        setError(data.message || t("auth.loginError"));
+      }
+    } catch (error) {
+      console.error("Error en el login con Google:", error);
+      setError(t("auth.connectionError"));
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Reemplazar los botones de redes sociales por componentes adecuados
+  const renderSocialButtons = () => {
+    // Obtener la URL actual para usarla como origen en la redirección
+    const origin = window.location.origin;
+
+    return (
+      <div className="auth-social-buttons">
+        <GoogleOAuthProvider clientId="85774792902-1mnr01atsj4fha0jc23nadsi8r5ohd9n.apps.googleusercontent.com">
+          <GoogleLogin
+            onSuccess={(credentialResponse) => {
+              handleSocialLogin("Google", credentialResponse);
+            }}
+            onError={() => {
+              console.error("Google Login Failed");
+              setError(t("auth.googleLoginError"));
+            }}
+            useOneTap={false}
+            theme="filled_blue"
+            text="signin_with"
+            shape="circle"
+            size="large"
+            width={210}
+            context="signin"
+            locale="es"
+            ux_mode="popup"
+          />
+        </GoogleOAuthProvider>
+
+        <button
+          type="button"
+          className="auth-social-button auth-facebook"
+          onClick={() => handleSocialLogin("Facebook")}
+          aria-label={t("auth.loginWithFacebook")}
+        >
+          <i className="fab fa-facebook-f"></i>
+        </button>
+
+        <button
+          type="button"
+          className="auth-social-button auth-twitter"
+          onClick={() => handleSocialLogin("Twitter")}
+          aria-label={t("auth.loginWithTwitter")}
+        >
+          <i className="fab fa-twitter"></i>
+        </button>
+      </div>
+    );
   };
 
   return (
@@ -277,32 +375,7 @@ function Login() {
 
         <div className="auth-social-login">
           <p>{t("auth.orLoginWith")}</p>
-          <div className="auth-social-buttons">
-            <button
-              type="button"
-              className="auth-social-button auth-google"
-              onClick={() => handleSocialLogin("Google")}
-              aria-label={t("auth.loginWithGoogle")}
-            >
-              <i className="fab fa-google"></i>
-            </button>
-            <button
-              type="button"
-              className="auth-social-button auth-facebook"
-              onClick={() => handleSocialLogin("Facebook")}
-              aria-label={t("auth.loginWithFacebook")}
-            >
-              <i className="fab fa-facebook-f"></i>
-            </button>
-            <button
-              type="button"
-              className="auth-social-button auth-twitter"
-              onClick={() => handleSocialLogin("Twitter")}
-              aria-label={t("auth.loginWithTwitter")}
-            >
-              <i className="fab fa-twitter"></i>
-            </button>
-          </div>
+          {renderSocialButtons()}
         </div>
 
         <div className="auth-footer">

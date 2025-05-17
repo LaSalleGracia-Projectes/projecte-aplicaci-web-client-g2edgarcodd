@@ -3,155 +3,100 @@ import { Link } from "react-router-dom";
 import { useLanguage } from "../../contexts/LanguageContext";
 import PropTypes from "prop-types";
 import "../../styles/components/moviedetail-enhanced.css";
+import {
+  getImageUrl,
+  getContentRecommendations,
+  getSimilarContent,
+  getContentByGenres,
+  getTMDBTrendingMovies,
+} from "../../utils/api";
 
-function RelatedContent({ movieId, movieGenres = [] }) {
-  const { t } = useLanguage();
+function RelatedContent({ movieId, movieGenres = [], mediaType = "movie" }) {
+  const { t, language } = useLanguage(); // Obtener idioma actual
   const [activeTab, setActiveTab] = useState("recommended");
   const [relatedMovies, setRelatedMovies] = useState([]);
   const [loading, setLoading] = useState(true);
   const carouselRef = useRef(null);
 
-  // Simulación de carga de películas relacionadas
+  // Cargar datos reales de TMDB
   useEffect(() => {
-    setLoading(true);
+    const fetchRelatedContent = async () => {
+      try {
+        setLoading(true);
+        let results = [];
 
-    // Simulamos una petición a API
-    setTimeout(() => {
-      const demoMovies = generateDemoMovies(movieId, activeTab);
-      setRelatedMovies(demoMovies);
-      setLoading(false);
-    }, 800);
-  }, [movieId, activeTab]);
+        if (activeTab === "recommended") {
+          const recommendedData = await getContentRecommendations(
+            movieId,
+            mediaType,
+            1,
+            language
+          );
+          results = recommendedData;
+        } else if (activeTab === "similar") {
+          const similarData = await getSimilarContent(
+            movieId,
+            mediaType,
+            1,
+            language
+          );
+          results = similarData;
+        } else if (activeTab === "latest") {
+          // En caso de "latest", podríamos usar otro endpoint o mostrar contenido por géneros
+          if (movieGenres && movieGenres.length > 0) {
+            const genreContent = await getContentByGenres(
+              movieGenres.slice(0, 2),
+              mediaType,
+              1,
+              language
+            );
+            results = genreContent;
+          } else {
+            // Si no hay géneros disponibles, cargar trending
+            const trendingContent = await getTMDBTrendingMovies(
+              "week",
+              language
+            );
+            results = trendingContent;
+          }
+        }
 
-  // Generar películas demo para la muestra
-  const generateDemoMovies = (movieId, type) => {
-    const baseMovies = [
-      {
-        id: `related-${type}-1`,
-        title: "Interestelar",
-        poster:
-          "https://es.web.img3.acsta.net/pictures/14/10/02/11/07/341344.jpg",
-        year: "2014",
-        genres: ["Ciencia ficción", "Aventura"],
-        rating: 9.2,
-      },
-      {
-        id: `related-${type}-2`,
-        title: "Blade Runner 2049",
-        poster:
-          "https://es.web.img2.acsta.net/pictures/17/08/24/11/58/347696.jpg",
-        year: "2017",
-        genres: ["Ciencia ficción", "Drama"],
-        rating: 8.7,
-      },
-      {
-        id: `related-${type}-3`,
-        title: "La Llegada",
-        poster:
-          "https://es.web.img3.acsta.net/pictures/16/10/13/11/15/317120.jpg",
-        year: "2016",
-        genres: ["Ciencia ficción", "Drama"],
-        rating: 8.5,
-      },
-      {
-        id: `related-${type}-4`,
-        title: "Ex Machina",
-        poster:
-          "https://es.web.img3.acsta.net/pictures/14/12/17/10/24/051812.jpg",
-        year: "2014",
-        genres: ["Ciencia ficción", "Thriller"],
-        rating: 8.3,
-      },
-      {
-        id: `related-${type}-5`,
-        title: "Mad Max: Fury Road",
-        poster:
-          "https://es.web.img3.acsta.net/pictures/15/04/14/15/25/128120.jpg",
-        year: "2015",
-        genres: ["Acción", "Aventura"],
-        rating: 8.8,
-      },
-      {
-        id: `related-${type}-6`,
-        title: "El Renacido",
-        poster:
-          "https://es.web.img3.acsta.net/pictures/15/12/23/12/37/091500.jpg",
-        year: "2015",
-        genres: ["Aventura", "Supervivencia"],
-        rating: 8.6,
-      },
-      {
-        id: `related-${type}-7`,
-        title: "La La Land",
-        poster:
-          "https://es.web.img3.acsta.net/pictures/16/11/30/15/41/048911.jpg",
-        year: "2016",
-        genres: ["Musical", "Drama"],
-        rating: 8.4,
-      },
-      {
-        id: `related-${type}-8`,
-        title: "Parásitos",
-        poster:
-          "https://es.web.img3.acsta.net/pictures/19/06/07/12/47/3068315.jpg",
-        year: "2019",
-        genres: ["Drama", "Thriller"],
-        rating: 9.0,
-      },
-    ];
+        // Procesar resultados para formato unificado
+        const processedResults = results.map((item) => ({
+          id: item.id,
+          title: item.title || item.name,
+          poster: getImageUrl(item.poster_path, "medium", "poster"),
+          rating: item.vote_average || 0,
+          year: item.release_date
+            ? new Date(item.release_date).getFullYear()
+            : item.first_air_date
+            ? new Date(item.first_air_date).getFullYear()
+            : "",
+          mediaType: item.media_type || mediaType,
+          popularity: item.popularity,
+        }));
 
-    // Adaptar la lista según el tipo seleccionado
-    if (type === "recommended") {
-      // Ordenar por puntuación para recomendados
-      return [...baseMovies].sort((a, b) => b.rating - a.rating);
-    } else if (type === "similar") {
-      // Cambiar ligeramente los IDs para simular contenido diferente
-      return baseMovies.map((movie) => ({
-        ...movie,
-        id: `similar-${movie.id}`,
-      }));
-    } else {
-      // Cambiar los años para simular lanzamientos más recientes
-      return baseMovies.map((movie) => ({
-        ...movie,
-        id: `latest-${movie.id}`,
-        year: "2023",
-      }));
+        setRelatedMovies(processedResults);
+      } catch (error) {
+        console.error("Error al cargar contenido relacionado:", error);
+        setRelatedMovies([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (movieId) {
+      fetchRelatedContent();
     }
-  };
+  }, [movieId, activeTab, mediaType, movieGenres, language]); // Añadir language a las dependencias
 
   // Navegar por el carrusel
   const scrollCarousel = (direction) => {
     if (carouselRef.current) {
-      const scrollAmount = direction === "left" ? -500 : 500;
+      const scrollAmount = direction === "left" ? -300 : 300;
       carouselRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
     }
   };
-
-  // Componente de esqueleto para carga
-  const RelatedContentSkeleton = () => (
-    <div className="movie-detail-related-skeleton">
-      <div className="skeleton-title"></div>
-      <div className="skeleton-tabs">
-        <div className="skeleton-tab"></div>
-        <div className="skeleton-tab"></div>
-        <div className="skeleton-tab"></div>
-      </div>
-      <div className="related-items-skeleton">
-        {[1, 2, 3, 4].map((item) => (
-          <div key={item} className="related-item-skeleton">
-            <div className="skeleton-poster"></div>
-            <div className="skeleton-title"></div>
-            <div className="skeleton-meta"></div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-
-  if (loading) {
-    return <RelatedContentSkeleton />;
-  }
 
   return (
     <div className="movie-detail-related-content-section">
@@ -201,43 +146,75 @@ function RelatedContent({ movieId, movieGenres = [] }) {
           className="movie-detail-related-content-carousel"
           ref={carouselRef}
         >
-          {relatedMovies.map((movie) => (
-            <div key={movie.id} className="movie-detail-related-item">
-              <Link
-                to={`/movie/${movie.id}`}
-                className="movie-detail-related-poster-link"
-              >
-                <div className="movie-detail-related-poster-wrapper">
-                  <img
-                    src={movie.poster}
-                    alt={movie.title}
-                    className="movie-detail-related-poster"
-                  />
-                  <div className="movie-detail-related-poster-overlay">
-                    <div className="related-movie-rating">
-                      <i className="fas fa-star"></i> {movie.rating.toFixed(1)}
-                    </div>
+          {loading ? (
+            // Mostrar esqueletos de carga
+            Array(6)
+              .fill(0)
+              .map((_, index) => (
+                <div key={index} className="movie-detail-related-item-skeleton">
+                  <div className="movie-detail-related-poster-skeleton"></div>
+                  <div className="movie-detail-related-title-skeleton"></div>
+                  <div className="movie-detail-related-meta-skeleton"></div>
+                </div>
+              ))
+          ) : relatedMovies.length > 0 ? (
+            relatedMovies.map((movie) => (
+              <div key={movie.id} className="movie-detail-related-item">
+                <Link
+                  to={`/${movie.mediaType === "tv" ? "series" : "movie"}/${
+                    movie.id
+                  }`}
+                  className="movie-detail-related-poster-link"
+                >
+                  <div className="movie-detail-related-poster-wrapper">
+                    <img
+                      src={
+                        movie.poster ||
+                        "https://via.placeholder.com/185x278?text=No+Image"
+                      }
+                      alt={movie.title}
+                      className="movie-detail-related-poster"
+                      loading="lazy"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src =
+                          "https://via.placeholder.com/185x278?text=No+Image";
+                      }}
+                    />
+                    <div className="movie-detail-related-poster-overlay">
+                      <div className="related-movie-rating">
+                        <i className="fas fa-star"></i>{" "}
+                        {movie.rating.toFixed(1)}
+                      </div>
 
-                    <button className="related-movie-quickview">
-                      <i className="fas fa-eye"></i>
-                    </button>
+                      <button className="related-movie-quickview">
+                        <i className="fas fa-eye"></i>
+                      </button>
+                    </div>
+                  </div>
+                </Link>
+
+                <div className="movie-detail-related-info">
+                  <h4 className="movie-detail-related-title">{movie.title}</h4>
+                  <div className="movie-detail-related-meta">
+                    <span className="movie-detail-related-year">
+                      {movie.year || t("common.unknown")}
+                    </span>
+                    <span className="movie-detail-related-type">
+                      {movie.mediaType === "tv"
+                        ? t("common.series")
+                        : t("common.movie")}
+                    </span>
                   </div>
                 </div>
-              </Link>
-
-              <div className="movie-detail-related-info">
-                <h4 className="movie-detail-related-title">{movie.title}</h4>
-                <div className="movie-detail-related-meta">
-                  <span className="movie-detail-related-year">
-                    {movie.year}
-                  </span>
-                  <span className="movie-detail-related-genres">
-                    {movie.genres.join(", ")}
-                  </span>
-                </div>
               </div>
+            ))
+          ) : (
+            <div className="movie-detail-no-related">
+              <i className="fas fa-film-slash fa-3x"></i>
+              <p>{t("movieDetail.noRelatedContent")}</p>
             </div>
-          ))}
+          )}
         </div>
 
         <button
@@ -253,7 +230,8 @@ function RelatedContent({ movieId, movieGenres = [] }) {
 
 RelatedContent.propTypes = {
   movieId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-  movieGenres: PropTypes.arrayOf(PropTypes.string),
+  movieGenres: PropTypes.array,
+  mediaType: PropTypes.string,
 };
 
 export default RelatedContent;

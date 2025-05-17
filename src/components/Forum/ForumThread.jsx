@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import MainLayout from "../../layouts/MainLayout";
 import { useLanguage } from "../../contexts/LanguageContext";
+import { getAvatarUrl } from "../../utils/avatar";
 import "../../styles/components/ForumThread.css";
 
 function ForumThread() {
@@ -38,7 +39,7 @@ function ForumThread() {
         setIsLoading(false);
         console.log("ForumThread - Carga completa");
       } catch (error) {
-        console.error("Error en la carga del tema:", error);
+        console.error(t("forum.errorLoadingThread"), error);
         setIsLoading(false);
       }
     }, 800);
@@ -154,7 +155,7 @@ function ForumThread() {
       id: Date.now(),
       author: t("common.currentUser"),
       authorRole: t("forum.member"),
-      avatarUrl: "https://randomuser.me/api/portraits/men/22.jpg",
+      avatarUrl: getAvatarUrl(null, t("common.currentUser")),
       content: replyContent,
       timestamp: t("forum.justNow"),
       date: new Date().toLocaleDateString("es-ES", {
@@ -274,7 +275,10 @@ function ForumThread() {
 
           <div className="forum-thread-post-content">
             <div className="forum-thread-post-author">
-              <img src={thread.avatarUrl} alt={thread.author} />
+              <img
+                src={getAvatarUrl(thread.avatarUrl, thread.author)}
+                alt={thread.author}
+              />
               <div className="forum-thread-author-info">
                 <span className="forum-thread-author-name">
                   {thread.author}
@@ -429,7 +433,10 @@ function ForumThread() {
                   }`}
                 >
                   <div className="forum-thread-post-author">
-                    <img src={reply.avatarUrl} alt={reply.author} />
+                    <img
+                      src={getAvatarUrl(reply.avatarUrl, reply.author)}
+                      alt={reply.author}
+                    />
                     <div className="forum-thread-author-info">
                       <span className="forum-thread-author-name">
                         {reply.author}
@@ -569,27 +576,27 @@ function ForumThread() {
             <div className="forum-thread-share-options">
               <div className="forum-thread-share-option facebook">
                 <i className="fab fa-facebook"></i>
-                <span>Facebook</span>
+                <span>{t("forum.shareOnFacebook")}</span>
               </div>
               <div className="forum-thread-share-option twitter">
                 <i className="fab fa-twitter"></i>
-                <span>Twitter</span>
+                <span>{t("forum.shareOnTwitter")}</span>
               </div>
               <div className="forum-thread-share-option whatsapp">
                 <i className="fab fa-whatsapp"></i>
-                <span>WhatsApp</span>
+                <span>{t("forum.shareOnWhatsApp")}</span>
               </div>
               <div className="forum-thread-share-option telegram">
                 <i className="fab fa-telegram"></i>
-                <span>Telegram</span>
+                <span>{t("forum.shareOnTelegram")}</span>
               </div>
               <div className="forum-thread-share-option reddit">
                 <i className="fab fa-reddit"></i>
-                <span>Reddit</span>
+                <span>{t("forum.shareOnReddit")}</span>
               </div>
               <div className="forum-thread-share-option mail">
                 <i className="fas fa-envelope"></i>
-                <span>Email</span>
+                <span>{t("forum.shareViaEmail")}</span>
               </div>
             </div>
           </div>
@@ -615,7 +622,7 @@ Busco algo que realmente valga la pena, con buena construcción de mundo, person
   author: "CineExpert",
   authorRole: "Cinéfilo experto",
   authorPosts: 126,
-  avatarUrl: "https://randomuser.me/api/portraits/women/68.jpg",
+  avatarUrl: null,
   date: "5 Mar 2025",
   views: 452,
   replies: 28,
@@ -631,7 +638,7 @@ const exampleReplies = [
     id: 101,
     author: "SciFiFan42",
     authorRole: "Moderador",
-    avatarUrl: "https://randomuser.me/api/portraits/men/42.jpg",
+    avatarUrl: null,
     content:
       "Sin duda, mi recomendación sería Foundation basada en las novelas de Asimov. El worldbuilding es espectacular, con una escala épica que abarca milenios. La serie hace un trabajo increíble adaptando un material que muchos consideraban inadaptable.\n\nLo que me encanta es cómo explora conceptos de matemáticas predictivas sociales, el destino vs. libre albedrío y la caída de los imperios. Visualmente también es impresionante.",
     timestamp: "Hace 2 días",
@@ -646,7 +653,7 @@ const exampleReplies = [
     id: 102,
     author: "StarTrekker",
     authorRole: "Miembro",
-    avatarUrl: "https://randomuser.me/api/portraits/women/33.jpg",
+    avatarUrl: null,
     content:
       "Star Trek: Deep Space Nine sigue siendo insuperable en mi opinión. A diferencia de otras series de Star Trek que son más episódicas, DS9 tiene un arco narrativo que se desarrolla a lo largo de varias temporadas.\n\nExplora temas profundos como la guerra, la religión, la identidad y la política interestelar. Los personajes son complejos y evolucionan de forma notable. Y el Capitán Sisko es posiblemente el mejor capitán de Star Trek.",
     timestamp: "Hace 2 días",
@@ -661,7 +668,7 @@ const exampleReplies = [
     id: 103,
     author: "CineExpert",
     authorRole: "Cinéfilo experto",
-    avatarUrl: "https://randomuser.me/api/portraits/women/68.jpg",
+    avatarUrl: null,
     content:
       "¡Gracias por las sugerencias! Foundation está en mi lista pero no la he empezado aún. ¿Crees que la adaptación hace justicia a los libros?",
     timestamp: "Hace 1 día",
@@ -676,7 +683,7 @@ const exampleReplies = [
     id: 104,
     author: "SciFiFan42",
     authorRole: "Moderador",
-    avatarUrl: "https://randomuser.me/api/portraits/men/42.jpg",
+    avatarUrl: null,
     content:
       "Es una adaptación bastante libre, añade nuevos personajes y tramas, pero mantiene la esencia de las ideas de Asimov. Creo que era necesario para adaptar algo tan conceptual al medio visual. Te la recomiendo mucho, especialmente si te gustó The Expanse.",
     timestamp: "Hace 20 horas",
@@ -691,7 +698,7 @@ const exampleReplies = [
     id: 105,
     author: "WhoFan",
     authorRole: "Miembro",
-    avatarUrl: "https://randomuser.me/api/portraits/men/32.jpg",
+    avatarUrl: null,
     content:
       "No puedo creer que nadie haya mencionado Doctor Who. Con más de 50 años de historia, ha sentado muchas bases del género. Lo que más me gusta es cómo puede ser tan diversa: un episodio puede ser de terror, el siguiente comedia, luego ciencia dura, etc.\n\nAdemás, el concepto de regeneración permite que la serie se reinvente constantemente. Si no la has visto, te recomiendo empezar con la era de David Tennant.",
     timestamp: "Hace 22 horas",
@@ -706,7 +713,7 @@ const exampleReplies = [
     id: 106,
     author: "FarscapeLover",
     authorRole: "Miembro",
-    avatarUrl: "https://randomuser.me/api/portraits/women/21.jpg",
+    avatarUrl: null,
     content:
       "Farscape es una joya infravalorada. Un astronauta moderno catapultado a través de un agujero de gusano a una parte lejana de la galaxia, rodeado de criaturas alienígenas creadas por Jim Henson's Creature Shop.\n\nLo que la hace especial es lo rara que es: toma riesgos narrativos y visuales que otras series no se atreverían. Los personajes son profundamente imperfectos pero entrañables. Si buscas algo único, esta es tu serie.",
     timestamp: "Hace 18 horas",
@@ -721,7 +728,7 @@ const exampleReplies = [
     id: 107,
     author: "SolarisFan",
     authorRole: "Nuevo miembro",
-    avatarUrl: "https://randomuser.me/api/portraits/men/22.jpg",
+    avatarUrl: null,
     content:
       "Aunque es más reciente, Dark merece un lugar entre las mejores. Esta serie alemana de Netflix es una obra maestra del sci-fi con viajes en el tiempo. \n\nTiene una narrativa increíblemente compleja pero coherente, personajes con profundidad y un ambiente visual oscuro y cautivador. Es de esas series que te hace pensar y conectar puntos constantemente.",
     timestamp: "Hace 12 horas",

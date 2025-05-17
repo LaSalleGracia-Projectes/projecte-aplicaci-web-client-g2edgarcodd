@@ -7,6 +7,8 @@ function AccountSummary({ userData }) {
 
   // Formatear la fecha en formato legible
   const formatDate = (dateString) => {
+    if (!dateString) return "-";
+
     const options = { year: "numeric", month: "long", day: "numeric" };
     return new Date(dateString).toLocaleDateString(
       currentLanguage === "es"
@@ -44,7 +46,10 @@ function AccountSummary({ userData }) {
     return colors[genre] || `rgba(96, 125, 139, ${alpha})`; // Gris por defecto
   };
 
-  const remainingDays = calculateRemainingDays(userData.planExpiry);
+  // Asegurarse de que los datos existen antes de usarlos
+  const remainingDays = userData.planExpiry
+    ? calculateRemainingDays(userData.planExpiry)
+    : 0;
 
   return (
     <div className="account-summary animate-fade-in">
@@ -65,7 +70,9 @@ function AccountSummary({ userData }) {
           <div className="info-row">
             <span className="info-label">{t("profile.planType")}:</span>
             <span className="info-value">
-              <span className={`plan-badge ${userData.plan.toLowerCase()}`}>
+              <span
+                className={`plan-badge ${(userData.plan || "").toLowerCase()}`}
+              >
                 {userData.plan === "Premium" ? (
                   <>
                     <i className="fas fa-crown"></i> Premium
@@ -98,9 +105,6 @@ function AccountSummary({ userData }) {
         <div className="action-buttons">
           <Link to="/profile/update" className="btn-primary">
             <i className="fas fa-pencil-alt"></i> {t("profile.editProfile")}
-          </Link>
-          <Link to="/subscription" className="btn-secondary">
-            <i className="fas fa-crown"></i> {t("profile.manageSubscription")}
           </Link>
         </div>
       </div>
@@ -351,15 +355,6 @@ function AccountSummary({ userData }) {
               </div>
             ))}
           </div>
-        </div>
-
-        <div className="stats-links">
-          <Link to="/favorites" className="btn-secondary">
-            <i className="fas fa-heart"></i> {t("profile.viewMyFavorites")}
-          </Link>
-          <Link to="/watchlist" className="btn-secondary">
-            <i className="fas fa-list"></i> {t("profile.viewMyLists")}
-          </Link>
         </div>
       </div>
     </div>

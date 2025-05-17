@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useLanguage } from "../../contexts/LanguageContext";
 import PropTypes from "prop-types";
+import "../../styles/components/moviedetail-enhanced.css";
 
 function MovieInfo({ movie }) {
   const { t } = useLanguage();
@@ -11,6 +12,17 @@ function MovieInfo({ movie }) {
   // Calcular porcentaje de puntuación para gráficos visuales
   const calculateScorePercentage = (score, max) => {
     return (parseFloat(score) / parseFloat(max)) * 100;
+  };
+
+  // Formatear fecha para mostrarla
+  const formatDate = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    return date.toLocaleDateString("es-ES", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
   };
 
   return (
@@ -40,14 +52,14 @@ function MovieInfo({ movie }) {
         >
           <i className="fas fa-user-tie"></i> {t("movieDetail.crew")}
         </button>
-        {movie.trivia && movie.trivia.length > 0 && (
+        {movie.media_type === "tv" && (
           <button
             className={`movie-detail-info-nav-item ${
-              activeSection === "trivia" ? "active" : ""
+              activeSection === "seasons" ? "active" : ""
             }`}
-            onClick={() => setActiveSection("trivia")}
+            onClick={() => setActiveSection("seasons")}
           >
-            <i className="fas fa-lightbulb"></i> {t("movieDetail.trivia")}
+            <i className="fas fa-list-ol"></i> {t("movieDetail.seasons")}
           </button>
         )}
       </div>
@@ -56,24 +68,42 @@ function MovieInfo({ movie }) {
         {activeSection === "synopsis" && (
           <div className="movie-detail-synopsis-section">
             <p className="movie-detail-movie-full-description">
-              {movie.description}
+              {movie.description || t("movieDetail.noDescriptionAvailable")}
             </p>
 
-            {/* Palabras clave */}
-            {movie.keywords && movie.keywords.length > 0 && (
-              <div className="movie-detail-movie-keywords">
-                <h4 className="movie-detail-keywords-title">
-                  <i className="fas fa-tags"></i> {t("movieDetail.keywords")}
-                </h4>
-                <div className="movie-detail-keyword-list">
-                  {movie.keywords.map((keyword, index) => (
-                    <span key={index} className="movie-detail-keyword-tag">
-                      {t(`keywords.${keyword.toLowerCase()}`) || keyword}
-                    </span>
-                  ))}
-                </div>
+            {/* Mostrar tagline si existe */}
+            {movie.tagline && (
+              <div className="movie-detail-tagline">
+                <i className="fas fa-quote-left"></i> {movie.tagline}{" "}
+                <i className="fas fa-quote-right"></i>
               </div>
             )}
+
+            {/* Enlaces externos */}
+            <div className="movie-detail-external-links">
+              {movie.homepage && (
+                <a
+                  href={movie.homepage}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="movie-detail-external-link"
+                >
+                  <i className="fas fa-globe"></i>{" "}
+                  {t("movieDetail.officialWebsite")}
+                </a>
+              )}
+
+              {movie.imdb_id && (
+                <a
+                  href={`https://www.imdb.com/title/${movie.imdb_id}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="movie-detail-external-link imdb"
+                >
+                  <i className="fab fa-imdb"></i> IMDb
+                </a>
+              )}
+            </div>
           </div>
         )}
 
@@ -109,8 +139,8 @@ function MovieInfo({ movie }) {
                   <i className="fas fa-calendar-alt"></i>
                 </div>
                 <div className="movie-detail-detail-content">
-                  <h4>{t("movieDetail.releaseYear")}</h4>
-                  <p>{movie.year}</p>
+                  <h4>{t("movieDetail.releaseDate")}</h4>
+                  <p>{formatDate(movie.release_date)}</p>
                 </div>
               </div>
 
@@ -120,7 +150,15 @@ function MovieInfo({ movie }) {
                 </div>
                 <div className="movie-detail-detail-content">
                   <h4>{t("movieDetail.duration")}</h4>
-                  <p>{movie.duration || t("common.notAvailable")}</p>
+                  <p>
+                    {movie.media_type === "tv"
+                      ? `${movie.duration} ${t("common.minutes")} ${t(
+                          "common.perEpisode"
+                        )}`
+                      : `${Math.floor(movie.duration / 60)}h ${
+                          movie.duration % 60
+                        }min`}
+                  </p>
                 </div>
               </div>
 
@@ -131,10 +169,48 @@ function MovieInfo({ movie }) {
                   </div>
                   <div className="movie-detail-detail-content">
                     <h4>{t("movieDetail.originalLanguage")}</h4>
-                    <p>
-                      {t(`languages.${movie.originalLanguage}`) ||
-                        movie.originalLanguage}
-                    </p>
+                    <p>{movie.originalLanguage}</p>
+                  </div>
+                </div>
+              )}
+
+              {movie.status && (
+                <div className="movie-detail-detail-item">
+                  <div className="movie-detail-detail-icon">
+                    <i className="fas fa-info-circle"></i>
+                  </div>
+                  <div className="movie-detail-detail-content">
+                    <h4>{t("movieDetail.status")}</h4>
+                    <p>{movie.status}</p>
+                    {movie.in_production && (
+                      <span className="movie-detail-production-badge">
+                        {t("movieDetail.inProduction")}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {movie.popularity && (
+                <div className="movie-detail-detail-item">
+                  <div className="movie-detail-detail-icon">
+                    <i className="fas fa-fire"></i>
+                  </div>
+                  <div className="movie-detail-detail-content">
+                    <h4>{t("movieDetail.popularity")}</h4>
+                    <p>{movie.popularity.toFixed(1)}</p>
+                  </div>
+                </div>
+              )}
+
+              {movie.vote_count && (
+                <div className="movie-detail-detail-item">
+                  <div className="movie-detail-detail-icon">
+                    <i className="fas fa-users"></i>
+                  </div>
+                  <div className="movie-detail-detail-content">
+                    <h4>{t("movieDetail.votes")}</h4>
+                    <p>{movie.vote_count.toLocaleString()}</p>
                   </div>
                 </div>
               )}
@@ -151,6 +227,31 @@ function MovieInfo({ movie }) {
                     </div>
                   </div>
                 )}
+
+              {/* Información específica de series */}
+              {movie.media_type === "tv" && movie.number_of_seasons && (
+                <div className="movie-detail-detail-item">
+                  <div className="movie-detail-detail-icon">
+                    <i className="fas fa-layer-group"></i>
+                  </div>
+                  <div className="movie-detail-detail-content">
+                    <h4>{t("movieDetail.seasons")}</h4>
+                    <p>{movie.number_of_seasons}</p>
+                  </div>
+                </div>
+              )}
+
+              {movie.media_type === "tv" && movie.number_of_episodes && (
+                <div className="movie-detail-detail-item">
+                  <div className="movie-detail-detail-icon">
+                    <i className="fas fa-film"></i>
+                  </div>
+                  <div className="movie-detail-detail-content">
+                    <h4>{t("movieDetail.episodes")}</h4>
+                    <p>{movie.number_of_episodes}</p>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Compañías de producción */}
@@ -173,6 +274,39 @@ function MovieInfo({ movie }) {
                         )}
                         <span className="movie-detail-company-name">
                           {company.name}
+                          {company.origin_country && (
+                            <small className="movie-detail-company-country">
+                              ({company.origin_country})
+                            </small>
+                          )}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+            {/* Redes (Networks) para series de TV */}
+            {movie.media_type === "tv" &&
+              movie.networks &&
+              movie.networks.length > 0 && (
+                <div className="movie-detail-networks">
+                  <h4 className="movie-detail-section-subtitle">
+                    <i className="fas fa-broadcast-tower"></i>{" "}
+                    {t("movieDetail.networks")}
+                  </h4>
+                  <div className="movie-detail-networks-list">
+                    {movie.networks.map((network, index) => (
+                      <div key={index} className="movie-detail-network-item">
+                        {network.logo && (
+                          <img
+                            src={network.logo}
+                            alt={network.name}
+                            className="movie-detail-network-logo"
+                          />
+                        )}
+                        <span className="movie-detail-network-name">
+                          {network.name}
                         </span>
                       </div>
                     ))}
@@ -231,59 +365,121 @@ function MovieInfo({ movie }) {
 
         {activeSection === "crew" && (
           <div className="movie-detail-crew-section">
-            {movie.crew && movie.crew.length > 0 ? (
-              <div className="movie-detail-crew-grid">
-                {movie.crew.map((member, index) => (
-                  <div key={index} className="movie-detail-crew-member">
-                    <div className="movie-detail-crew-member-icon">
-                      <i
-                        className={
-                          member.job === "Director"
-                            ? "fas fa-video"
-                            : member.job === "Guionista"
-                            ? "fas fa-pen-fancy"
-                            : member.job === "Fotografía"
-                            ? "fas fa-camera"
-                            : member.job === "Música"
-                            ? "fas fa-music"
-                            : "fas fa-user-tie"
-                        }
-                      ></i>
-                    </div>
-                    <div className="movie-detail-crew-member-details">
-                      <h4 className="movie-detail-crew-job">
-                        {t(`crew.${member.job.toLowerCase()}`) || member.job}
-                      </h4>
-                      <p className="movie-detail-crew-name">{member.name}</p>
+            {movie.crew &&
+            Object.keys(movie.crewByDepartment || {}).length > 0 ? (
+              <div className="movie-detail-crew-departments">
+                {Object.keys(movie.crewByDepartment || {}).map((department) => (
+                  <div
+                    key={department}
+                    className="movie-detail-crew-department"
+                  >
+                    <h4 className="movie-detail-department-title">
+                      {department}
+                    </h4>
+                    <div className="movie-detail-crew-list">
+                      {movie.crewByDepartment[department].map(
+                        (member, index) => (
+                          <div key={index} className="movie-detail-crew-member">
+                            <div className="movie-detail-crew-member-icon">
+                              <i
+                                className={
+                                  member.job === "Director"
+                                    ? "fas fa-video"
+                                    : member.job === "Writer" ||
+                                      member.job === "Screenplay"
+                                    ? "fas fa-pen-fancy"
+                                    : member.job ===
+                                        "Director of Photography" ||
+                                      member.job === "Cinematography"
+                                    ? "fas fa-camera"
+                                    : member.job === "Music" ||
+                                      member.job === "Original Music Composer"
+                                    ? "fas fa-music"
+                                    : member.job === "Producer"
+                                    ? "fas fa-money-bill"
+                                    : "fas fa-user-tie"
+                                }
+                              ></i>
+                            </div>
+                            <div className="movie-detail-crew-member-details">
+                              <p className="movie-detail-crew-name">
+                                {member.name}
+                              </p>
+                              <h5 className="movie-detail-crew-job">
+                                {member.job}
+                              </h5>
+                            </div>
+                          </div>
+                        )
+                      )}
                     </div>
                   </div>
                 ))}
               </div>
             ) : (
               <div className="movie-detail-no-crew-info">
-                <i className="fas fa-exclamation-circle"></i>
-                <p>{t("movieDetail.noCrew")}</p>
+                <i className="fas fa-user-slash fa-3x"></i>
+                <p>{t("movieDetail.noCrewAvailable")}</p>
               </div>
             )}
           </div>
         )}
 
-        {activeSection === "trivia" && movie.trivia && (
-          <div className="movie-detail-trivia-section">
-            <h4 className="movie-detail-trivia-title">
-              <i className="fas fa-lightbulb"></i>{" "}
-              {t("movieDetail.interesting")} {t("movieDetail.facts")}
-            </h4>
-            <ul className="movie-detail-trivia-list">
-              {movie.trivia.map((item, index) => (
-                <li key={index} className="movie-detail-trivia-item">
-                  <div className="movie-detail-trivia-icon">
-                    <i className="fas fa-info-circle"></i>
+        {activeSection === "seasons" && movie.media_type === "tv" && (
+          <div className="movie-detail-seasons-section">
+            {movie.seasons && movie.seasons.length > 0 ? (
+              <div className="movie-detail-seasons-list">
+                {movie.seasons.map((season) => (
+                  <div key={season.id} className="movie-detail-season-item">
+                    <div className="movie-detail-season-poster">
+                      {season.poster_path ? (
+                        <img
+                          src={season.poster_path}
+                          alt={season.name}
+                          className="movie-detail-season-img"
+                        />
+                      ) : (
+                        <div className="movie-detail-season-no-image">
+                          <i className="fas fa-film"></i>
+                        </div>
+                      )}
+                    </div>
+                    <div className="movie-detail-season-info">
+                      <h4 className="movie-detail-season-name">
+                        {season.name}
+                      </h4>
+                      <div className="movie-detail-season-meta">
+                        <span className="movie-detail-season-date">
+                          {season.air_date
+                            ? formatDate(season.air_date)
+                            : t("common.unknown")}
+                        </span>
+                        <span className="movie-detail-episode-count">
+                          {season.episode_count}{" "}
+                          {season.episode_count === 1
+                            ? t("movieDetail.episode")
+                            : t("movieDetail.episodes")}
+                        </span>
+                      </div>
+                      {season.overview && (
+                        <p className="movie-detail-season-overview">
+                          {season.overview}
+                        </p>
+                      )}
+                      <button className="movie-detail-season-details-btn">
+                        <i className="fas fa-info-circle"></i>{" "}
+                        {t("movieDetail.seasonDetails")}
+                      </button>
+                    </div>
                   </div>
-                  <p>{item}</p>
-                </li>
-              ))}
-            </ul>
+                ))}
+              </div>
+            ) : (
+              <div className="movie-detail-no-seasons-info">
+                <i className="fas fa-calendar-times fa-3x"></i>
+                <p>{t("movieDetail.noSeasonsAvailable")}</p>
+              </div>
+            )}
           </div>
         )}
       </div>

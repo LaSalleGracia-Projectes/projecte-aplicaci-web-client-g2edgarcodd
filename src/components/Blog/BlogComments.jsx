@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useLanguage } from "../../contexts/LanguageContext";
+import { getAvatarUrl } from "../../utils/avatar";
 
 // Textos por defecto para fallback
 const defaultTexts = {
@@ -54,7 +55,7 @@ function BlogComments({ comments, postId }) {
           const newComment = {
             id: `comment${Date.now()}`,
             authorName: authorName.trim(),
-            authorAvatar: "https://source.unsplash.com/random/60x60/?avatar",
+            authorAvatar: null, // Usar DiceBear
             date: new Date().toISOString().split("T")[0],
             content: commentText.trim(),
             likes: 0,
@@ -127,18 +128,10 @@ function BlogComments({ comments, postId }) {
               <div key={comment.id} className="article-comment">
                 <div className="article-comment-avatar">
                   <img
-                    src={
-                      comment.authorAvatar ||
-                      "https://source.unsplash.com/random/60x60/?avatar"
-                    }
+                    src={getAvatarUrl(comment.authorAvatar, comment.authorName)}
                     alt={`${t("blog.photoOf")} ${
                       comment.authorName || "anónimo"
                     }`}
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src =
-                        "https://source.unsplash.com/random/60x60/?avatar";
-                    }}
                   />
                 </div>
 

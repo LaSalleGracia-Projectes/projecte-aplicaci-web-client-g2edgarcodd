@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import MainLayout from "../../layouts/MainLayout";
 import { useLanguage } from "../../contexts/LanguageContext";
+import { getAvatarUrl } from "../../utils/avatar";
 import "../../styles/components/Forum.css";
 
 function Forum() {
@@ -81,7 +82,7 @@ function Forum() {
       content: newTopic.content,
       category: newTopic.category,
       author: "Tu usuario",
-      avatarUrl: "https://randomuser.me/api/portraits/men/22.jpg",
+      avatarUrl: getAvatarUrl(null, "Tu usuario"),
       createdAt: currentDate,
       replies: 0,
       views: 1,
@@ -237,7 +238,7 @@ function Forum() {
               <ul className="forum-active-users">
                 <li>
                   <img
-                    src="https://randomuser.me/api/portraits/women/68.jpg"
+                    src={getAvatarUrl(null, "CineExpert")}
                     alt={t("forum.userImageAlt")}
                   />
                   <div className="forum-user-info">
@@ -249,7 +250,7 @@ function Forum() {
                 </li>
                 <li>
                   <img
-                    src="https://randomuser.me/api/portraits/men/32.jpg"
+                    src={getAvatarUrl(null, "FilmLover22")}
                     alt={t("forum.userImageAlt")}
                   />
                   <div className="forum-user-info">
@@ -261,7 +262,7 @@ function Forum() {
                 </li>
                 <li>
                   <img
-                    src="https://randomuser.me/api/portraits/women/33.jpg"
+                    src={getAvatarUrl(null, "SeriesAddict")}
                     alt={t("forum.userImageAlt")}
                   />
                   <div className="forum-user-info">
@@ -273,7 +274,7 @@ function Forum() {
                 </li>
                 <li>
                   <img
-                    src="https://randomuser.me/api/portraits/men/54.jpg"
+                    src={getAvatarUrl(null, "MovieBuff")}
                     alt={t("forum.userImageAlt")}
                   />
                   <div className="forum-user-info">
@@ -361,7 +362,10 @@ function Forum() {
                         onClick={() => navigateToTopic(topic.id)}
                       >
                         <div className="forum-topic-author">
-                          <img src={topic.avatarUrl} alt={topic.author} />
+                          <img
+                            src={getAvatarUrl(topic.avatarUrl, topic.author)}
+                            alt={topic.author}
+                          />
                         </div>
                         <div className="forum-topic-content">
                           <h3>
@@ -503,16 +507,16 @@ function Forum() {
                     {t("forum.categoryNames.general")}
                   </option>
                   <option value="peliculas">
-                    {t("forum.categoryNames.movies")}
+                    {t("forum.categoryNames.peliculas")}
                   </option>
                   <option value="series">
                     {t("forum.categoryNames.series")}
                   </option>
                   <option value="noticias">
-                    {t("forum.categoryNames.news")}
+                    {t("forum.categoryNames.noticias")}
                   </option>
                   <option value="recomendaciones">
-                    {t("forum.categoryNames.recommendations")}
+                    {t("forum.categoryNames.recomendaciones")}
                   </option>
                 </select>
               </div>
@@ -559,7 +563,7 @@ const forumTopics = [
       "Estoy buscando una buena serie de ciencia ficción para maratonear este fin de semana. ¿Cuáles me recomendarían como las mejores de todos los tiempos? Ya he visto Battlestar Galactica y The Expanse pero busco algo nuevo que realmente valga la pena.",
     category: "series",
     author: "CineExpert",
-    avatarUrl: "https://randomuser.me/api/portraits/women/68.jpg",
+    avatarUrl: null,
     createdAt: "5 Mar 2025",
     replies: 24,
     views: 342,
@@ -574,7 +578,7 @@ const forumTopics = [
       "Según un comunicado oficial, Netflix planea aumentar el precio de sus suscripciones a partir de abril. Los planes básicos subirán un 12% y los premium hasta un 15%. ¿Qué opinan? ¿Vale la pena seguir pagando con tantas opciones disponibles?",
     category: "noticias",
     author: "StreamNews",
-    avatarUrl: "https://randomuser.me/api/portraits/men/42.jpg",
+    avatarUrl: null,
     createdAt: "7 Mar 2025",
     replies: 18,
     views: 156,
@@ -589,7 +593,7 @@ const forumTopics = [
       "Acabo de ver la última película de Nolan y quería compartir mis impresiones. Sin spoilers, creo que es una de sus mejores obras hasta la fecha por su narrativa compleja pero accesible, y los efectos visuales que complementan perfectamente la historia sin sobresaturarla.",
     category: "peliculas",
     author: "FilmCritic87",
-    avatarUrl: "https://randomuser.me/api/portraits/men/32.jpg",
+    avatarUrl: null,
     createdAt: "2 Mar 2025",
     replies: 42,
     views: 520,
@@ -604,7 +608,7 @@ const forumTopics = [
       "Estoy buscando buenos documentales sobre naturaleza y vida salvaje. ¿Alguien tiene recomendaciones aparte de los de David Attenborough? Me interesan especialmente los que tratan sobre conservación marina o ecosistemas poco conocidos.",
     category: "recomendaciones",
     author: "NatureLover",
-    avatarUrl: "https://randomuser.me/api/portraits/women/33.jpg",
+    avatarUrl: null,
     createdAt: "6 Mar 2025",
     replies: 12,
     views: 98,
@@ -619,7 +623,7 @@ const forumTopics = [
       "Con tantas plataformas disponibles (Netflix, HBO Max, Disney+, Prime Video, Apple TV+...), me pregunto cuál creen que ofrece el mejor catálogo por el precio que se paga actualmente. Tengo que recortar gastos y solo puedo mantener dos suscripciones.",
     category: "general",
     author: "DecisionMaker",
-    avatarUrl: "https://randomuser.me/api/portraits/men/54.jpg",
+    avatarUrl: null,
     createdAt: "1 Mar 2025",
     replies: 35,
     views: 310,
@@ -634,7 +638,7 @@ const forumTopics = [
       "Mi serie favorita acaba de ser cancelada después de solo dos temporadas dejando muchas tramas sin resolver. ¿A alguien más le ha pasado? ¿Qué series creen que merecían más temporadas para desarrollar adecuadamente su historia?",
     category: "series",
     author: "SeriesAddict",
-    avatarUrl: "https://randomuser.me/api/portraits/women/22.jpg",
+    avatarUrl: null,
     createdAt: "28 Feb 2025",
     replies: 48,
     views: 425,
@@ -649,7 +653,7 @@ const forumTopics = [
       "¿Cuáles consideran que son las películas de superhéroes más destacadas de los últimos años? Personalmente creo que Logan, The Dark Knight y Spider-Man: Into the Spider-Verse están muy por encima del resto, pero me gustaría conocer otras opiniones.",
     category: "peliculas",
     author: "ComicBookFan",
-    avatarUrl: "https://randomuser.me/api/portraits/men/88.jpg",
+    avatarUrl: null,
     createdAt: "26 Feb 2025",
     replies: 29,
     views: 276,
@@ -664,7 +668,7 @@ const forumTopics = [
       "Con el creciente dominio de las plataformas de streaming y sus producciones originales, ¿creen que estamos presenciando el declive de la experiencia cinematográfica tradicional? ¿O simplemente es una evolución natural del medio?",
     category: "general",
     author: "CinemaLover",
-    avatarUrl: "https://randomuser.me/api/portraits/women/45.jpg",
+    avatarUrl: null,
     createdAt: "22 Feb 2025",
     replies: 64,
     views: 580,

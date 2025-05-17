@@ -1,5 +1,6 @@
 import React from "react";
 import { useLanguage } from "../../contexts/LanguageContext";
+import { getAvatarUrl } from "../../utils/avatar";
 
 // Textos por defecto para fallback
 const defaultTexts = {
@@ -20,10 +21,11 @@ function BlogAuthor({ author }) {
         <div className="article-author-header">
           <div className="article-author-avatar-container">
             <img
-              src={
-                safeAuthor.avatar ||
-                "https://randomuser.me/api/portraits/lego/1.jpg"
-              }
+              src={getAvatarUrl(
+                safeAuthor.avatar,
+                safeAuthor.name || "autor",
+                "micah"
+              )}
               alt={`${t("blog.photoOf")} ${safeAuthor.name || "autor"}`}
               className="article-author-avatar"
             />

@@ -11,14 +11,14 @@ function ProfileSettings({ userData }) {
     confirmPassword: "",
     language: userData.language || "es",
     notifications: {
-      newsletter: true,
-      newContent: true,
-      recommendations: true,
+      newsletter: userData.notifications?.newsletter !== false,
+      newContent: userData.notifications?.newContent !== false,
+      recommendations: userData.notifications?.recommendations !== false,
     },
     privacy: {
-      publicProfile: true,
-      showActivity: true,
-      shareWatchlist: false,
+      publicProfile: userData.privacy?.publicProfile !== false,
+      showActivity: userData.privacy?.showActivity !== false,
+      shareWatchlist: userData.privacy?.shareWatchlist === true,
     },
   });
 

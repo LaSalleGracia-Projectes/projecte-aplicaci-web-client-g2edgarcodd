@@ -2,331 +2,368 @@ import React, { useState, useEffect, useRef } from "react";
 import { useLanguage } from "../../contexts/LanguageContext";
 import PropTypes from "prop-types";
 import "../../styles/components/moviedetail-enhanced.css";
+import { getContentVideos } from "../../utils/api";
+import { motion, AnimatePresence } from "framer-motion";
 
-function VideoPlayer({ videoId, thumbnailUrl, title }) {
-  const { t } = useLanguage();
+function VideoPlayer({
+  videoId,
+  movieId,
+  mediaType = "movie",
+  thumbnailUrl,
+  title,
+}) {
+  const { t, language } = useLanguage();
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
-  const [videoLoaded, setVideoLoaded] = useState(false);
-  const [volume, setVolume] = useState(70);
-  const [progress, setProgress] = useState(0);
-  const [duration, setDuration] = useState(0);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [fullscreen, setFullscreen] = useState(false);
+  const [loadingPlayer, setLoadingPlayer] = useState(false);
+  const [actualVideoId, setActualVideoId] = useState(videoId);
+  const [isMuted, setIsMuted] = useState(false);
+  const [volume, setVolume] = useState(100);
 
+  // Referencias para el contenedor y el iframe del video
+  const videoContainerRef = useRef(null);
   const videoRef = useRef(null);
-  const containerRef = useRef(null);
-  const progressIntervalRef = useRef(null);
 
-  // Manejar la carga inicial del video y asignar los controladores de eventos
+  // Cargar video desde la API si no se proporciona videoId
   useEffect(() => {
-    const videoElement = videoRef.current;
+    if (!videoId && movieId) {
+      const loadVideoFromApi = async () => {
+        try {
+          setLoadingPlayer(true);
+          const videos = await getContentVideos(movieId, mediaType, language);
 
-    if (videoElement) {
-      const handleLoadedMetadata = () => {
-        setDuration(videoElement.duration);
-        setVideoLoaded(true);
-      };
+          // Buscar primero trailers oficiales
+          const trailer =
+            videos.find(
+              (v) => v.type === "Trailer" && v.official && v.site === "YouTube"
+            ) ||
+            videos.find((v) => v.type === "Trailer" && v.site === "YouTube") ||
+            videos.find((v) => v.site === "YouTube");
 
-      const handleTimeUpdate = () => {
-        setCurrentTime(videoElement.currentTime);
-        setProgress((videoElement.currentTime / videoElement.duration) * 100);
-      };
-
-      videoElement.addEventListener("loadedmetadata", handleLoadedMetadata);
-      videoElement.addEventListener("timeupdate", handleTimeUpdate);
-
-      return () => {
-        videoElement.removeEventListener(
-          "loadedmetadata",
-          handleLoadedMetadata
-        );
-        videoElement.removeEventListener("timeupdate", handleTimeUpdate);
-
-        if (progressIntervalRef.current) {
-          clearInterval(progressIntervalRef.current);
+          if (trailer) {
+            setActualVideoId(trailer.key);
+            setLoadingPlayer(false);
+          } else {
+            console.warn("No se encontraron videos disponibles");
+            setLoadingPlayer(false);
+          }
+        } catch (error) {
+          console.error("Error al cargar videos:", error);
+          setLoadingPlayer(false);
         }
       };
-    }
-  }, [videoLoaded]);
 
-  // Manejar cambios en el estado de reproducción
-  useEffect(() => {
-    if (videoRef.current) {
-      if (isPlaying) {
-        videoRef.current.play().catch((error) => {
-          console.error("Error al reproducir el video:", error);
-          setIsPlaying(false);
-        });
-      } else {
-        videoRef.current.pause();
-      }
-    }
-  }, [isPlaying]);
-
-  // Manejar cambios en el volumen
-  useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.volume = volume / 100;
-    }
-  }, [volume]);
-
-  // Formateador de tiempo (convierte segundos en formato MM:SS)
-  const formatTime = (timeInSeconds) => {
-    const minutes = Math.floor(timeInSeconds / 60);
-    const seconds = Math.floor(timeInSeconds % 60);
-    return `${minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
-  };
-
-  // Manejadores de eventos
-  const handlePlayClick = () => {
-    setIsPlaying(!isPlaying);
-  };
-
-  const handleVolumeChange = (newVolume) => {
-    setVolume(Math.max(0, Math.min(100, newVolume)));
-  };
-
-  const handleProgressClick = (e) => {
-    const progressBar = e.currentTarget;
-    const clickPosition = e.clientX - progressBar.getBoundingClientRect().left;
-    const progressBarWidth = progressBar.clientWidth;
-    const newProgress = (clickPosition / progressBarWidth) * 100;
-
-    if (videoRef.current) {
-      const newTime = (newProgress / 100) * videoRef.current.duration;
-      videoRef.current.currentTime = newTime;
-      setProgress(newProgress);
-      setCurrentTime(newTime);
-    }
-  };
-
-  const toggleFullscreen = () => {
-    if (!document.fullscreenElement) {
-      containerRef.current.requestFullscreen().catch((err) => {
-        console.error(
-          `Error al intentar entrar en modo pantalla completa:`,
-          err.message
-        );
-      });
+      loadVideoFromApi();
     } else {
-      document.exitFullscreen();
+      setActualVideoId(videoId);
     }
-  };
+  }, [videoId, movieId, mediaType, language]);
 
-  useEffect(() => {
-    const handleFullscreenChange = () => {
-      setFullscreen(!!document.fullscreenElement);
-    };
-
-    document.addEventListener("fullscreenchange", handleFullscreenChange);
-
-    return () => {
-      document.removeEventListener("fullscreenchange", handleFullscreenChange);
-    };
-  }, []);
-
-  const handleTrailerClick = () => {
+  // Manejar clic en la miniatura para reproducir el video
+  const handlePlayClick = () => {
+    if (!actualVideoId) return;
+    setLoadingPlayer(true);
     setIsPlaying(true);
   };
 
-  if (!videoId) {
-    return (
-      <div className="movie-detail-video-player-container">
-        <div className="movie-detail-video-placeholder">
-          <div className="movie-detail-video-overlay">
-            <div className="movie-detail-trailer-info">
-              {t("movieDetail.trailerNotAvailable")}
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  // Alternar reproducción del trailer
+  const handleTrailerToggle = () => {
+    setIsPlaying(!isPlaying);
 
-  // Si el video no está activo, mostrar la miniatura con botón de reproducción
-  if (!isPlaying) {
-    return (
-      <div className="movie-detail-video-player-container">
-        <div
-          className="movie-detail-video-placeholder"
-          onClick={handleTrailerClick}
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
-        >
-          <img
-            src={
-              thumbnailUrl ||
-              `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`
-            }
-            alt={title}
-            className="movie-detail-video-thumbnail"
-          />
-          <div
-            className={`movie-detail-video-overlay ${
-              isHovered ? "hovered" : ""
-            }`}
-          >
-            <div className="movie-detail-play-button-large">
-              <i className="fas fa-play"></i>
-            </div>
-            <div className="movie-detail-play-text">
-              {t("movieDetail.playTrailer")}
-            </div>
-            <div className="movie-detail-trailer-info">
-              {title || t("movieDetail.officialTrailer")}
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Video está reproduciéndose
-  return (
-    <div className="movie-detail-video-player-container" ref={containerRef}>
-      <div className="movie-detail-video-info-overlay">
-        <div className="movie-detail-video-info-content">
-          <div className="movie-detail-video-info-title">
-            <h2>{title || t("movieDetail.officialTrailer")}</h2>
-          </div>
-        </div>
-      </div>
-      <video
-        ref={videoRef}
-        className="movie-detail-video-player"
-        width="100%"
-        controls={false}
-        onClick={handlePlayClick}
-        poster={
-          thumbnailUrl ||
-          `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`
+    if (isPlaying) {
+      if (videoRef.current) {
+        videoRef.current.src = "";
+        setTimeout(() => {
+          videoRef.current = null;
+        }, 100);
+      }
+    } else {
+      setTimeout(() => {
+        if (videoRef.current) {
+          // Reiniciar el iframe para que comience la reproducción
+          const currentSrc = videoRef.current.src;
+          videoRef.current.src = currentSrc;
         }
+      }, 100);
+    }
+  };
+
+  // Control de volumen (slider)
+  const handleVolumeChange = (e) => {
+    if (e) e.stopPropagation();
+
+    const newVolume = parseInt(e.target.value, 10);
+    setVolume(newVolume);
+
+    // Si el volumen es 0, mutear, de lo contrario desmutear
+    const shouldBeMuted = newVolume === 0;
+
+    if (shouldBeMuted !== isMuted) {
+      setIsMuted(shouldBeMuted);
+
+      if (videoRef.current) {
+        try {
+          // Actualizar el iframe src para reflejar el cambio en mute
+          let currentSrc = videoRef.current.src;
+          if (shouldBeMuted) {
+            currentSrc = currentSrc.replace("mute=0", "mute=1");
+          } else {
+            currentSrc = currentSrc.replace("mute=1", "mute=0");
+          }
+          videoRef.current.src = currentSrc;
+        } catch (error) {
+          console.error("Error al cambiar el volumen:", error);
+        }
+      }
+    }
+  };
+
+  // Entrar en modo pantalla completa
+  const handleFullScreen = (e) => {
+    if (e) e.stopPropagation();
+
+    const iframe = videoRef.current;
+    if (!iframe) return;
+
+    try {
+      if (iframe.requestFullscreen) {
+        iframe.requestFullscreen();
+      } else if (iframe.mozRequestFullScreen) {
+        iframe.mozRequestFullScreen();
+      } else if (iframe.webkitRequestFullscreen) {
+        iframe.webkitRequestFullscreen();
+      } else if (iframe.msRequestFullscreen) {
+        iframe.msRequestFullscreen();
+      }
+    } catch (error) {
+      console.error("Error al activar pantalla completa:", error);
+    }
+  };
+
+  // Gestionar evento de carga del iframe
+  const handleTrailerLoad = () => {
+    console.log("Trailer cargado correctamente");
+    setLoadingPlayer(false);
+  };
+
+  // Construir la URL del trailer al estilo Hero
+  const trailerUrl = actualVideoId
+    ? `https://www.youtube.com/embed/${actualVideoId}?autoplay=1&mute=${
+        isMuted ? 1 : 0
+      }&controls=1&showinfo=0&rel=0&loop=1&playlist=${actualVideoId}&enablejsapi=1&origin=${
+        window.location.origin
+      }`
+    : "";
+
+  // Variantes para las animaciones
+  const containerVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.6, ease: "easeOut" },
+    },
+    exit: {
+      opacity: 0,
+      transition: { duration: 0.3 },
+    },
+  };
+
+  const titleVariants = {
+    hidden: { opacity: 0, y: 10 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.5, delay: 0.2 },
+    },
+  };
+
+  const controlsVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.5, delay: 0.3 },
+    },
+  };
+
+  return (
+    <motion.div
+      className="movie-detail-video-player-section hero-style"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+      exit="exit"
+    >
+      <motion.div
+        className="movie-detail-section-header"
+        variants={titleVariants}
+        initial="hidden"
+        animate="visible"
       >
-        <source
-          src={`https://www.youtube.com/embed/${videoId}?autoplay=1`}
-          type="video/mp4"
-        />
-        {t("movieDetail.videoNotSupported")}
-      </video>
-      <div className="movie-detail-video-controls">
-        <div className="movie-detail-control-buttons">
-          <button
-            className="movie-detail-control-button main-control"
-            onClick={handlePlayClick}
-          >
-            <i className={isPlaying ? "fas fa-pause" : "fas fa-play"}></i>
-          </button>
-          <button className="movie-detail-control-button">
-            <i className="fas fa-step-backward"></i>
-          </button>
-          <button className="movie-detail-control-button">
-            <i className="fas fa-step-forward"></i>
-          </button>
-        </div>
+        <h3 className="movie-detail-section-title">
+          <i className="fas fa-film"></i> {t("movieDetail.trailer")}
+        </h3>
+      </motion.div>
 
-        <div className="movie-detail-volume-control">
-          <i
-            className={
-              volume === 0
-                ? "fas fa-volume-mute"
-                : volume < 30
-                ? "fas fa-volume-down"
-                : "fas fa-volume-up"
-            }
-          ></i>
-          <div className="movie-detail-volume-slider">
-            <div
-              className="movie-detail-volume-progress"
-              style={{ width: `${volume}%` }}
-            ></div>
-            <div
-              className="movie-detail-volume-handle"
-              style={{ left: `${volume}%` }}
-            ></div>
+      <div
+        className={`movie-detail-video-container hero-video-container ${
+          isPlaying ? "playing" : ""
+        }`}
+        ref={videoContainerRef}
+      >
+        <div
+          className="movie-detail-video-thumbnail hero-style-thumbnail"
+          onClick={handlePlayClick}
+          style={{
+            opacity: isPlaying ? 0 : 1,
+            pointerEvents: isPlaying ? "none" : "auto",
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            zIndex: 1,
+          }}
+        >
+          <div className="movie-detail-thumbnail-wrapper">
+            <img
+              src={
+                thumbnailUrl ||
+                `https://img.youtube.com/vi/${actualVideoId}/maxresdefault.jpg`
+              }
+              alt={`${title} - ${t("movieDetail.trailer")}`}
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = `https://img.youtube.com/vi/${actualVideoId}/hqdefault.jpg`;
+              }}
+              className="movie-detail-thumbnail-image hero-image-style"
+            />
+            <div className="movie-detail-thumbnail-overlay hero-overlay-style"></div>
           </div>
-        </div>
 
-        <div className="movie-detail-video-progress">
-          <div className="movie-detail-progress-time">
-            {formatTime(currentTime)}
-          </div>
-          <div
-            className="movie-detail-progress-bar-container"
-            onClick={handleProgressClick}
-          >
-            <div
-              className="movie-detail-progress-bar"
-              style={{ width: `${progress}%` }}
-            ></div>
-            <div
-              className="movie-detail-progress-handle"
-              style={{ left: `${progress}%` }}
-            ></div>
-            <div
-              className="movie-detail-progress-preview"
-              style={{ left: `${progress}%` }}
+          <div className="movie-detail-video-play-overlay">
+            <motion.div
+              className="movie-detail-video-play-button hero-play-button"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
             >
-              <img
-                src={
-                  thumbnailUrl ||
-                  `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`
-                }
-                className="movie-detail-preview-thumbnail"
-                alt="Preview"
-              />
-              <div className="movie-detail-preview-time">
-                {formatTime(currentTime)}
-              </div>
+              <i className="fas fa-play"></i>
+              {loadingPlayer && (
+                <span className="movie-detail-loading-indicator">
+                  <i className="fas fa-circle-notch fa-spin"></i>
+                </span>
+              )}
+            </motion.div>
+            <div className="movie-detail-video-title hero-title-style">
+              <motion.h4
+                className="hero-cinematic-title"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+              >
+                {title || t("movieDetail.officialTrailer")}
+              </motion.h4>
+              <motion.span
+                className="hero-cinematic-tagline"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+              >
+                {t("movieDetail.watchTrailer")}
+              </motion.span>
             </div>
-          </div>
-          <div className="movie-detail-progress-duration">
-            {formatTime(duration)}
           </div>
         </div>
 
-        <div className="movie-detail-video-settings">
-          <button className="movie-detail-control-button">
-            <i className="fas fa-cog"></i>
-            <div className="movie-detail-settings-dropdown">
-              <div className="movie-detail-settings-option">
-                <span>{t("videoPlayer.quality")}</span>
-                <select>
-                  <option value="auto">Auto (720p)</option>
-                  <option value="1080p">1080p</option>
-                  <option value="720p">720p</option>
-                  <option value="480p">480p</option>
-                  <option value="360p">360p</option>
-                </select>
+        <AnimatePresence>
+          {isPlaying && (
+            <motion.div
+              className="movie-detail-trailer-container hero-trailer-style"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+                zIndex: 2,
+              }}
+            >
+              <iframe
+                ref={videoRef}
+                className="movie-detail-trailer-frame"
+                src={trailerUrl}
+                title={`${title || "Movie"} Trailer`}
+                frameBorder="0"
+                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                loading="lazy"
+                onLoad={handleTrailerLoad}
+                style={{ width: "100%", height: "100%" }}
+              ></iframe>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Controls en la parte inferior con los tres botones alineados */}
+        <AnimatePresence>
+          {isPlaying && (
+            <motion.div
+              className="movie-detail-trailer-controls hero-controls-style"
+              variants={controlsVariants}
+              initial="hidden"
+              animate="visible"
+              exit={{ opacity: 0, y: 20, transition: { duration: 0.3 } }}
+            >
+              {/* Control de volumen mejorado (izquierda) */}
+              <div className="movie-detail-volume-control hero-volume-control">
+                <i className={`fas fa-volume${isMuted ? "-mute" : "-up"}`}></i>
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  value={volume}
+                  onChange={handleVolumeChange}
+                  className="movie-detail-volume-slider hero-volume-slider"
+                  aria-label={t("common.volume")}
+                />
               </div>
-              <div className="movie-detail-settings-option">
-                <span>{t("videoPlayer.speed")}</span>
-                <select>
-                  <option value="0.5">0.5x</option>
-                  <option value="1" selected>
-                    1x
-                  </option>
-                  <option value="1.25">1.25x</option>
-                  <option value="1.5">1.5x</option>
-                  <option value="2">2x</option>
-                </select>
-              </div>
-            </div>
-          </button>
-          <button
-            className="movie-detail-control-button"
-            onClick={toggleFullscreen}
-          >
-            <i className={fullscreen ? "fas fa-compress" : "fas fa-expand"}></i>
-          </button>
-        </div>
+
+              {/* Botón de cerrar (centro) */}
+              <motion.button
+                className="movie-detail-btn-trailer hero-btn-style active"
+                onClick={handleTrailerToggle}
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+              >
+                <i className="fas fa-times"></i>
+                {t("common.hideTrailer")}
+              </motion.button>
+
+              {/* Botón de pantalla completa (derecha) */}
+              <motion.button
+                className="movie-detail-video-control-btn movie-detail-video-fullscreen hero-fullscreen-btn"
+                onClick={handleFullScreen}
+                aria-label={t("common.fullscreen")}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <i className="fas fa-expand"></i>
+              </motion.button>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
 VideoPlayer.propTypes = {
   videoId: PropTypes.string,
+  movieId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  mediaType: PropTypes.string,
   thumbnailUrl: PropTypes.string,
   title: PropTypes.string,
 };

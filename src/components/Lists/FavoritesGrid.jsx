@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { useLanguage } from "../../contexts/LanguageContext";
 import { useFavorites } from "../../contexts/FavoritesContext";
 import FavoriteItem from "./FavoriteItem";
@@ -9,11 +10,14 @@ function FavoritesGrid() {
 
   if (!favorites || favorites.length === 0) {
     return (
-      <div className="empty-favorites">
-        <div className="empty-content">
-          <i className="far fa-bookmark empty-icon"></i>
-          <h3>{t("favorites.noFavorites")}</h3>
-          <p>{t("favorites.noFavoritesDescription")}</p>
+      <div className="favorites-empty-state">
+        <div className="empty-state-container">
+          <i className="fas fa-heart empty-icon"></i>
+          <h3>{t("lists.noFavorites")}</h3>
+          <p>{t("lists.noFavoritesDescription")}</p>
+          <Link to="/explore" className="btn-primary">
+            <i className="fas fa-compass"></i> {t("explore.title")}
+          </Link>
         </div>
       </div>
     );

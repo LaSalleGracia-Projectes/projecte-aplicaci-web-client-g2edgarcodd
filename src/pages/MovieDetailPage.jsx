@@ -14,7 +14,6 @@ import { useFavorites } from "../contexts/FavoritesContext";
 import MainLayout from "../layouts/MainLayout";
 import "../styles/components/moviedetail.css";
 import { getMovieDetails, getImageUrl, getTVShowDetails } from "../utils/api";
-import castData from "../data/castData";
 
 // Componentes con carga diferida para mejorar el rendimiento inicial
 const VideoPlayer = lazy(() => import("../components/MovieDetail/VideoPlayer"));
@@ -32,7 +31,7 @@ const MovieDetailHero = lazy(() =>
 );
 
 const MovieDetailPage = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage(); // Obtener idioma actual
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
@@ -67,10 +66,10 @@ const MovieDetailPage = () => {
 
         if (isTV) {
           // Si es una serie, usar getTVShowDetails
-          data = await getTVShowDetails(id);
+          data = await getTVShowDetails(id, language);
         } else {
           // Si es una película, usar getMovieDetails
-          data = await getMovieDetails(id);
+          data = await getMovieDetails(id, language);
         }
 
         if (data) {
@@ -91,7 +90,7 @@ const MovieDetailPage = () => {
     if (id) {
       fetchMovieDetails();
     }
-  }, [id, isTV, t]);
+  }, [id, isTV, t, language]); // Añadir language a las dependencias
 
   // Función para transformar datos de TMDB al formato que esperan nuestros componentes
   const transformTMDBData = (data, isTV) => {
@@ -118,13 +117,35 @@ const MovieDetailPage = () => {
     const cast =
       data.credits?.cast?.map((actor) => ({
         id: actor.id,
-        movieId: data.id,
         name: actor.name,
-        character: actor.character,
+        character: actor.character || t("common.unknown"),
         photo: actor.profile_path
           ? getImageUrl(actor.profile_path, "medium", "profile")
           : "https://via.placeholder.com/185x278?text=No+Image",
+        popularity: actor.popularity,
+        order: actor.order,
       })) || [];
+
+    // Procesar el equipo de producción (crew)
+    const crew =
+      data.credits?.crew?.map((member) => ({
+        id: member.id,
+        name: member.name,
+        job: member.job,
+        department: member.department,
+        photo: member.profile_path
+          ? getImageUrl(member.profile_path, "medium", "profile")
+          : null,
+      })) || [];
+
+    // Agrupar miembros del equipo por departamento para una mejor organización
+    const crewByDepartment = crew.reduce((acc, member) => {
+      if (!acc[member.department]) {
+        acc[member.department] = [];
+      }
+      acc[member.department].push(member);
+      return acc;
+    }, {});
 
     // Procesar videos
     const videos =
@@ -132,20 +153,80 @@ const MovieDetailPage = () => {
         key: video.key,
         name: video.name,
         type: video.type,
+        site: video.site,
+        official: video.official,
+        published_at: video.published_at,
+        thumbnail:
+          video.site === "YouTube"
+            ? `https://img.youtube.com/vi/${video.key}/hqdefault.jpg`
+            : null,
       })) || [];
+
+    // Filtrar por tipo de video para fácil acceso
+    const trailers = videos.filter(
+      (video) => video.type === "Trailer" && video.site === "YouTube"
+    );
+    const teasers = videos.filter(
+      (video) => video.type === "Teaser" && video.site === "YouTube"
+    );
 
     // Procesar imágenes para la galería
     const images =
-      data.images?.backdrops?.slice(0, 10).map((img) => ({
+      data.images?.backdrops?.map((img) => ({
         url: getImageUrl(img.file_path, "large", "backdrop"),
+        width: img.width,
+        height: img.height,
+        aspect_ratio: img.aspect_ratio,
       })) || [];
 
     // Procesar pósters para la galería
     const posters =
-      data.images?.posters?.slice(0, 10).map((poster) => ({
+      data.images?.posters?.map((poster) => ({
         url: getImageUrl(poster.file_path, "large", "poster"),
         language: poster.iso_639_1,
+        width: poster.width,
+        height: poster.height,
+        aspect_ratio: poster.aspect_ratio,
       })) || [];
+
+    // Información adicional para series de TV
+    const tvInfo = isTV
+      ? {
+          seasons:
+            data.seasons?.map((season) => ({
+              id: season.id,
+              name: season.name,
+              overview: season.overview,
+              poster_path: season.poster_path
+                ? getImageUrl(season.poster_path, "medium", "poster")
+                : null,
+              season_number: season.season_number,
+              episode_count: season.episode_count,
+              air_date: season.air_date,
+            })) || [],
+          number_of_seasons: data.number_of_seasons,
+          number_of_episodes: data.number_of_episodes,
+          episode_run_time: data.episode_run_time,
+          in_production: data.in_production,
+          status: data.status,
+          networks:
+            data.networks?.map((network) => ({
+              id: network.id,
+              name: network.name,
+              logo: network.logo_path
+                ? getImageUrl(network.logo_path, "small", "poster")
+                : null,
+            })) || [],
+          created_by:
+            data.created_by?.map((creator) => ({
+              id: creator.id,
+              name: creator.name,
+              profile: creator.profile_path
+                ? getImageUrl(creator.profile_path, "medium", "profile")
+                : null,
+            })) || [],
+        }
+      : {};
 
     // Crear objeto con formato compatible con nuestros componentes
     return {
@@ -165,18 +246,29 @@ const MovieDetailPage = () => {
       duration: isTV ? data.episode_run_time?.[0] || 0 : data.runtime || 0,
       vote_average: data.vote_average,
       genres: data.genres?.map((genre) => genre.name) || [],
+      genre_ids: data.genres?.map((genre) => genre.id) || [],
       director,
       starring:
         data.credits?.cast?.slice(0, 5).map((actor) => actor.name) || [],
-      trailer_key: videos.find((video) => video.type === "Trailer")?.key || "",
+      trailer_key: trailers.length > 0 ? trailers[0].key : "",
       cast,
+      crew,
+      crewByDepartment,
       videos,
+      trailers,
+      teasers,
       images,
       posters,
+      adult: data.adult,
       status: data.status,
       originalLanguage: data.original_language,
+      popularity: data.popularity,
+      vote_count: data.vote_count,
       revenue: data.revenue ? `$${(data.revenue / 1000000).toFixed(2)} M` : "",
       budget: data.budget ? `$${(data.budget / 1000000).toFixed(2)} M` : "",
+      tagline: data.tagline,
+      homepage: data.homepage,
+      imdb_id: data.imdb_id,
       productionCountries:
         data.production_countries?.map((country) => country.name) || [],
       productionCompanies:
@@ -186,6 +278,13 @@ const MovieDetailPage = () => {
           logo: company.logo_path
             ? getImageUrl(company.logo_path, "small", "poster")
             : null,
+          origin_country: company.origin_country,
+        })) || [],
+      spoken_languages:
+        data.spoken_languages?.map((lang) => ({
+          iso_639_1: lang.iso_639_1,
+          name: lang.name,
+          english_name: lang.english_name,
         })) || [],
       ratings: [
         {
@@ -204,6 +303,9 @@ const MovieDetailPage = () => {
       media_type: isTV ? "tv" : "movie",
       runtime: data.runtime,
       release_date: data.release_date || data.first_air_date,
+      release_dates: data.release_dates, // Información adicional de fechas de estreno
+      // Incluir información específica de TV si aplica
+      ...tvInfo,
     };
   };
 
@@ -301,23 +403,7 @@ const MovieDetailPage = () => {
             </div>
           }
         >
-          <MovieDetailHero
-            movie={{
-              title: movie.title,
-              backdrop_path: movie.backdrop_path,
-              tagline: movie.tagline,
-              overview: movie.description,
-              vote_average: movie.vote_average,
-              release_date: movie.year?.toString(),
-              runtime: parseInt(movie.duration),
-              genres: movie.genres,
-              director: movie.director,
-              starring: movie.starring,
-              trailer_key: movie.trailer_key,
-              awards: movie.awards,
-              poster_path: movie.poster_path,
-            }}
-          />
+          <MovieDetailHero movie={movie} />
         </Suspense>
 
         <div className="movie-detail-grid">
@@ -331,6 +417,41 @@ const MovieDetailPage = () => {
                   className="movie-detail-poster"
                   loading="lazy"
                 />
+
+                {/* Overlay con botón de favoritos dentro del póster */}
+                <div className="movie-detail-poster-overlay">
+                  <div className="movie-detail-poster-actions">
+                    <button
+                      className={`movie-detail-poster-action-btn movie-detail-favorite-btn ${
+                        isMovieFavorite ? "active" : ""
+                      }`}
+                      onClick={handleToggleFavorite}
+                      aria-label={
+                        isMovieFavorite
+                          ? t("favorites.removeFromFavorites")
+                          : t("favorites.addToFavorites")
+                      }
+                    >
+                      <i
+                        className={`fas ${
+                          isMovieFavorite ? "fa-heart" : "fa-heart"
+                        }`}
+                      ></i>
+                    </button>
+
+                    {movie.trailer_key && (
+                      <button
+                        className="movie-detail-poster-action-btn movie-detail-play-btn"
+                        onClick={() =>
+                          window.scrollTo({ top: 0, behavior: "smooth" })
+                        }
+                        aria-label={t("common.watchTrailer")}
+                      >
+                        <i className="fas fa-play"></i>
+                      </button>
+                    )}
+                  </div>
+                </div>
               </div>
               <div className="movie-detail-badges">
                 {movie.vote_average >= 8.5 && (
@@ -344,23 +465,6 @@ const MovieDetailPage = () => {
                     {t("movieDetail.highlyRated")}
                   </div>
                 )}
-              </div>
-
-              {/* Botón de favoritos */}
-              <div className="movie-detail-actions">
-                <button
-                  className={`movie-detail-action-btn ${
-                    isMovieFavorite ? "active" : ""
-                  }`}
-                  onClick={handleToggleFavorite}
-                >
-                  <i className="fas fa-heart"></i>
-                  <span>
-                    {isMovieFavorite
-                      ? t("favorites.removeFromFavorites")
-                      : t("favorites.addToFavorites")}
-                  </span>
-                </button>
               </div>
             </div>
           </aside>
@@ -405,6 +509,30 @@ const MovieDetailPage = () => {
                   }
                 >
                   <MovieInfo movie={movie} />
+
+                  {/* Ahora pasamos directamente los datos del cast desde la API */}
+                  <Cast cast={movie.cast} />
+
+                  {/* Añadimos más componentes para mostrar la información adicional */}
+                  {movie.trailers && movie.trailers.length > 0 && (
+                    <VideoPlayer
+                      videoId={movie.trailers[0].key}
+                      thumbnailUrl={movie.trailers[0].thumbnail}
+                      title={movie.trailers[0].name}
+                    />
+                  )}
+
+                  {/* Galería de medios con todas las imágenes y videos */}
+                  <MediaGallery movie={movie} />
+
+                  {/* Contenido relacionado usando los géneros de la película */}
+                  <RelatedContent
+                    movieId={movie.id}
+                    movieGenres={movie.genre_ids}
+                  />
+
+                  {/* Componente de reseñas */}
+                  <Reviews movieId={movie.id} />
                 </Suspense>
               </div>
             </div>

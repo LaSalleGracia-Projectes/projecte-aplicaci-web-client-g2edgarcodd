@@ -21,7 +21,7 @@ import {
 } from "../utils/api";
 
 function ExplorePage() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const location = useLocation();
@@ -43,7 +43,7 @@ function ExplorePage() {
   // Referencia para indicar si hay una carga en curso
   const isLoadingRef = useRef(false);
 
-  // Detectar el tipo de contenido según la URL
+  // Detectar el tipo de contenido según la URL y cargar el género del parámetro
   useEffect(() => {
     const path = location.pathname;
     if (path.includes("/films")) {
@@ -53,39 +53,51 @@ function ExplorePage() {
     } else {
       setContentType("all");
     }
+
+    // Leer el género desde los parámetros de la URL y actualizarlo
+    const genreParam = searchParams.get("genre");
+    if (genreParam && genreParam !== activeGenre) {
+      setActiveGenre(genreParam);
+    }
+
     // Reiniciar el estado cuando cambia el tipo de contenido
     setMovies([]);
     setFilteredMovies([]);
     setCurrentPage(1);
     setHasMoreContent(true);
-  }, [location.pathname]);
+  }, [location.pathname, searchParams]);
 
-  // Cargar géneros desde la API
+  // Modificación para asegurar que los géneros se traduzcan correctamente y usen IDs numéricas de TMDB
   useEffect(() => {
     const fetchGenres = async () => {
       try {
-        const genreData = await getMovieGenres();
-
-        // Añadir opción "Todos" al inicio
-        const allGenresOption = [
-          { id: "all", name: t("explore.genreNames.all") || "Todos" },
+        // Usar IDs numéricas de TMDB para los géneros
+        const genresData = [
+          { id: "all", name: t("explore.genreNames.all") },
+          { id: "28", name: t("explore.genreNames.action") }, // Acción
+          { id: "35", name: t("explore.genreNames.comedy") }, // Comedia
+          { id: "18", name: t("explore.genreNames.drama") }, // Drama
+          { id: "878", name: t("explore.genreNames.scifi") }, // Ciencia Ficción
+          { id: "27", name: t("explore.genreNames.horror") }, // Terror
+          { id: "16", name: t("explore.genreNames.animation") }, // Animación
+          { id: "53", name: t("explore.genreNames.thriller") }, // Thriller
+          { id: "14", name: t("explore.genreNames.fantasy") }, // Fantasía
+          { id: "12", name: t("explore.genreNames.adventure") }, // Aventura
+          { id: "80", name: t("explore.genreNames.crime") }, // Crimen
+          { id: "99", name: t("explore.genreNames.documentary") }, // Documental
+          { id: "10749", name: t("explore.genreNames.romance") }, // Romance
+          { id: "9648", name: t("explore.genreNames.mystery") }, // Misterio
         ];
 
-        // Transformar los géneros de la API para que coincidan con el formato esperado
-        const formattedGenres = genreData.map((genre) => ({
-          id: genre.id.toString(),
-          name: genre.name,
-        }));
-
-        setGenres([...allGenresOption, ...formattedGenres]);
+        setGenres(genresData);
       } catch (err) {
-        console.error("Error al obtener géneros:", err);
-        setError("Error al cargar los géneros");
+        console.error("Error al cargar los géneros:", err);
+        setError("No se pudieron cargar los géneros");
       }
     };
 
     fetchGenres();
-  }, [t]);
+  }, [t, language]); // Importante incluir t y language como dependencias para actualizar cuando cambie el idioma
 
   // Función para cargar contenido
   const fetchContent = useCallback(
@@ -121,13 +133,13 @@ function ExplorePage() {
               if (genre === "all") {
                 // Para películas sin filtro de género
                 if (sort === "rating") {
-                  contentData = await getTopRatedMovies(page);
+                  contentData = await getTopRatedMovies(page, language);
                 } else {
-                  contentData = await getAllMovies(page);
+                  contentData = await getAllMovies(page, language);
                 }
               } else {
                 // Para películas con filtro de género
-                contentData = await getTMDBMoviesByGenre(genre, page);
+                contentData = await getTMDBMoviesByGenre(genre, page, language);
               }
               // Marcar contenido como películas
               contentData = contentData.map((item) => ({
@@ -138,10 +150,13 @@ function ExplorePage() {
 
             case "series":
               // Para series
-              if (sort === "rating") {
-                contentData = await getTopRatedTVShows(page);
+              if (genre !== "all") {
+                // Usar la API para obtener series por género - Modificación para usar la función correcta
+                contentData = await getTMDBMoviesByGenre(genre, page, language);
+              } else if (sort === "rating") {
+                contentData = await getTopRatedTVShows(page, language);
               } else {
-                contentData = await getPopularTVShows(page);
+                contentData = await getPopularTVShows(page, language);
               }
               // Marcar contenido como series
               contentData = contentData.map((item) => ({
@@ -152,22 +167,41 @@ function ExplorePage() {
 
             default:
               // Para todos (películas y series)
-              const [moviesData, seriesData] = await Promise.all([
-                getAllMovies(page),
-                getPopularTVShows(page),
-              ]);
+              if (genre !== "all") {
+                // Si hay un género seleccionado, obtener tanto películas como series de ese género
+                // Modificación para usar la función correcta para ambos tipos
+                const moviesData = await getTMDBMoviesByGenre(
+                  genre,
+                  page,
+                  language
+                );
 
-              // Combinar y marcar ambos tipos
-              const markedMovies = moviesData.map((movie) => ({
-                ...movie,
-                type: "film",
-              }));
-              const markedSeries = seriesData.map((show) => ({
-                ...show,
-                type: "series",
-              }));
+                // Combinar y marcar todos como películas (ya que es el único tipo disponible por ahora)
+                const markedMovies = moviesData.map((movie) => ({
+                  ...movie,
+                  type: "film",
+                }));
 
-              contentData = [...markedMovies, ...markedSeries];
+                contentData = markedMovies;
+              } else {
+                // Si no hay género seleccionado, obtener contenido normal
+                const [moviesData, seriesData] = await Promise.all([
+                  getAllMovies(page, language),
+                  getPopularTVShows(page, language),
+                ]);
+
+                // Combinar y marcar ambos tipos
+                const markedMovies = moviesData.map((movie) => ({
+                  ...movie,
+                  type: "film",
+                }));
+                const markedSeries = seriesData.map((show) => ({
+                  ...show,
+                  type: "series",
+                }));
+
+                contentData = [...markedMovies, ...markedSeries];
+              }
               break;
           }
         } catch (error) {
@@ -232,7 +266,7 @@ function ExplorePage() {
         isLoadingRef.current = false;
       }
     },
-    [searchParams, contentType, movies]
+    [searchParams, contentType, movies, language]
   );
 
   // Cargar contenido inicial
@@ -263,10 +297,10 @@ function ExplorePage() {
               if (genre === "all") {
                 initialData =
                   sort === "rating"
-                    ? await getTopRatedMovies(1)
-                    : await getAllMovies(1);
+                    ? await getTopRatedMovies(1, language)
+                    : await getAllMovies(1, language);
               } else {
-                initialData = await getTMDBMoviesByGenre(genre, 1);
+                initialData = await getTMDBMoviesByGenre(genre, 1, language);
               }
               // Marcar como películas
               initialData = initialData.map((item) => ({
@@ -276,10 +310,15 @@ function ExplorePage() {
               break;
 
             case "series":
-              initialData =
-                sort === "rating"
-                  ? await getTopRatedTVShows(1)
-                  : await getPopularTVShows(1);
+              if (genre !== "all") {
+                // Usar la función correcta para obtener series por género
+                initialData = await getTMDBMoviesByGenre(genre, 1, language);
+              } else {
+                initialData =
+                  sort === "rating"
+                    ? await getTopRatedTVShows(1, language)
+                    : await getPopularTVShows(1, language);
+              }
               // Marcar como series
               initialData = initialData.map((item) => ({
                 ...item,
@@ -288,22 +327,34 @@ function ExplorePage() {
               break;
 
             default:
-              // Cargamos películas y series
-              const [moviesData, seriesData] = await Promise.all([
-                getAllMovies(1),
-                getPopularTVShows(1),
-              ]);
+              // Para todos (películas y series)
+              if (genre !== "all") {
+                // Si hay un género seleccionado, obtener solo películas por ahora
+                initialData = await getTMDBMoviesByGenre(genre, 1, language);
 
-              const markedMovies = moviesData.map((movie) => ({
-                ...movie,
-                type: "film",
-              }));
-              const markedSeries = seriesData.map((show) => ({
-                ...show,
-                type: "series",
-              }));
+                // Marcar como películas
+                initialData = initialData.map((item) => ({
+                  ...item,
+                  type: "film",
+                }));
+              } else {
+                // Cargamos películas y series
+                const [moviesData, seriesData] = await Promise.all([
+                  getAllMovies(1, language),
+                  getPopularTVShows(1, language),
+                ]);
 
-              initialData = [...markedMovies, ...markedSeries];
+                const markedMovies = moviesData.map((movie) => ({
+                  ...movie,
+                  type: "film",
+                }));
+                const markedSeries = seriesData.map((show) => ({
+                  ...show,
+                  type: "series",
+                }));
+
+                initialData = [...markedMovies, ...markedSeries];
+              }
               break;
           }
         } catch (err) {
@@ -348,7 +399,7 @@ function ExplorePage() {
         el.classList.add("visible");
       }, 100 * index);
     });
-  }, [searchParams, contentType]);
+  }, [searchParams, contentType, language]);
 
   // Configurar Intersection Observer para detección de scroll infinito
   useEffect(() => {
@@ -421,40 +472,50 @@ function ExplorePage() {
     setFilteredMovies(result);
   }, [activeGenre, sortBy, movies, setSearchParams, contentType]);
 
+  // Función para navegar con recarga completa
+  const navigateWithReload = (path) => {
+    window.location.href = path;
+  };
+
+  // Función auxiliar para navegar directamente a un género
+  const navigateToGenre = (genreId) => {
+    // Conservar el tipo de contenido actual en la navegación
+    let basePath = "/explore";
+    if (contentType === "films") {
+      basePath = "/explore/films";
+    } else if (contentType === "series") {
+      basePath = "/explore/series";
+    }
+
+    // Navegar a la URL con el género como parámetro
+    const url = `${basePath}?genre=${genreId}&sort=${sortBy}`;
+    window.location.href = url; // Usar window.location.href para recarga completa
+  };
+
+  // Modificar handleGenreChange para usar recarga completa de manera correcta
   const handleGenreChange = (genreId) => {
     if (genreId === activeGenre) return;
 
-    setActiveGenre(genreId);
-    setMovies([]);
-    setFilteredMovies([]);
-    setCurrentPage(1);
-    setHasMoreContent(true);
-    setError(null);
+    // Conservar el tipo de contenido actual en la navegación
+    let path = window.location.pathname;
+    const urlParams = new URLSearchParams(window.location.search);
+    const sortParam = urlParams.get("sort") || "popular";
 
-    // Actualizar URL y dejar que el efecto se encargue de la carga
-    setSearchParams({
-      genre: genreId,
-      sort: sortBy,
-    });
+    // Construir la URL con los parámetros adecuados
+    const url = `${path}?genre=${genreId}&sort=${sortParam}`;
 
-    exploreSectionRef.current?.scrollIntoView({ behavior: "smooth" });
+    // Navegar a la URL construida
+    window.location.href = url;
   };
 
+  // Modificar handleSortChange para usar recarga completa
   const handleSortChange = (sortId) => {
     if (sortId === sortBy) return;
 
-    setSortBy(sortId);
-    setMovies([]);
-    setFilteredMovies([]);
-    setCurrentPage(1);
-    setHasMoreContent(true);
-    setError(null);
-
-    // Actualizar URL y dejar que el efecto se encargue de la carga
-    setSearchParams({
-      genre: activeGenre,
-      sort: sortId,
-    });
+    // Construir la URL manteniendo los parámetros actuales
+    let path = window.location.pathname;
+    const url = `${path}?genre=${activeGenre}&sort=${sortId}`;
+    window.location.href = url;
   };
 
   const toggleViewMode = () => {
@@ -527,48 +588,79 @@ function ExplorePage() {
           <div className="hero-content">
             <h1 className="fade-in-element">{getPageTitle()}</h1>
             <p className="fade-in-element">{getPageSubtitle()}</p>
+
+            {/* Añadir botones para géneros populares */}
+            <div className="popular-genres fade-in-element">
+              <div className="popular-genres-list">
+                {genres.slice(0, 6).map(
+                  (genre) =>
+                    genre.id !== "all" && (
+                      <button
+                        key={genre.id}
+                        className={`genre-button ${
+                          activeGenre === genre.id ? "active" : ""
+                        }`}
+                        onClick={() => navigateToGenre(genre.id)}
+                      >
+                        {genre.name}
+                      </button>
+                    )
+                )}
+              </div>
+            </div>
           </div>
         </section>
 
-        {/* Tabs para navegar entre tipos de contenido */}
+        {/* Tabs para navegar entre tipos de contenido con recarga completa */}
         <section className="content-type-tabs fade-in-element">
           <div className="content-tabs-container">
-            <NavLink
-              to="/explore"
-              className={({ isActive }) =>
-                `content-tab ${
-                  isActive && location.pathname === "/explore" ? "active" : ""
-                }`
-              }
-              end
+            <a
+              href="/explore"
+              className={`content-tab ${
+                location.pathname === "/explore" ? "active" : ""
+              }`}
+              onClick={(e) => {
+                e.preventDefault();
+                navigateWithReload("/explore");
+              }}
             >
               <div className="tab-icon-wrapper">
                 <i className="fas fa-th"></i>
               </div>
               <span>{t("explore.allContent")}</span>
-            </NavLink>
-            <NavLink
-              to="/explore/films"
-              className={({ isActive }) =>
-                `content-tab ${isActive ? "active" : ""}`
-              }
+            </a>
+
+            <a
+              href="/explore/films"
+              className={`content-tab ${
+                location.pathname.includes("/films") ? "active" : ""
+              }`}
+              onClick={(e) => {
+                e.preventDefault();
+                navigateWithReload("/explore/films");
+              }}
             >
               <div className="tab-icon-wrapper">
                 <i className="fas fa-film"></i>
               </div>
               <span>{t("explore.films")}</span>
-            </NavLink>
-            <NavLink
-              to="/explore/series"
-              className={({ isActive }) =>
-                `content-tab ${isActive ? "active" : ""}`
-              }
+            </a>
+
+            <a
+              href="/explore/series"
+              className={`content-tab ${
+                location.pathname.includes("/series") ? "active" : ""
+              }`}
+              onClick={(e) => {
+                e.preventDefault();
+                navigateWithReload("/explore/series");
+              }}
             >
               <div className="tab-icon-wrapper">
                 <i className="fas fa-tv"></i>
               </div>
               <span>{t("explore.series")}</span>
-            </NavLink>
+            </a>
           </div>
         </section>
 

@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { useLanguage } from "../../contexts/LanguageContext";
 import LanguageSwitcher from "../LanguageSwitcher";
+import { getAvatarUrl } from "../../utils/avatar";
 
 function ProfileHeader({ userData }) {
   const { t } = useLanguage();
   const [isEditing, setIsEditing] = useState(false);
   const [statusMessage, setStatusMessage] = useState(
-    userData.statusMessage || t("profile.defaultStatus")
+    userData?.statusMessage || t("profile.defaultStatus")
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -43,19 +44,13 @@ function ProfileHeader({ userData }) {
       <div
         className="profile-cover-image"
         style={
-          userData.coverImage
+          userData?.coverImage
             ? {
                 backgroundImage: `linear-gradient(to right, rgba(13, 71, 161, 0.7), rgba(25, 118, 210, 0.7)), url(${userData.coverImage})`,
               }
             : {}
         }
       >
-        <div className="edit-cover-button">
-          <button aria-label={t("profile.changeCover")}>
-            <i className="fas fa-camera"></i>
-          </button>
-        </div>
-
         {/* Añadimos el selector de idioma */}
         <div style={{ position: "absolute", top: "15px", right: "15px" }}>
           <LanguageSwitcher variant="minimal" />
@@ -64,24 +59,37 @@ function ProfileHeader({ userData }) {
 
       <div className="profile-header-content">
         <div className="profile-avatar-container">
-          <img
-            src={userData.avatar}
-            alt={userData.username}
-            className="profile-avatar"
-          />
-          <div className="edit-avatar-button">
-            <button aria-label={t("profile.changeAvatar")}>
-              <i className="fas fa-camera"></i>
-            </button>
-          </div>
+          {userData?.avatar ? (
+            <img
+              src={userData.avatar}
+              alt={userData?.username || t("profile.user")}
+              className="profile-avatar"
+            />
+          ) : (
+            <div className="profile-avatar-placeholder">
+              <img
+                src={getAvatarUrl(
+                  null,
+                  userData?.username || t("profile.user"),
+                  "big-ears"
+                )}
+                alt={userData?.username || t("profile.user")}
+                className="profile-avatar"
+              />
+            </div>
+          )}
         </div>
 
         <div className="profile-header-info">
           <div className="profile-name-container">
-            <h1 className="profile-name">{userData.fullName}</h1>
-            <span className="profile-username">@{userData.username}</span>
+            <h1 className="profile-name">
+              {userData?.fullName || t("profile.noName")}
+            </h1>
+            <span className="profile-username">
+              @{userData?.username || "usuario"}
+            </span>
 
-            {userData.plan === "Premium" && (
+            {userData?.plan === "Premium" && (
               <span className="premium-badge">
                 <i className="fas fa-crown"></i> Premium
               </span>
@@ -136,18 +144,18 @@ function ProfileHeader({ userData }) {
 
           <div className="profile-stats">
             <div className="stat-item">
-              <span className="stat-value">{userData.watchTime}</span>
+              <span className="stat-value">{userData?.watchTime || 0}</span>
               <span className="stat-label">{t("profile.hoursWatched")}</span>
             </div>
             <div className="stat-item">
               <span className="stat-value">
-                {userData.favorites ? userData.favorites.length : 0}
+                {userData?.favorites ? userData.favorites.length : 0}
               </span>
               <span className="stat-label">{t("profile.favorites")}</span>
             </div>
             <div className="stat-item">
               <span className="stat-value">
-                {userData.customLists ? userData.customLists.length : 0}
+                {userData?.customLists ? userData.customLists.length : 0}
               </span>
               <span className="stat-label">{t("profile.lists")}</span>
             </div>

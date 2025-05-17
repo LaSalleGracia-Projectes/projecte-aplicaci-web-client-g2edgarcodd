@@ -29,11 +29,11 @@ function LegalPage() {
                 <strong>
                   {t("legal.info.companyIdentification.address")}:
                 </strong>{" "}
-                Calle Gran Vía 123, 28013, Madrid, España
+                Plaça del Nord, 14, Gràcia, 08024 Barcelona
               </li>
               <li>
                 <strong>{t("legal.info.companyIdentification.email")}:</strong>{" "}
-                info@streamhub.com
+                 info@streamhub.com
               </li>
               <li>
                 <strong>{t("legal.info.companyIdentification.phone")}:</strong>{" "}

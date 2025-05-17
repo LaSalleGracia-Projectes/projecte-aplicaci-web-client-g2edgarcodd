@@ -3,9 +3,8 @@ import { useLanguage } from "../../contexts/LanguageContext";
 import PropTypes from "prop-types";
 import "../../styles/components/moviedetail-enhanced.css";
 
-function Cast({ movieId, castData }) {
+function Cast({ cast = [] }) {
   const { t } = useLanguage();
-  const [activeCastMembers, setActiveCastMembers] = useState([]);
   const [visibleItems, setVisibleItems] = useState({});
   const [expanded, setExpanded] = useState(false);
   const imageObserverRef = useRef(null);
@@ -35,11 +34,8 @@ function Cast({ movieId, castData }) {
     };
   }, []);
 
-  // Filtrar el reparto por el ID de la película y cargar imágenes
+  // Programar la observación de elementos después del renderizado
   useEffect(() => {
-    const movieCast = castData.filter((actor) => actor.movieId === movieId);
-    setActiveCastMembers(movieCast);
-
     // Resetear el estado de elementos visibles con nuevos datos
     setVisibleItems({});
 
@@ -61,12 +57,10 @@ function Cast({ movieId, castData }) {
         imageObserverRef.current.disconnect();
       }
     };
-  }, [movieId, castData]);
+  }, [cast]);
 
   // Determinar cuántos actores mostrar según el estado de expansión
-  const displayedMembers = expanded
-    ? activeCastMembers
-    : activeCastMembers.slice(0, 8);
+  const displayedMembers = expanded ? cast : cast.slice(0, 8);
 
   // Manejar la expansión/contracción del reparto
   const toggleExpand = () => {
@@ -95,7 +89,7 @@ function Cast({ movieId, castData }) {
         </h3>
       </div>
 
-      {activeCastMembers.length > 0 ? (
+      {cast.length > 0 ? (
         <>
           <div className="movie-detail-cast-grid">
             {displayedMembers.map((actor, index) => (
@@ -130,7 +124,7 @@ function Cast({ movieId, castData }) {
             ))}
           </div>
 
-          {activeCastMembers.length > 8 && (
+          {cast.length > 8 && (
             <button
               className={`movie-detail-cast-toggle ${
                 expanded ? "expanded" : ""
@@ -162,17 +156,14 @@ function Cast({ movieId, castData }) {
 }
 
 Cast.propTypes = {
-  movieId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
-  castData: PropTypes.arrayOf(
+  cast: PropTypes.arrayOf(
     PropTypes.shape({
-      id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
-      movieId: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
-        .isRequired,
+      id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
       name: PropTypes.string.isRequired,
       character: PropTypes.string.isRequired,
       photo: PropTypes.string.isRequired,
     })
-  ).isRequired,
+  ),
 };
 
 export default Cast;

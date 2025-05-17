@@ -10,8 +10,9 @@ function Navbar({
   isScrolled,
   isAuthenticated,
   isLoading,
+  mobileMenuOpen,
+  toggleMobileMenu,
 }) {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
   const location = useLocation();
   const navRef = useRef(null);
@@ -20,7 +21,6 @@ function Navbar({
 
   // Cerrar el menú móvil al cambiar de ruta
   useEffect(() => {
-    setMobileMenuOpen(false);
     setActiveDropdown(null);
   }, [location.pathname]);
 
@@ -36,11 +36,6 @@ function Navbar({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const toggleMobileMenu = () => {
-    setMobileMenuOpen(!mobileMenuOpen);
-    if (activeDropdown) setActiveDropdown(null);
-  };
-
   // Función mejorada para controlar los desplegables
   const toggleDropdown = (dropdown, e) => {
     if (e) {
@@ -48,7 +43,20 @@ function Navbar({
       e.stopPropagation();
     }
 
-    setActiveDropdown(activeDropdown === dropdown ? null : dropdown);
+    // En móvil, si está abierto otro dropdown, cerrarlo primero
+    if (
+      window.innerWidth <= 768 &&
+      activeDropdown &&
+      activeDropdown !== dropdown
+    ) {
+      setActiveDropdown(null);
+      // Pequeño delay antes de abrir el nuevo dropdown para una mejor transición
+      setTimeout(() => {
+        setActiveDropdown(dropdown);
+      }, 100);
+    } else {
+      setActiveDropdown(activeDropdown === dropdown ? null : dropdown);
+    }
   };
 
   const isActive = (path) => {
@@ -66,6 +74,21 @@ function Navbar({
     window.location.href = "/";
   };
 
+  // Función para cerrar el menú cuando se hace clic en un enlace
+  const handleNavLinkClick = () => {
+    if (mobileMenuOpen && window.innerWidth <= 768) {
+      toggleMobileMenu();
+    }
+  };
+
+  // Función para navegar recargando la página completamente
+  const navigateWithReload = (path, e) => {
+    if (e) {
+      e.preventDefault();
+    }
+    window.location.href = path;
+  };
+
   return (
     <nav className={`navbar ${isScrolled ? "scrolled" : ""}`} ref={navRef}>
       <div className="logo">
@@ -75,16 +98,23 @@ function Navbar({
         </Link>
       </div>
 
+      {/* Botón de menú móvil mejorado con indicador de aria */}
       <div
         className={`mobile-menu-toggle ${mobileMenuOpen ? "active" : ""}`}
         onClick={toggleMobileMenu}
+        aria-label={mobileMenuOpen ? "Cerrar menú" : "Abrir menú"}
+        aria-expanded={mobileMenuOpen}
+        role="button"
+        tabIndex="0"
       >
         <i className={`fas ${mobileMenuOpen ? "fa-times" : "fa-bars"}`}></i>
       </div>
 
       <ul className={`nav-center ${mobileMenuOpen ? "mobile-active" : ""}`}>
         <li className={isActive("/")}>
-          <Link to="/">{t("navbar.home")}</Link>
+          <Link to="/" onClick={handleNavLinkClick}>
+            {t("navbar.home")}
+          </Link>
         </li>
         <li
           className={`has-dropdown ${
@@ -107,47 +137,96 @@ function Navbar({
           >
             <div className="column">
               <li>
-                <Link to="/explore">{t("explore.allContent")}</Link>
+                <a
+                  href="/explore"
+                  onClick={(e) => navigateWithReload("/explore", e)}
+                >
+                  {t("explore.allContent")}
+                </a>
               </li>
               <li>
-                <Link to="/explore/films">{t("explore.films")}</Link>
+                <a
+                  href="/explore/films"
+                  onClick={(e) => navigateWithReload("/explore/films", e)}
+                >
+                  {t("explore.films")}
+                </a>
               </li>
               <li>
-                <Link to="/explore/series">{t("explore.series")}</Link>
+                <a
+                  href="/explore/series"
+                  onClick={(e) => navigateWithReload("/explore/series", e)}
+                >
+                  {t("explore.series")}
+                </a>
               </li>
             </div>
             <div className="column">
               <li>
-                <Link to="/explore?genre=action">{t("genres.action")}</Link>
+                <a
+                  href="/explore?genre=28"
+                  onClick={(e) => navigateWithReload("/explore?genre=28", e)}
+                >
+                  {t("genres.action")}
+                </a>
               </li>
               <li>
-                <Link to="/explore?genre=adventure">
+                <a
+                  href="/explore?genre=12"
+                  onClick={(e) => navigateWithReload("/explore?genre=12", e)}
+                >
                   {t("genres.adventure")}
-                </Link>
+                </a>
               </li>
               <li>
-                <Link to="/explore?genre=fantasy">{t("genres.fantasy")}</Link>
+                <a
+                  href="/explore?genre=14"
+                  onClick={(e) => navigateWithReload("/explore?genre=14", e)}
+                >
+                  {t("genres.fantasy")}
+                </a>
               </li>
               <li>
-                <Link to="/explore?genre=scifi">{t("genres.scifi")}</Link>
+                <a
+                  href="/explore?genre=878"
+                  onClick={(e) => navigateWithReload("/explore?genre=878", e)}
+                >
+                  {t("genres.scifi")}
+                </a>
               </li>
               <li>
-                <Link to="/explore?genre=romance">{t("genres.romance")}</Link>
+                <a
+                  href="/explore?genre=10749"
+                  onClick={(e) => navigateWithReload("/explore?genre=10749", e)}
+                >
+                  {t("genres.romance")}
+                </a>
               </li>
               <li>
-                <Link to="/explore?genre=drama">{t("genres.drama")}</Link>
+                <a
+                  href="/explore?genre=18"
+                  onClick={(e) => navigateWithReload("/explore?genre=18", e)}
+                >
+                  {t("genres.drama")}
+                </a>
               </li>
             </div>
           </div>
         </li>
         <li className={isActive("/blog")}>
-          <Link to="/blog">{t("navbar.blog")}</Link>
+          <Link to="/blog" onClick={handleNavLinkClick}>
+            {t("navbar.blog")}
+          </Link>
         </li>
         <li className={isActive("/forum")}>
-          <Link to="/forum">{t("navbar.forum")}</Link>
+          <Link to="/forum" onClick={handleNavLinkClick}>
+            {t("navbar.forum")}
+          </Link>
         </li>
         <li className={isActive("/contact")}>
-          <Link to="/contact">{t("navbar.contact")}</Link>
+          <Link to="/contact" onClick={handleNavLinkClick}>
+            {t("navbar.contact")}
+          </Link>
         </li>
       </ul>
 
